@@ -37,7 +37,3 @@ src/test/
 
 ### VS Code ###
 .vscode/
-
-
-### Custom class ###
-src/main/java/com/mySportPage/SensitiveData.java
