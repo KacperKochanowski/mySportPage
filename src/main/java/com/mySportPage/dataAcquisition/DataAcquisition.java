@@ -10,12 +10,19 @@ import com.squareup.okhttp.Request;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataAcquisition {
+
+    @Value("${spring.request.header.X_RAPID_API_KEY}")
+    private String X_RAPID_API_KEY;
+
+    @Value("${spring.request.header.X_RAPID_API_HOST}")
+    private String X_RAPID_API_HOST;
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisition.class);
 
@@ -41,8 +48,8 @@ public class DataAcquisition {
                 Request request = new Request.Builder()
                         .url(path)
                         .get()
-                        .addHeader("X-RapidAPI-Key", SensitiveData.X_RAPID_API_KEY.getValue())
-                        .addHeader("X-RapidAPI-Host", SensitiveData.X_RAPID_API_HOST.getValue())
+                        .addHeader("X-RapidAPI-Key", X_RAPID_API_KEY)
+                        .addHeader("X-RapidAPI-Host", X_RAPID_API_HOST)
                         .build();
                 return client.newCall(request).execute().body().string();
             } catch (IOException ex) {
