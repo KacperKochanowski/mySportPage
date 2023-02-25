@@ -1,6 +1,7 @@
 HELP.md
 target/
-resources/
+resources/static
+resources/templates
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -37,3 +38,6 @@ src/test/
 
 ### VS Code ###
 .vscode/
+
+### Sensitive Data ###
+src/main/resources/application.properties
