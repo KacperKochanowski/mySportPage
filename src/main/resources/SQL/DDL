@@ -1,0 +1,19 @@
+CREATE TABLE public.teams (
+	team_id int4 NOT NULL,
+	"name" text NOT NULL,
+	shortcut text NULL,
+	club_crest text NULL,
+	club_founded int4 NULL,
+	country text NULL,
+	CONSTRAINT teams_external_id_key UNIQUE (team_id),
+	CONSTRAINT teams_name_key UNIQUE (name)
+);
+
+CREATE TABLE public.stadiums (
+	stadium text NOT NULL,
+	stadium_capacity int4 NULL,
+	address_of_stadium text NULL,
+	city_of_stadium text NOT NULL,
+	is_national bool NULL,
+	team_id int4 NOT NULL
+);
