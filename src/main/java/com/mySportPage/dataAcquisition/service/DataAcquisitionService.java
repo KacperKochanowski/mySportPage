@@ -27,7 +27,7 @@ public class DataAcquisitionService {
 
     public void createTeamsAndStadiums(String data) {
         if (data != null) {
-            dataAcquisitionDao.persistTeams(mapJSONObjectToCustomList(data));
+            dataAcquisitionDao.persistTeamsAndStadiums(mapJSONObjectToCustomList(data));
         }
     }
 

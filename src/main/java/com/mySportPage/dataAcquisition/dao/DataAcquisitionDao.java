@@ -31,7 +31,7 @@ public class DataAcquisitionDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public void persistTeams(List<Team> teams) {
+    public void persistTeamsAndStadiums(List<Team> teams) {
         if(teams.isEmpty()){
             return;
         }
