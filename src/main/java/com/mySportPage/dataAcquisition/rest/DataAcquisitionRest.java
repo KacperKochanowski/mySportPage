@@ -30,9 +30,16 @@ public class DataAcquisitionRest {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/createTeams/{leagueId}")
-    public void createTeamsAndStadiums(@PathVariable Integer leagueId) {
-        String externalPath = ExternalPaths.GET_ALL_TEAMS_FROM_ONE_LEAGUE_ID_V2.getUrl().replace("{league_id}", String.valueOf(leagueId));
+    @PostMapping("/createTeamsAndStadiums")
+    public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId, @RequestParam("season") Integer season) {
+        String externalPath = ExternalPaths.GET_ALL_TEAMS_FROM_ONE_LEAGUE_ID_V3.getUrl();
+        if (leagueId != null) {
+            externalPath += "?league=" + leagueId;
+        }
+        if (season != null) {
+            externalPath += leagueId != null ? "&" : "?";
+            externalPath += "season=" + season;
+        }
         dataAcquisitionService.createTeamsAndStadiums(sendGetRequest(externalPath));
     }
 
