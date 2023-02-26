@@ -1,11 +1,13 @@
 package com.mySportPage.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class Stadium {
+
+    @JsonProperty("id")
+    private Integer id;
 
     @JsonProperty("venue_name")
     private String stadium;
@@ -14,16 +16,12 @@ public class Stadium {
     private Long capacity;
 
     @JsonProperty("venue_address")
-    private String addressOfStadium;
+    private String address;
 
     @JsonProperty("venue_city")
-    private String cityOfStadium;
+    private String city;
 
-    @JsonProperty("is_national")
-    private boolean isNational;
-
-    @JsonProperty("venue_surface")
-    @JsonIgnore
-    private String venueSurface;
+    @JsonProperty("team_id")
+    private Integer externalTeamId;
 
 }
