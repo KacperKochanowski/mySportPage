@@ -1,11 +1,9 @@
 package com.mySportPage.dataAcquisition.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.dataAcquisition.dao.DataAcquisitionDao;
 import com.mySportPage.model.Stadium;
 import com.mySportPage.model.Team;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,28 +20,46 @@ public class DataAcquisitionService {
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionService.class);
 
-    private static final Map<Object, List<Object>> dataFromJson = new HashMap<>();
-
-
     public void createTeamsAndStadiums(String data) {
         if (data != null) {
-            dataAcquisitionDao.persistTeamsAndStadiums(mapJSONObjectToCustomList(data));
+            dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data));
+            dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data));
         }
     }
 
-    public static List<Team> mapJSONObjectToCustomList(String responseBody) {
+    public List<Team> mapJSONObjectToTeamsList(String responseBody) {
         JSONObject jsonObject = new JSONObject(responseBody);
-        String teams = jsonObject.getJSONObject("api").getJSONArray("teams").toString();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            List<Team> participantJsonList;
-            participantJsonList = mapper.readValue(teams, new TypeReference<>() {
-            });
-            return participantJsonList;
-        } catch (JsonProcessingException ex) {
-            log.info("DataAcquisitionService.mapJSONObjectToCustomList(): Couldn't parse data from given json. Message: " + ex.getMessage());
+        List<Team> teams = new ArrayList<>();
+        JSONArray response = jsonObject.getJSONArray("response");
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject element = response.getJSONObject(i).getJSONObject("team");
+            Team team = new Team();
+            team.setExternalTeamId(element.getInt("id"));
+            team.setName(element.getString("name"));
+            team.setShortCut(element.getString("code"));
+            team.setCountry(element.getString("country"));
+            team.setClubFounded(element.getInt("founded"));
+            team.setClubCrest(element.getString("logo"));
+            teams.add(team);
         }
-        return new ArrayList<>();
+        return teams;
     }
 
+    public List<Stadium> mapJSONObjectToStadiumsList(String responseBody) {
+        JSONObject jsonObject = new JSONObject(responseBody);
+        List<Stadium> stadiums = new ArrayList<>();
+        JSONArray response = jsonObject.getJSONArray("response");
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject element = response.getJSONObject(i);
+            Stadium stadium = new Stadium();
+            stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
+            element = response.getJSONObject(i).getJSONObject("venue");
+            stadium.setStadium(element.getString("name"));
+            stadium.setAddress(element.getString("address"));
+            stadium.setCity(element.getString("city"));
+            stadium.setCapacity(element.getLong("capacity"));
+            stadiums.add(stadium);
+        }
+        return stadiums;
+    }
 }
