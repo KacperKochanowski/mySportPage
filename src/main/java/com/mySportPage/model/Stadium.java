@@ -1,5 +1,6 @@
 package com.mySportPage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -21,7 +22,7 @@ public class Stadium {
     @JsonProperty("venue_city")
     private String city;
 
-    @JsonProperty("team_id")
+    @JsonIgnore
     private Integer externalTeamId;
 
 }

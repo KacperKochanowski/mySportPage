@@ -1,12 +1,13 @@
 package com.mySportPage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class Team {
 
-    @JsonProperty("team_id")
+    @JsonProperty("id")
     private Integer externalTeamId;
 
     private String name;
@@ -21,5 +22,8 @@ public class Team {
 
     @JsonProperty("founded")
     private Integer clubFounded;
+
+    @JsonIgnore
+    private boolean national;
 
 }
