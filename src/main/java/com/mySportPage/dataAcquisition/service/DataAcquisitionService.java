@@ -1,5 +1,7 @@
 package com.mySportPage.dataAcquisition.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.dataAcquisition.dao.DataAcquisitionDao;
 import com.mySportPage.model.Stadium;
 import com.mySportPage.model.Team;
@@ -28,32 +30,29 @@ public class DataAcquisitionService {
     }
 
     public List<Team> mapJSONObjectToTeamsList(String responseBody) {
-        JSONObject jsonObject = new JSONObject(responseBody);
-        List<Team> teams = new ArrayList<>();
-        JSONArray response = jsonObject.getJSONArray("response");
-        for (int i = 0; i < response.length(); i++) {
-            JSONObject element = response.getJSONObject(i).getJSONObject("team");
-            Team team = new Team();
-            team.setExternalTeamId(element.getInt("id"));
-            team.setName(element.getString("name"));
-            team.setShortCut(element.getString("code"));
-            team.setCountry(element.getString("country"));
-            team.setClubFounded(element.getInt("founded"));
-            team.setClubCrest(element.getString("logo"));
-            teams.add(team);
+        try {
+            List<Team> teams = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            JSONArray response = new JSONObject(responseBody).getJSONArray("response");
+            for (int i = 0; i < response.length(); i++) {
+                teams.add(objectMapper.readValue(response.getJSONObject(i).getJSONObject("team").toString(), Team.class));
+            }
+            return teams;
+        } catch (JsonProcessingException e) {
+            log.error("DataAcquisitionService.mapJSONObjectToTeamsList(): Couldn't parse data from given json. Message: " + e.getMessage());
         }
-        return teams;
+        return new ArrayList<>();
     }
 
     public List<Stadium> mapJSONObjectToStadiumsList(String responseBody) {
-        JSONObject jsonObject = new JSONObject(responseBody);
         List<Stadium> stadiums = new ArrayList<>();
-        JSONArray response = jsonObject.getJSONArray("response");
+        JSONArray response = new JSONObject(responseBody).getJSONArray("response");
         for (int i = 0; i < response.length(); i++) {
             JSONObject element = response.getJSONObject(i);
             Stadium stadium = new Stadium();
             stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
             element = response.getJSONObject(i).getJSONObject("venue");
+            stadium.setId(element.getInt("id"));
             stadium.setStadium(element.getString("name"));
             stadium.setAddress(element.getString("address"));
             stadium.setCity(element.getString("city"));
