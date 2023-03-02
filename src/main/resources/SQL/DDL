@@ -11,7 +11,7 @@ CREATE TABLE public.teams (
 CREATE TABLE public.stadiums (
 	stadium_id int4 NULL,
 	stadium text NOT NULL,
-	team_id int4 NOT NULL,
+	team_id _int4 NOT NULL,
 	capacity int4 NULL,
 	address text NULL,
 	city text NOT NULL,
