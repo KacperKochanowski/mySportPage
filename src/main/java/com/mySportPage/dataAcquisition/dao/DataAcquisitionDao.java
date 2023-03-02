@@ -23,8 +23,8 @@ public class DataAcquisitionDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final Map<SportObjectEnum, String> queriesForChecking = new HashMap<>() {{
-        put(SportObjectEnum.TEAM, "SELECT EXISTS (SELECT 1 FROM public.teams where team_id = :externalTeamId)");
-        put(SportObjectEnum.STADIUM, "SELECT EXISTS (SELECT 1 FROM public.stadiums where team_id = :externalTeamId)");
+        put(SportObjectEnum.TEAM, "SELECT EXISTS (SELECT 1 FROM public.teams WHERE team_id = :externalTeamId)");
+        put(SportObjectEnum.STADIUM, "SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE :externalTeamId = ANY(team_id))");
     }};
 
     @Autowired
@@ -48,7 +48,7 @@ public class DataAcquisitionDao {
             String persistTeam = "INSERT INTO public.teams (team_id, name, shortcut, club_crest, club_founded, country) " +
                     "VALUES (:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country);";
 
-            if (!checkIfObjectAlreadyExist(SportObjectEnum.TEAM, team.getExternalTeamId())) {
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.TEAM, team.getExternalTeamId(), null)) {
                 this.namedParameterJdbcTemplate.update(persistTeam, parameters);
                 log.info("Team: " + team.getName() + " stored in db.");
             }
@@ -69,9 +69,9 @@ public class DataAcquisitionDao {
             parameters.addValue("city", stadium.getCity() != null ? stadium.getCity() : null);
 
             String persistStadium = "INSERT INTO public.stadiums (stadium_id, stadium, team_id, capacity, address, city) " +
-                    "VALUES (:id, :stadium, :teamId, :capacity, :address, :city);";
+                    "VALUES (:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
 
-            if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getExternalTeamId())) {
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getExternalTeamId(), stadium.getId())) {
                 this.namedParameterJdbcTemplate.update(persistStadium, parameters);
                 log.info("Stadium: " + stadium.getStadium() + " stored in db.");
             }
@@ -79,12 +79,16 @@ public class DataAcquisitionDao {
     }
 
 
-    public boolean checkIfObjectAlreadyExist(SportObjectEnum object, Integer externalId) {
+    public boolean checkIfObjectAlreadyExist(SportObjectEnum object, Integer externalTeamId, Integer externalStadiumId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("externalTeamId", externalTeamId);
+        if(externalStadiumId != null) {
+            parameters.addValue("externalStadiumId", externalStadiumId);
+        }
         return Boolean.TRUE.equals(
                 namedParameterJdbcTemplate.queryForObject(
                         queriesForChecking.get(object),
-                        parameters.addValue("externalTeamId", externalId),
+                        parameters,
                         Boolean.class));
     }
 }
