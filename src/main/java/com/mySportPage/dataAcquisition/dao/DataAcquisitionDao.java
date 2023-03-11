@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -22,13 +23,15 @@ public class DataAcquisitionDao {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final Map<SportObjectEnum, String> queriesForChecking = new HashMap<>() {{
-        put(SportObjectEnum.TEAM, "SELECT EXISTS (SELECT 1 FROM public.teams WHERE team_id = :externalTeamId)");
-        put(SportObjectEnum.STADIUM, "SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE :externalTeamId = ANY(team_id))");
+    private final Map<SportObjectEnum, List<String>> queriesForChecking = new HashMap<>() {{
+        put(SportObjectEnum.TEAM, List.of("SELECT EXISTS (SELECT 1 FROM public.teams WHERE team_id = :externalTeamId)"));
+        put(SportObjectEnum.STADIUM, List.of("SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE stadium_id = :externalStadiumId AND :externalTeamId = ANY(team_id))",
+                "SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE stadium_id = :externalStadiumId)"
+        ));
     }};
 
     @Autowired
-    public void setDataSource(DataSource dataSource) {
+    private void setDataSource(DataSource dataSource) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -71,23 +74,27 @@ public class DataAcquisitionDao {
             String persistStadium = "INSERT INTO public.stadiums (stadium_id, stadium, team_id, capacity, address, city) " +
                     "VALUES (:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
 
-            if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getExternalTeamId(), stadium.getId())) {
+            String updateStadium = "UPDATE public.stadiums SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
+
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, null, stadium.getId())) {
                 this.namedParameterJdbcTemplate.update(persistStadium, parameters);
                 log.info("Stadium: " + stadium.getStadium() + " stored in db.");
+            } else if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getExternalTeamId(), stadium.getId())) {
+                this.namedParameterJdbcTemplate.update(updateStadium, parameters);
+                log.info("Stadium: " + stadium.getStadium() + " now has additional team assigned to with id: " + stadium.getExternalTeamId());
             }
         }
     }
 
 
-    public boolean checkIfObjectAlreadyExist(SportObjectEnum object, Integer externalTeamId, Integer externalStadiumId) {
+    private boolean checkIfObjectAlreadyExist(SportObjectEnum object, Integer externalTeamId, Integer externalStadiumId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("externalTeamId", externalTeamId);
-        if(externalStadiumId != null) {
-            parameters.addValue("externalStadiumId", externalStadiumId);
-        }
+        parameters.addValue("externalStadiumId", externalStadiumId);
+        int queryIndex = externalTeamId != null ? 0 : 1;
         return Boolean.TRUE.equals(
                 namedParameterJdbcTemplate.queryForObject(
-                        queriesForChecking.get(object),
+                        queriesForChecking.get(object).get(queryIndex),
                         parameters,
                         Boolean.class));
     }
