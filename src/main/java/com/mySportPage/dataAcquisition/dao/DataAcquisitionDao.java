@@ -52,7 +52,7 @@ public class DataAcquisitionDao {
 
             if (!checkIfObjectAlreadyExist(SportObjectEnum.TEAM, team.getExternalTeamId(), null)) {
                 this.namedParameterJdbcTemplate.update(persistTeam, parameters);
-                log.info("Team: " + team.getName() + " stored in db.");
+                log.info("Team: {} stored in db.", team.getName());
             }
         }
     }
@@ -77,10 +77,10 @@ public class DataAcquisitionDao {
 
             if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, null, stadium.getId())) {
                 this.namedParameterJdbcTemplate.update(persistStadium, parameters);
-                log.info("Stadium: " + stadium.getStadium() + " stored in db.");
+                log.info("Stadium: {} stored in db.", stadium.getStadium());
             } else if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getExternalTeamId(), stadium.getId())) {
                 this.namedParameterJdbcTemplate.update(updateStadium, parameters);
-                log.info("Stadium: " + stadium.getStadium() + " now has additional team assigned to with id: " + stadium.getExternalTeamId());
+                log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getStadium(), stadium.getExternalTeamId());
             }
         }
     }
