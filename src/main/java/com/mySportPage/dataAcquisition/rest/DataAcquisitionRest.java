@@ -32,7 +32,7 @@ public class DataAcquisitionRest {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createTeamsAndStadiums")
     public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId, @RequestParam("season") Integer season) {
-        String externalPath = ExternalPaths.GET_ALL_TEAMS_FROM_ONE_LEAGUE_ID_V3.getUrl();
+        String externalPath = ExternalPaths.GET_ALL_TEAMS_AND_STADIUMS_FROM_ONE_LEAGUE_ID_V3.getUrl();
         if (leagueId != null) {
             externalPath += "?league=" + leagueId;
         }
