@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class LeagueCoverage {
 
+    private Integer externalLeagueId;
+
     private boolean events;
 
     private boolean lineups;
