@@ -31,8 +31,9 @@ public class DataAcquisitionRest {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createTeamsAndStadiums")
-    public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId, @RequestParam("season") Integer season) {
-        String externalPath = ExternalPaths.GET_ALL_TEAMS_AND_STADIUMS_FROM_ONE_LEAGUE_ID_V3.getUrl();
+    public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
+                                       @RequestParam("season") Integer season) {
+        String externalPath = ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl();
         if (leagueId != null) {
             externalPath += "?league=" + leagueId;
         }
@@ -41,6 +42,38 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         dataAcquisitionService.createTeamsAndStadiums(sendGetRequest(externalPath));
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/createLeagues")
+    public void createLeagues(@RequestParam(required = false) String leagueId,
+                              @RequestParam(required = false) String season,
+                              @RequestParam(required = false) String code,
+                              @RequestParam(required = false) String country,
+                              @RequestParam(required = false) String name) {
+        String externalPath = ExternalPaths.GET_LEAGUES_V3.getUrl();
+        if (leagueId != null) {
+            externalPath += externalPath.contains("?") ? "&" : "?";
+            externalPath += "league=" + leagueId;
+        }
+        if (season != null) {
+            externalPath += externalPath.contains("?") ? "&" : "?";
+            externalPath += "season=" + season;
+        }
+        if (code != null) {
+            externalPath += externalPath.contains("?") ? "&" : "?";
+            externalPath += "code=" + code;
+        }
+        if (country != null) {
+            externalPath += externalPath.contains("?") ? "&" : "?";
+            externalPath += "country=" + country;
+        }
+        if (name != null) {
+            externalPath += externalPath.contains("?") ? "&" : "?";
+            externalPath += "name=" + name;
+        }
+        String response = sendGetRequest(externalPath);
+        dataAcquisitionService.createLeagues(response);
     }
 
     public String sendGetRequest(String path) {
