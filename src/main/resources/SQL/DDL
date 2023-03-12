@@ -17,3 +17,40 @@ CREATE TABLE public.stadiums (
 	city text NOT NULL,
 	CONSTRAINT stadiums_stadium_id_key UNIQUE (stadium_id)
 );
+
+CREATE TABLE public.leagues (
+	league_id int4 NOT NULL,
+	"name" text NOT NULL,
+	"type" text NULL,
+	country text NOT NULL,
+	"year" text NULL,
+	"start" date NULL,
+	"end" date NULL,
+	logo text NULL,
+	CONSTRAINT leagues_league_id_key UNIQUE (league_id)
+);
+
+CREATE TABLE public.country (
+	"name" text NOT NULL,
+	code text NOT NULL,
+	flag text NULL,
+	CONSTRAINT country_code_key UNIQUE (code),
+	CONSTRAINT country_name_key UNIQUE (name)
+);
+
+CREATE TABLE public.league_coverage (
+	external_league_id int4 NOT NULL,
+	events bool NULL,
+	lineups bool NULL,
+	statistics_fixtures bool NULL,
+	statistics_players bool NULL,
+	standings bool NULL,
+	players bool NULL,
+	top_scorers bool NULL,
+	top_assists bool NULL,
+	top_cards bool NULL,
+	injuries bool NULL,
+	predictions bool NULL,
+	odds bool NULL,
+	CONSTRAINT league_coverage_external_league_id_key UNIQUE (external_league_id)
+);
