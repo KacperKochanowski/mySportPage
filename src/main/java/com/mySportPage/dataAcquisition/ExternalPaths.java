@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ExternalPaths {
 
-    GET_ALL_TEAMS_AND_STADIUMS_FROM_ONE_LEAGUE_ID_V3("https://api-football-v1.p.rapidapi.com/v3/teams");
+    GET_TEAMS_AND_STADIUMS_V3("https://api-football-v1.p.rapidapi.com/v3/teams"),
+    GET_LEAGUES_V3("https://api-football-v1.p.rapidapi.com/v3/leagues");
 
     private final String url;
 
