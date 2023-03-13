@@ -39,7 +39,7 @@ public class DataAcquisitionDao {
             return;
         }
         String persistTeam = "INSERT INTO public.teams (team_id, name, shortcut, club_crest, club_founded, country) " +
-                "VALUES (:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country);";
+                "VALUES(:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country);";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Team team : teams) {
@@ -62,7 +62,7 @@ public class DataAcquisitionDao {
             return;
         }
         String persistStadium = "INSERT INTO public.stadiums (stadium_id, stadium, team_id, capacity, address, city) " +
-                "VALUES (:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
+                "VALUES(:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
 
         String updateStadium = "UPDATE public.stadiums SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
 
