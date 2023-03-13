@@ -7,27 +7,27 @@ public class LeagueCoverage {
 
     private Integer externalLeagueId;
 
-    private boolean events;
+    private boolean withEvents;
 
-    private boolean lineups;
+    private boolean withLineups;
 
-    private boolean statisticsFixtures;
+    private boolean withStatisticsFixtures;
 
-    private boolean statisticsPlayers;
+    private boolean withStatisticsPlayers;
 
-    private boolean standings;
+    private boolean withStandings;
 
-    private boolean players;
+    private boolean withPlayers;
 
-    private boolean topScorers;
+    private boolean withTopScorers;
 
-    private boolean topAssists;
+    private boolean withTopAssists;
 
-    private boolean topCards;
+    private boolean withTopCards;
 
-    private boolean injuries;
+    private boolean withInjuries;
 
-    private boolean predictions;
+    private boolean withPredictions;
 
-    private boolean odds;
+    private boolean withOdds;
 }
