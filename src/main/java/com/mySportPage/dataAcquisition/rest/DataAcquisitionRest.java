@@ -76,6 +76,22 @@ public class DataAcquisitionRest {
         dataAcquisitionService.createLeagues(response);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/createFixtures")
+    public void createLeagues(@RequestParam(required = false) String leagueId,
+                              @RequestParam(required = false) Integer season) {
+        String externalPath = ExternalPaths.GET_FIXTURES_V3.getUrl();
+
+        if (leagueId != null) {
+            externalPath += "?league=" + leagueId;
+        }
+        if (season != null) {
+            externalPath += leagueId != null ? "&" : "?";
+            externalPath += "season=" + season;
+        }
+        dataAcquisitionService.createFixtures(sendGetRequest(externalPath));
+    }
+
     public String sendGetRequest(String path) {
         if (path != null && !path.trim().isEmpty()) {
             try {
