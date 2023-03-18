@@ -1,4 +1,4 @@
-package com.mySportPage.model;
+package com.mySportPage.dataAcquisition.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
