@@ -3,7 +3,7 @@ package com.mySportPage.dataAcquisition.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.dataAcquisition.dao.DataAcquisitionDao;
-import com.mySportPage.model.*;
+import com.mySportPage.dataAcquisition.model.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -16,6 +16,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class DataAcquisitionService {
@@ -24,6 +26,8 @@ public class DataAcquisitionService {
     private DataAcquisitionDao dataAcquisitionDao;
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionService.class);
+
+    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public void createTeamsAndStadiums(String data) {
         if (data != null) {
@@ -37,6 +41,12 @@ public class DataAcquisitionService {
             dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
             dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
             dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
+        }
+    }
+
+    public void createFixtures(String data) {
+        if (data != null) {
+            dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
         }
     }
 
@@ -113,8 +123,7 @@ public class DataAcquisitionService {
                 league.setCountry(objectMapper.readValue(response.getJSONObject(i).getJSONObject("country").toString(), Country.class));
             } catch (ParseException pex) {
                 log.error("DataAcquisitionService.mapJSONObjectToLeaguesList():Couldn't parse start or end date of league with id = " + league.getExternalLeagueId());
-            }
-            catch (JsonProcessingException e) {
+            } catch (JsonProcessingException e) {
                 log.error("DataAcquisitionService.mapJSONObjectToLeaguesList():Couldn't assign country to league = " + league.getExternalLeagueId());
                 e.printStackTrace();
             }
@@ -147,5 +156,75 @@ public class DataAcquisitionService {
             leagueCoverages.add(leagueCoverage);
         }
         return leagueCoverages;
+    }
+
+    public List<Fixture> mapJSONObjectToFixturesList(String responseBody) {
+        Integer leagueId;
+        Integer season;
+        List<Fixture> fixtures = new ArrayList<>();
+        JSONObject params = new JSONObject(responseBody).getJSONObject("parameters");
+        JSONArray response = new JSONObject(responseBody).getJSONArray("response");
+        if (params.get("league") != null) {
+            leagueId = Integer.parseInt((String) params.get("league"));
+        } else {
+            leagueId = null;
+        }
+        if (params.get("season") != null) {
+            season = Integer.parseInt((String) params.get("season"));
+        } else {
+            season = null;
+        }
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject element = response.getJSONObject(i).getJSONObject("fixture");
+            Fixture fixture = new Fixture();
+            fixture.setLeagueId(leagueId);
+            fixture.setSeason(season);
+            fixture.setId(element.getInt("id"));
+            fixture.setReferee(new Referee(element.get("referee") != null && !(element.get("referee").toString()).equals("null") ?
+                    element.getString("referee") : null));
+            setFixtureStartDate(fixture, element.getString("date"));
+            fixture.setStadiumId(element.getJSONObject("venue").get("id") != null && !(element.getJSONObject("venue").get("id").toString()).equals("null") ?
+                    element.getJSONObject("venue").getInt("id") : null);
+            fixture.setStatus((element.getJSONObject("status").getString("short")).equals("FT"));
+            fixture.setRound(response.getJSONObject(i).getJSONObject("league").getString("round"));
+            element = response.getJSONObject(i).getJSONObject("teams").getJSONObject("home");
+            fixture.setHost(new Team(element.getInt("id"), element.getString("name")));
+            element = response.getJSONObject(i).getJSONObject("teams").getJSONObject("away");
+            fixture.setGuest(new Team(element.getInt("id"), element.getString("name")));
+            if (element.get("winner") == null) {
+                fixture.setWinner(element.getBoolean("winner") ?
+                        fixture.getGuest().getName() : fixture.getHost().getName());
+            } else {
+                fixture.setWinner(null);
+            }
+            fixture.setEvent(fixture.getHost().getName(), fixture.getGuest().getName());
+            element = response.getJSONObject(i).getJSONObject("score").getJSONObject("halftime");
+            fixture.setHalftimeScore(Stream.of(new Object[][]{
+                    {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
+                            element.getInt("home") : 0},
+                    {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
+                            element.getInt("away") : 0},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+            element = response.getJSONObject(i).getJSONObject("score").getJSONObject("fulltime");
+            fixture.setFulltimeScore(Stream.of(new Object[][]{
+                    {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
+                            element.getInt("home") : 0},
+                    {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
+                            element.getInt("away") : 0},
+            }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+            fixtures.add(fixture);
+        }
+        return fixtures;
+    }
+
+    private void setFixtureStartDate(Fixture fixture, String date) {
+        try {
+            if (date.contains("+")) {
+                date = date.substring(0, date.lastIndexOf("+"));
+            }
+            fixture.setStart(format.parse(date.replace("T", " ")));
+        } catch (ParseException e) {
+            log.error("DataAcquisitionService.setFixtureStartDate(): Couldn't parse event start for fixture id: {}", fixture.getId(), e);
+        }
     }
 }
