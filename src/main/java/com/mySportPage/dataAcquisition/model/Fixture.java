@@ -34,11 +34,17 @@ public class Fixture {
 
     private String winner;
 
+    private Integer round;
+
     public void setStatus(boolean status) {
         this.status = status;
     }
 
     public void setEvent(String hostName, String guestName) {
         this.event = String.format("%s-%s",hostName, guestName);
+    }
+
+    public void setRound(String round) {
+        this.round = Integer.valueOf(round.replaceAll("\\D+", ""));
     }
 }
