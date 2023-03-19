@@ -1,6 +1,6 @@
 package com.mySportPage.dataAcquisition.dao;
 
-import com.mySportPage.model.*;
+import com.mySportPage.dataAcquisition.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ public class DataAcquisitionDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final Map<SportObjectEnum, List<String>> queriesForChecking = new HashMap<>() {{
-        put(SportObjectEnum.TEAM, List.of("SELECT EXISTS (SELECT 1 FROM public.teams WHERE team_id = :internalId)"));
-        put(SportObjectEnum.STADIUM, List.of("SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE stadium_id = :internalId)",
-                "SELECT EXISTS (SELECT 1 FROM public.stadiums WHERE stadium_id = :internalId AND :externalId = ANY(team_id))"));
-        put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM public.leagues WHERE league_id = :internalId AND country = CAST(:externalId AS text))"));
+        put(SportObjectEnum.TEAM, List.of("SELECT EXISTS (SELECT 1 FROM public.team WHERE team_id = :internalId)"));
+        put(SportObjectEnum.STADIUM, List.of("SELECT EXISTS (SELECT 1 FROM public.stadium WHERE stadium_id = :internalId)",
+                "SELECT EXISTS (SELECT 1 FROM public.stadium WHERE stadium_id = :internalId AND :externalId = ANY(team_id))"));
+        put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM public.league WHERE league_id = :internalId AND country = CAST(:externalId AS text))"));
         put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM public.league_coverage WHERE external_league_id = :internalId)"));
         put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
     }};
@@ -38,7 +38,7 @@ public class DataAcquisitionDao {
         if (teams.isEmpty()) {
             return;
         }
-        String persistTeam = "INSERT INTO public.teams (team_id, name, shortcut, club_crest, club_founded, country) " +
+        String persistTeam = "INSERT INTO public.team (team_id, name, shortcut, club_crest, club_founded, country) " +
                 "VALUES(:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country);";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -61,10 +61,10 @@ public class DataAcquisitionDao {
         if (stadiums.isEmpty()) {
             return;
         }
-        String persistStadium = "INSERT INTO public.stadiums (stadium_id, stadium, team_id, capacity, address, city) " +
+        String persistStadium = "INSERT INTO public.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
                 "VALUES(:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
 
-        String updateStadium = "UPDATE public.stadiums SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
+        String updateStadium = "UPDATE public.stadium SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Stadium stadium : stadiums) {
@@ -90,7 +90,7 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistLeague = "INSERT INTO public.leagues (league_id, name, type, logo, year, start, \"end\", country) " +
+        String persistLeague = "INSERT INTO public.league (league_id, name, type, logo, year, start, \"end\", country) " +
                 "VALUES(:leagueId, :name, :type, :logo, :year, :start, :end, :country)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -160,6 +160,12 @@ public class DataAcquisitionDao {
                 this.namedParameterJdbcTemplate.update(persistCountry, parameters);
                 log.info("Country {} stored in db.", country.getName());
             }
+        }
+    }
+
+    public void persistFixture(List<Fixture> fixtures) {
+        if (fixtures.isEmpty()) {
+            return;
         }
     }
 
