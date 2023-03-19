@@ -10,7 +10,7 @@ public class Fixture {
 
     private Integer leagueId;
 
-    private Integer season;
+    private String season;
 
     private Integer id;
 
@@ -26,7 +26,7 @@ public class Fixture {
 
     private Team guest;
 
-    private boolean status;
+    private boolean finished;
 
     private Map<String, Integer> halftimeScore;
 
@@ -36,15 +36,19 @@ public class Fixture {
 
     private Integer round;
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public void setEvent(String hostName, String guestName) {
-        this.event = String.format("%s-%s",hostName, guestName);
+        this.event = String.format("%s - %s",hostName, guestName);
     }
 
     public void setRound(String round) {
         this.round = Integer.valueOf(round.replaceAll("\\D+", ""));
+    }
+
+    public void setSeason(Integer season) {
+        this.season = String.format("%s/%d", String.valueOf(season).substring(2), Integer.parseInt(String.valueOf(season).substring(1)) + 1);
     }
 }
