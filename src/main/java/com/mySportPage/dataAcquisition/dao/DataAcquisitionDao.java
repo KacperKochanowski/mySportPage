@@ -27,6 +27,7 @@ public class DataAcquisitionDao {
         put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM public.league WHERE league_id = :internalId AND country = CAST(:externalId AS text))"));
         put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM public.league_coverage WHERE external_league_id = :internalId)"));
         put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
+        put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM public.fixture WHERE fixture_id = :internalId)"));
     }};
 
     @Autowired
@@ -167,6 +168,42 @@ public class DataAcquisitionDao {
         if (fixtures.isEmpty()) {
             return;
         }
+
+        String persistFixture = "INSERT INTO public.fixture " +
+                "(fixture_id, \"event\", league_id, round, season, \"start\", host, guest, winner, stadium_id, referee, \"result\", halftime_score, fulltime_score, played) " +
+                "VALUES(:id, :event, :leagueId, :round, :season, :start, :host, :guest, :winner, :stadiumId, :referee, :result, :halftimeScore, :fulltimeScore, :finished);";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+        for (Fixture fixture : fixtures) {
+            String halftimeResult = String.format("%s:%s",
+                    fixture.getHalftimeScore().get("HOST"),
+                    fixture.getHalftimeScore().get("GUEST"));
+            String fulltimeResult = String.format("%s:%s",
+                    fixture.getFulltimeScore().get("HOST"),
+                    fixture.getFulltimeScore().get("GUEST"));
+            parameters.addValue("id", fixture.getId());
+            parameters.addValue("event", fixture.getEvent());
+            parameters.addValue("leagueId", fixture.getLeagueId());
+            parameters.addValue("round", fixture.getRound());
+            parameters.addValue("season", fixture.getSeason());
+            parameters.addValue("start", fixture.getStart());
+            parameters.addValue("host", fixture.getHost().getName());
+            parameters.addValue("guest", fixture.getGuest().getName());
+            parameters.addValue("winner", fixture.getWinner());
+            parameters.addValue("stadiumId", fixture.getStadiumId());
+            parameters.addValue("referee", fixture.getReferee().getName());
+            parameters.addValue("result", String.format("%s (%s)",fulltimeResult, halftimeResult));
+            parameters.addValue("halftimeScore", halftimeResult);
+            parameters.addValue("fulltimeScore", fulltimeResult);
+            parameters.addValue("finished", fixture.isFinished());
+
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.FIXTURE, fixture.getId(), null)) {
+                this.namedParameterJdbcTemplate.update(persistFixture, parameters);
+                log.info("Fixture {} stored in db.", fixture.getEvent());
+            }
+        }
+
     }
 
 
