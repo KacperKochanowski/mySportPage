@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -217,7 +218,7 @@ public class DataAcquisitionService {
                     {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
                             element.getInt("away") : 0},
             }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
-            if(fixture.getWinner() == null) {
+            if(fixture.getWinner() == null && fixture.getStart().before(new Date())) {
                 fixture.setWinner("-");
             }
             fixtures.add(fixture);
