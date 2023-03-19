@@ -1,24 +1,24 @@
-CREATE TABLE public.teams (
+CREATE TABLE public.team (
 	team_id int4 NOT NULL,
 	"name" text NOT NULL,
 	shortcut text NULL,
 	club_founded int4 NULL,
 	country text NULL,
 	club_crest text NULL,
-	CONSTRAINT teams_team_id_key UNIQUE (team_id)
+	CONSTRAINT team_team_id_key UNIQUE (team_id)
 );
 
-CREATE TABLE public.stadiums (
+CREATE TABLE public.stadium (
 	stadium_id int4 NULL,
 	stadium text NOT NULL,
 	team_id _int4 NOT NULL,
 	capacity int4 NULL,
 	address text NULL,
 	city text NOT NULL,
-	CONSTRAINT stadiums_stadium_id_key UNIQUE (stadium_id)
+	CONSTRAINT stadium_stadium_id_key UNIQUE (stadium_id)
 );
 
-CREATE TABLE public.leagues (
+CREATE TABLE public.league (
 	league_id int4 NOT NULL,
 	"name" text NOT NULL,
 	"type" text NULL,
@@ -27,7 +27,7 @@ CREATE TABLE public.leagues (
 	"start" date NULL,
 	"end" date NULL,
 	logo text NULL,
-	CONSTRAINT leagues_league_id_key UNIQUE (league_id)
+	CONSTRAINT league_league_id_key UNIQUE (league_id)
 );
 
 CREATE TABLE public.country (
@@ -53,4 +53,23 @@ CREATE TABLE public.league_coverage (
 	predictions bool NULL,
 	odds bool NULL,
 	CONSTRAINT league_coverage_external_league_id_key UNIQUE (external_league_id)
+);
+
+CREATE TABLE public.fixture (
+	fixture_id int4 NOT NULL,
+	"event" text NOT NULL,
+	league_id int4 NOT NULL,
+	round int4 NOT NULL,
+	season int4 NOT NULL,
+	"start" time NULL,
+	host text NOT NULL,
+	guest text NOT NULL,
+	winner text NULL,
+	stadium_id int4 NULL,
+	referee text NULL,
+	"result" text NULL,
+	halftime_score text NULL,
+	fulltime_score text NULL,
+	played bool NULL,
+	CONSTRAINT fixture_fixture_id_key UNIQUE (fixture_id)
 );
