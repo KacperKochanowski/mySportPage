@@ -160,7 +160,7 @@ public class DataAcquisitionService {
 
     public List<Fixture> mapJSONObjectToFixturesList(String responseBody) {
         Integer leagueId;
-        Integer season;
+        Integer season;;
         List<Fixture> fixtures = new ArrayList<>();
         JSONObject params = new JSONObject(responseBody).getJSONObject("parameters");
         JSONArray response = new JSONObject(responseBody).getJSONArray("response");
@@ -180,22 +180,27 @@ public class DataAcquisitionService {
             fixture.setLeagueId(leagueId);
             fixture.setSeason(season);
             fixture.setId(element.getInt("id"));
-            fixture.setReferee(new Referee(element.get("referee") != null && !(element.get("referee").toString()).equals("null") ?
-                    element.getString("referee") : null));
+            fixture.setReferee(new Referee(
+                    element.get("referee") != null && !(element.get("referee").toString()).equals("null") ?
+                            element.getString("referee") : null));
             setFixtureStartDate(fixture, element.getString("date"));
             fixture.setStadiumId(element.getJSONObject("venue").get("id") != null && !(element.getJSONObject("venue").get("id").toString()).equals("null") ?
                     element.getJSONObject("venue").getInt("id") : null);
-            fixture.setStatus((element.getJSONObject("status").getString("short")).equals("FT"));
+            fixture.setFinished((element.getJSONObject("status").getString("short")).equals("FT"));
             fixture.setRound(response.getJSONObject(i).getJSONObject("league").getString("round"));
             element = response.getJSONObject(i).getJSONObject("teams").getJSONObject("home");
             fixture.setHost(new Team(element.getInt("id"), element.getString("name")));
+            if (element.get("winner") != null &&
+                    !(element.get("winner").toString()).equals("null") &&
+                    element.getBoolean("winner")) {
+                fixture.setWinner(fixture.getHost().getName());
+            }
             element = response.getJSONObject(i).getJSONObject("teams").getJSONObject("away");
             fixture.setGuest(new Team(element.getInt("id"), element.getString("name")));
-            if (element.get("winner") == null) {
-                fixture.setWinner(element.getBoolean("winner") ?
-                        fixture.getGuest().getName() : fixture.getHost().getName());
-            } else {
-                fixture.setWinner(null);
+            if (element.get("winner") != null &&
+                    !(element.get("winner").toString()).equals("null") &&
+                    element.getBoolean("winner")) {
+                fixture.setWinner(fixture.getGuest().getName());
             }
             fixture.setEvent(fixture.getHost().getName(), fixture.getGuest().getName());
             element = response.getJSONObject(i).getJSONObject("score").getJSONObject("halftime");
@@ -212,6 +217,9 @@ public class DataAcquisitionService {
                     {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
                             element.getInt("away") : 0},
             }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+            if(fixture.getWinner() == null) {
+                fixture.setWinner("-");
+            }
             fixtures.add(fixture);
         }
         return fixtures;
