@@ -48,6 +48,13 @@ public class Fixture {
         this.round = Integer.valueOf(round.replaceAll("\\D+", ""));
     }
 
+    /**
+     * Field season needs custom setter because most of the football seasons or at least ones used now don't start and finish at the same year,
+     * so putting there only one year would be misleading.
+     * e.g. Polish Ekstraklasa lasts between 2022-07-15 and 2023-05-27.
+     * @param season - year when competitions start
+     */
+
     public void setSeason(Integer season) {
         this.season = String.format("%s/%d", String.valueOf(season).substring(2), Integer.parseInt(String.valueOf(season).substring(1)) + 1);
     }
