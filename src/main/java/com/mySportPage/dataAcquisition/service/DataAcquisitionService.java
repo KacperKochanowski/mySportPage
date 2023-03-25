@@ -161,7 +161,7 @@ public class DataAcquisitionService {
 
     public List<Fixture> mapJSONObjectToFixturesList(String responseBody) {
         Integer leagueId;
-        Integer season;;
+        Integer season;
         List<Fixture> fixtures = new ArrayList<>();
         JSONObject params = new JSONObject(responseBody).getJSONObject("parameters");
         JSONArray response = new JSONObject(responseBody).getJSONArray("response");
