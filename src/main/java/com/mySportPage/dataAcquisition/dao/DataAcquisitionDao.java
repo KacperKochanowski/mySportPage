@@ -203,7 +203,6 @@ public class DataAcquisitionDao {
                 log.info("Fixture {} stored in db.", fixture.getEvent());
             }
         }
-
     }
 
 
