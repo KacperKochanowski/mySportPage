@@ -28,6 +28,8 @@ public class DataAcquisitionDao {
         put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM public.league_coverage WHERE external_league_id = :internalId)"));
         put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
         put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM public.fixture WHERE fixture_id = :internalId)"));
+        put(SportObjectEnum.RESULTS, List.of("SELECT EXISTS (SELECT 1 FROM public.results WHERE description = :internalId AND team_id = :externalId)"));
+        put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM public.standing WHERE updated = :internalId AND team = :externalId)"));
     }};
 
     @Autowired
@@ -208,6 +210,56 @@ public class DataAcquisitionDao {
     public void persistStanding(List<Standing> standings) {
         if (standings.isEmpty()) {
             return;
+        }
+
+        String persistStandings = "INSERT INTO public.standing " +
+                "(\"rank\", team, points, goals_diff, form, league_id, season, position_description, actual_results_id, home_results_id, away_results_id, updated) " +
+                "VALUES(:rank, :team, :points, :goalsDiff, :form, :leagueId, :season, :additionalPositionDescription, :resultsId, :homeResultsId, :awayResultsId, :updated)";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        for (Standing standing : standings) {
+            parameters.addValue("resultsId", prepareResults(parameters, standing.getResults()));
+            parameters.addValue("homeResultsId", prepareResults(parameters, standing.getHomeResults()));
+            parameters.addValue("awayResultsId", prepareResults(parameters, standing.getAwayResults()));
+            log.info("{}s results stored in db.", standing.getTeam().getName());
+            parameters.addValue("rank", standing.getRank());
+            parameters.addValue("team", standing.getTeam().getName());
+            parameters.addValue("points", standing.getPoints());
+            parameters.addValue("goalsDiff", standing.getGoalsDiff());
+            parameters.addValue("form", standing.getForm());
+            parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
+            parameters.addValue("season", standing.getSeason());
+            parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
+            parameters.addValue("updated", standing.getUpdated());
+
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.STANDING, standing.getUpdated(), standing.getTeam())) {
+                this.namedParameterJdbcTemplate.update(persistStandings, parameters);
+                log.info("{}s standing updated in db.", standing.getTeam().getName());
+            }
+        }
+    }
+
+    private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
+
+        String persistResults = "INSERT INTO public.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +
+                "VALUES(:teamId, :roundsPlayed, :wins, :draws, :loses, :goalsFor, :goalsAgainst, :description) " +
+                "RETURNING id";
+
+        String getResultId = "SELECT id FROM public.results WHERE description = :description AND team_id = :teamId)";
+
+        parameters.addValue("teamId", results.getTeamId());
+        parameters.addValue("roundsPlayed", results.getRoundsPlayed());
+        parameters.addValue("wins", results.getWins());
+        parameters.addValue("draws", results.getDraws());
+        parameters.addValue("loses", results.getLoses());
+        parameters.addValue("goalsFor", results.getGoals().getOrDefault("FOR", 0));
+        parameters.addValue("goalsAgainst", results.getGoals().getOrDefault("AGAINST", 0));
+        parameters.addValue("description", results.getDescription());
+
+        if (!checkIfObjectAlreadyExist(SportObjectEnum.RESULTS, results.getDescription(), results.getTeamId())) {
+            return this.namedParameterJdbcTemplate.update(persistResults, parameters);
+        } else {
+            return this.namedParameterJdbcTemplate.queryForObject(getResultId, parameters, Integer.class);
         }
     }
 
