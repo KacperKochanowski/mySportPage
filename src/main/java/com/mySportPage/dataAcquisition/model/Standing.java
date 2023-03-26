@@ -1,10 +1,15 @@
 package com.mySportPage.dataAcquisition.model;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class Standing {
 
     private League league;
+
+    private Integer season;
 
     private Integer rank;
 
@@ -18,11 +23,11 @@ public class Standing {
 
     private String additionalPositionDescription;
 
-    private Results all;
+    private Results results;
 
-    private Results home;
+    private Results homeResults;
 
-    private Results away;
+    private Results awayResults;
 
     private Date updated;
 }
