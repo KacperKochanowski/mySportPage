@@ -249,9 +249,9 @@ public class DataAcquisitionService {
             standing.setGoalsDiff(String.valueOf(element.getInt("goalsDiff")));
             standing.setForm(element.getString("form"));
             standing.setAdditionalPositionDescription(element.get("description") != null && !(element.get("description").toString()).equals("null") ? element.getString("description") : null);
-            standing.setResults(creteResults(element.getJSONObject("all")));
-            standing.setHomeResults(creteResults(element.getJSONObject("home")));
-            standing.setAwayResults(creteResults(element.getJSONObject("away")));
+            standing.setResults(creteResults(element.getJSONObject("all"), "All"));
+            standing.setHomeResults(creteResults(element.getJSONObject("home"), "Home"));
+            standing.setAwayResults(creteResults(element.getJSONObject("away"), "Away"));
         }
         return standings;
     }
@@ -267,8 +267,9 @@ public class DataAcquisitionService {
         }
     }
 
-    private Results creteResults(JSONObject data){
+    private Results creteResults(JSONObject data, String typeOfResults){
         Results results = new Results();
+        results.setDescription(typeOfResults);
         results.setRoundsPlayed(data.getInt("played"));
         results.setWins(data.getInt("win"));
         results.setDraws(data.getInt("draw"));
