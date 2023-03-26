@@ -225,7 +225,6 @@ public class DataAcquisitionService {
     public List<Standing> mapJSONObjectToStandingsList(String responseBody) {
         Integer leagueId;
         Integer season;
-        Standing standing = new Standing();
         List<Standing> standings = new ArrayList<>();
         JSONObject params = new JSONObject(responseBody).getJSONObject("parameters");
         JSONArray response = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getJSONObject("league").getJSONArray("standings").getJSONArray(0);
@@ -240,6 +239,7 @@ public class DataAcquisitionService {
             season = null;
         }
         for (int i = 0; i < response.length(); i++) {
+            Standing standing = new Standing();
             standing.setSeason(season);
             standing.setLeague(new League(leagueId));
             JSONObject element = response.getJSONObject(i);
@@ -249,10 +249,11 @@ public class DataAcquisitionService {
             standing.setGoalsDiff(String.valueOf(element.getInt("goalsDiff")));
             standing.setForm(element.getString("form"));
             standing.setAdditionalPositionDescription(element.get("description") != null && !(element.get("description").toString()).equals("null") ? element.getString("description") : null);
-            standing.setResults(creteResults(element.getJSONObject("all"), "All"));
-            standing.setHomeResults(creteResults(element.getJSONObject("home"), "Home"));
-            standing.setAwayResults(creteResults(element.getJSONObject("away"), "Away"));
+            standing.setResults(creteResults(element.getJSONObject("all"), "All", standing.getTeam().getExternalTeamId()));
+            standing.setHomeResults(creteResults(element.getJSONObject("home"), "Home", standing.getTeam().getExternalTeamId()));
+            standing.setAwayResults(creteResults(element.getJSONObject("away"), "Away", standing.getTeam().getExternalTeamId()));
             standing.setUpdated(parseDate(element.getString("update")));
+            standings.add(standing);
         }
         return standings;
     }
@@ -268,9 +269,10 @@ public class DataAcquisitionService {
         }
     }
 
-    private Results creteResults(JSONObject data, String typeOfResults){
+    private Results creteResults(JSONObject data, String typeOfResults, Integer teamId){
         Results results = new Results();
         results.setDescription(typeOfResults);
+        results.setTeamId(teamId);
         results.setRoundsPlayed(data.getInt("played"));
         results.setWins(data.getInt("win"));
         results.setDraws(data.getInt("draw"));
