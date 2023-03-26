@@ -180,7 +180,7 @@ public class DataAcquisitionService {
             fixture.setReferee(new Referee(
                     element.get("referee") != null && !(element.get("referee").toString()).equals("null") ?
                             element.getString("referee") : null));
-            setFixtureStartDate(fixture, element.getString("date"));
+            fixture.setStart(parseDate(element.getString("date")));
             fixture.setStadiumId(element.getJSONObject("venue").get("id") != null && !(element.getJSONObject("venue").get("id").toString()).equals("null") ?
                     element.getJSONObject("venue").getInt("id") : null);
             fixture.setFinished((element.getJSONObject("status").getString("short")).equals("FT"));
@@ -252,18 +252,19 @@ public class DataAcquisitionService {
             standing.setResults(creteResults(element.getJSONObject("all"), "All"));
             standing.setHomeResults(creteResults(element.getJSONObject("home"), "Home"));
             standing.setAwayResults(creteResults(element.getJSONObject("away"), "Away"));
+            standing.setUpdated(parseDate(element.getString("update")));
         }
         return standings;
     }
 
-    private void setFixtureStartDate(Fixture fixture, String date) {
+    private Date parseDate(String date) {
         try {
             if (date.contains("+")) {
                 date = date.substring(0, date.lastIndexOf("+"));
             }
-            fixture.setStart(format.parse(date.replace("T", " ")));
+            return format.parse(date.replace("T", " "));
         } catch (ParseException e) {
-            log.error("DataAcquisitionService.setFixtureStartDate(): Couldn't parse event start for fixture id: {}", fixture.getId(), e);
+            return null;
         }
     }
 
