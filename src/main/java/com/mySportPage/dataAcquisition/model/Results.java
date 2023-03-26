@@ -7,7 +7,7 @@ import java.util.Map;
 @Data
 public class Results {
 
-    private Integer teamId;
+    private Team team;
 
     private Integer roundsPlayed;
 
