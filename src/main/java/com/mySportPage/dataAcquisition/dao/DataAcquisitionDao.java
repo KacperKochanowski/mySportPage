@@ -205,6 +205,12 @@ public class DataAcquisitionDao {
         }
     }
 
+    public void persistStanding(List<Standing> standings) {
+        if (standings.isEmpty()) {
+            return;
+        }
+    }
+
 
     private boolean checkIfObjectAlreadyExist(SportObjectEnum object, Object internalId, Object externalId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
