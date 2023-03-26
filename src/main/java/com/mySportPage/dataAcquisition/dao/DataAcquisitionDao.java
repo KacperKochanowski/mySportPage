@@ -41,20 +41,20 @@ public class DataAcquisitionDao {
         if (teams.isEmpty()) {
             return;
         }
-        String persistTeam = "INSERT INTO public.team (team_id, name, shortcut, club_crest, club_founded, country) " +
+        String queryPersistTeam = "INSERT INTO public.team (team_id, name, shortcut, club_crest, club_founded, country) " +
                 "VALUES(:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country);";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Team team : teams) {
             parameters.addValue("externalTeamId", team.getExternalTeamId());
-            parameters.addValue("name", team.getName());
-            parameters.addValue("shortcut", team.getShortCut());
-            parameters.addValue("clubCrest", team.getClubCrest());
-            parameters.addValue("clubFounded", team.getClubFounded());
-            parameters.addValue("country", team.getCountry());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.TEAM, team.getExternalTeamId(), null)) {
-                this.namedParameterJdbcTemplate.update(persistTeam, parameters);
+                parameters.addValue("name", team.getName());
+                parameters.addValue("shortcut", team.getShortCut());
+                parameters.addValue("clubCrest", team.getClubCrest());
+                parameters.addValue("clubFounded", team.getClubFounded());
+                parameters.addValue("country", team.getCountry());
+
+                this.namedParameterJdbcTemplate.update(queryPersistTeam, parameters);
                 log.info("Team: {} stored in db.", team.getName());
             }
         }
@@ -64,25 +64,25 @@ public class DataAcquisitionDao {
         if (stadiums.isEmpty()) {
             return;
         }
-        String persistStadium = "INSERT INTO public.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
+        String queryPersistStadium = "INSERT INTO public.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
                 "VALUES(:id, :stadium, ARRAY [:teamId], :capacity, :address, :city);";
 
-        String updateStadium = "UPDATE public.stadium SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
+        String queryUpdateStadium = "UPDATE public.stadium SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Stadium stadium : stadiums) {
             parameters.addValue("id", stadium.getId());
-            parameters.addValue("stadium", stadium.getStadium());
             parameters.addValue("teamId", stadium.getExternalTeamId());
-            parameters.addValue("capacity", stadium.getCapacity());
-            parameters.addValue("address", stadium.getAddress());
-            parameters.addValue("city", stadium.getCity());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getId(), null)) {
-                this.namedParameterJdbcTemplate.update(persistStadium, parameters);
+                parameters.addValue("stadium", stadium.getStadium());
+                parameters.addValue("capacity", stadium.getCapacity());
+                parameters.addValue("address", stadium.getAddress());
+                parameters.addValue("city", stadium.getCity());
+
+                this.namedParameterJdbcTemplate.update(queryPersistStadium, parameters);
                 log.info("Stadium: {} stored in db.", stadium.getStadium());
             } else if (!checkIfObjectAlreadyExist(SportObjectEnum.STADIUM, stadium.getId(), stadium.getExternalTeamId())) {
-                this.namedParameterJdbcTemplate.update(updateStadium, parameters);
+                this.namedParameterJdbcTemplate.update(queryUpdateStadium, parameters);
                 log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getStadium(), stadium.getExternalTeamId());
             }
         }
@@ -93,22 +93,22 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistLeague = "INSERT INTO public.league (league_id, name, type, logo, year, start, \"end\", country) " +
+        String queryPersistLeague = "INSERT INTO public.league (league_id, name, type, logo, year, start, \"end\", country) " +
                 "VALUES(:leagueId, :name, :type, :logo, :year, :start, :end, :country)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (League league : leagues) {
             parameters.addValue("leagueId", league.getExternalLeagueId());
             parameters.addValue("name", league.getName());
-            parameters.addValue("type", league.getType());
-            parameters.addValue("logo", league.getLogo());
-            parameters.addValue("year", league.getYear());
-            parameters.addValue("start", league.getStart());
-            parameters.addValue("end", league.getEnd());
-            parameters.addValue("country", league.getCountry().getName());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.LEAGUE, league.getExternalLeagueId(), league.getCountry().getName())) {
-                this.namedParameterJdbcTemplate.update(persistLeague, parameters);
+                parameters.addValue("type", league.getType());
+                parameters.addValue("logo", league.getLogo());
+                parameters.addValue("year", league.getYear());
+                parameters.addValue("start", league.getStart());
+                parameters.addValue("end", league.getEnd());
+                parameters.addValue("country", league.getCountry().getName());
+
+                this.namedParameterJdbcTemplate.update(queryPersistLeague, parameters);
                 log.info("League: {} stored in db.", league.getName());
             }
         }
@@ -119,28 +119,28 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistCoverage = "INSERT INTO public.league_coverage " +
+        String queryPersistCoverage = "INSERT INTO public.league_coverage " +
                 "(external_league_id, events, lineups, statistics_fixtures, statistics_players, standings, players, top_scorers, top_assists, top_cards, injuries, predictions, odds) " +
                 "VALUES(:externalLeagueId, :events, :lineups, :statisticsFixtures, :statisticsPlayers, :standings, :players, :topScorers, :topAssists, :topCards, :injuries, :predictions, :odds)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (LeagueCoverage leagueCoverage : leagueCoverages) {
             parameters.addValue("externalLeagueId", leagueCoverage.getExternalLeagueId());
-            parameters.addValue("events", leagueCoverage.isWithEvents());
-            parameters.addValue("lineups", leagueCoverage.isWithLineups());
-            parameters.addValue("statisticsFixtures", leagueCoverage.isWithStatisticsFixtures());
-            parameters.addValue("statisticsPlayers", leagueCoverage.isWithStatisticsPlayers());
-            parameters.addValue("standings", leagueCoverage.isWithStandings());
-            parameters.addValue("players", leagueCoverage.isWithPlayers());
-            parameters.addValue("topScorers", leagueCoverage.isWithTopScorers());
-            parameters.addValue("topAssists", leagueCoverage.isWithTopAssists());
-            parameters.addValue("topCards", leagueCoverage.isWithTopCards());
-            parameters.addValue("injuries", leagueCoverage.isWithInjuries());
-            parameters.addValue("predictions", leagueCoverage.isWithPredictions());
-            parameters.addValue("odds", leagueCoverage.isWithOdds());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.LEAGUE_COVERAGE, leagueCoverage.getExternalLeagueId(), null)) {
-                this.namedParameterJdbcTemplate.update(persistCoverage, parameters);
+                parameters.addValue("events", leagueCoverage.isWithEvents());
+                parameters.addValue("lineups", leagueCoverage.isWithLineups());
+                parameters.addValue("statisticsFixtures", leagueCoverage.isWithStatisticsFixtures());
+                parameters.addValue("statisticsPlayers", leagueCoverage.isWithStatisticsPlayers());
+                parameters.addValue("standings", leagueCoverage.isWithStandings());
+                parameters.addValue("players", leagueCoverage.isWithPlayers());
+                parameters.addValue("topScorers", leagueCoverage.isWithTopScorers());
+                parameters.addValue("topAssists", leagueCoverage.isWithTopAssists());
+                parameters.addValue("topCards", leagueCoverage.isWithTopCards());
+                parameters.addValue("injuries", leagueCoverage.isWithInjuries());
+                parameters.addValue("predictions", leagueCoverage.isWithPredictions());
+                parameters.addValue("odds", leagueCoverage.isWithOdds());
+
+                this.namedParameterJdbcTemplate.update(queryPersistCoverage, parameters);
                 log.info("Coverage for league with id = {} stored in db.", leagueCoverage.getExternalLeagueId());
             }
         }
@@ -151,16 +151,16 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistCountry = "INSERT INTO public.country (\"name\", code, flag) VALUES(:name, :code, :flag)";
+        String queryPersistCountry = "INSERT INTO public.country (\"name\", code, flag) VALUES(:name, :code, :flag)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Country country : countries) {
             parameters.addValue("name", country.getName());
-            parameters.addValue("code", country.getCode());
-            parameters.addValue("flag", country.getFlag());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.COUNTRY, country.getName(), null)) {
-                this.namedParameterJdbcTemplate.update(persistCountry, parameters);
+                parameters.addValue("code", country.getCode());
+                parameters.addValue("flag", country.getFlag());
+
+                this.namedParameterJdbcTemplate.update(queryPersistCountry, parameters);
                 log.info("Country {} stored in db.", country.getName());
             }
         }
@@ -171,37 +171,37 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistFixture = "INSERT INTO public.fixture " +
+        String queryPersistFixture = "INSERT INTO public.fixture " +
                 "(fixture_id, \"event\", league_id, round, season, \"start\", host, guest, winner, stadium_id, referee, \"result\", halftime_score, fulltime_score, played) " +
                 "VALUES(:id, :event, :leagueId, :round, :season, :start, :host, :guest, :winner, :stadiumId, :referee, :result, :halftimeScore, :fulltimeScore, :finished);";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
 
         for (Fixture fixture : fixtures) {
-            String halftimeResult = String.format("%s:%s",
-                    fixture.getHalftimeScore().get("HOST"),
-                    fixture.getHalftimeScore().get("GUEST"));
-            String fulltimeResult = String.format("%s:%s",
-                    fixture.getFulltimeScore().get("HOST"),
-                    fixture.getFulltimeScore().get("GUEST"));
             parameters.addValue("id", fixture.getId());
-            parameters.addValue("event", fixture.getEvent());
-            parameters.addValue("leagueId", fixture.getLeagueId());
-            parameters.addValue("round", fixture.getRound());
-            parameters.addValue("season", fixture.getSeason());
-            parameters.addValue("start", fixture.getStart());
-            parameters.addValue("host", fixture.getHost().getName());
-            parameters.addValue("guest", fixture.getGuest().getName());
-            parameters.addValue("winner", fixture.getWinner());
-            parameters.addValue("stadiumId", fixture.getStadiumId());
-            parameters.addValue("referee", fixture.getReferee().getName());
-            parameters.addValue("result", String.format("%s (%s)",fulltimeResult, halftimeResult));
-            parameters.addValue("halftimeScore", halftimeResult);
-            parameters.addValue("fulltimeScore", fulltimeResult);
-            parameters.addValue("finished", fixture.isFinished());
-
             if (!checkIfObjectAlreadyExist(SportObjectEnum.FIXTURE, fixture.getId(), null)) {
-                this.namedParameterJdbcTemplate.update(persistFixture, parameters);
+                String halftimeResult = String.format("%s:%s",
+                        fixture.getHalftimeScore().get("HOST"),
+                        fixture.getHalftimeScore().get("GUEST"));
+                String fulltimeResult = String.format("%s:%s",
+                        fixture.getFulltimeScore().get("HOST"),
+                        fixture.getFulltimeScore().get("GUEST"));
+                parameters.addValue("event", fixture.getEvent());
+                parameters.addValue("leagueId", fixture.getLeagueId());
+                parameters.addValue("round", fixture.getRound());
+                parameters.addValue("season", fixture.getSeason());
+                parameters.addValue("start", fixture.getStart());
+                parameters.addValue("host", fixture.getHost().getName());
+                parameters.addValue("guest", fixture.getGuest().getName());
+                parameters.addValue("winner", fixture.getWinner());
+                parameters.addValue("stadiumId", fixture.getStadiumId());
+                parameters.addValue("referee", fixture.getReferee().getName());
+                parameters.addValue("result", String.format("%s (%s)", fulltimeResult, halftimeResult));
+                parameters.addValue("halftimeScore", halftimeResult);
+                parameters.addValue("fulltimeScore", fulltimeResult);
+                parameters.addValue("finished", fixture.isFinished());
+
+                this.namedParameterJdbcTemplate.update(queryPersistFixture, parameters);
                 log.info("Fixture {} stored in db.", fixture.getEvent());
             }
         }
@@ -212,28 +212,27 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String persistStandings = "INSERT INTO public.standing " +
+        String queryPersistStandings = "INSERT INTO public.standing " +
                 "(\"rank\", team, points, goals_diff, form, league_id, season, position_description, actual_results_id, home_results_id, away_results_id, updated) " +
                 "VALUES(:rank, :team, :points, :goalsDiff, :form, :leagueId, :season, :additionalPositionDescription, :resultsId, :homeResultsId, :awayResultsId, :updated)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Standing standing : standings) {
-            parameters.addValue("resultsId", prepareResults(parameters, standing.getResults()));
-            parameters.addValue("homeResultsId", prepareResults(parameters, standing.getHomeResults()));
-            parameters.addValue("awayResultsId", prepareResults(parameters, standing.getAwayResults()));
-            log.info("{}s results stored in db.", standing.getTeam().getName());
-            parameters.addValue("rank", standing.getRank());
-            parameters.addValue("team", standing.getTeam().getName());
-            parameters.addValue("points", standing.getPoints());
-            parameters.addValue("goalsDiff", standing.getGoalsDiff());
-            parameters.addValue("form", standing.getForm());
-            parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
-            parameters.addValue("season", standing.getSeason());
-            parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
             parameters.addValue("updated", standing.getUpdated());
-
+            parameters.addValue("team", standing.getTeam().getName());
             if (!checkIfObjectAlreadyExist(SportObjectEnum.STANDING, standing.getUpdated(), standing.getTeam().getName())) {
-                this.namedParameterJdbcTemplate.update(persistStandings, parameters);
+                parameters.addValue("resultsId", prepareResults(parameters, standing.getResults()));
+                parameters.addValue("homeResultsId", prepareResults(parameters, standing.getHomeResults()));
+                parameters.addValue("awayResultsId", prepareResults(parameters, standing.getAwayResults()));
+                parameters.addValue("rank", standing.getRank());
+                parameters.addValue("points", standing.getPoints());
+                parameters.addValue("goalsDiff", standing.getGoalsDiff());
+                parameters.addValue("form", standing.getForm());
+                parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
+                parameters.addValue("season", standing.getSeason());
+                parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
+
+                this.namedParameterJdbcTemplate.update(queryPersistStandings, parameters);
                 log.info("{}s standing updated in db.", standing.getTeam().getName());
             }
         }
@@ -241,28 +240,29 @@ public class DataAcquisitionDao {
 
     private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
 
-        String persistResults = "INSERT INTO public.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +
+        String queryPersistResults = "INSERT INTO public.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +
                 "VALUES(:teamId, :roundsPlayed, :wins, :draws, :loses, :goalsFor, :goalsAgainst, :description) " +
                 "RETURNING id";
 
-        String getResultId = "SELECT id FROM public.results WHERE description = :description AND team_id = :teamId";
+        String queryGetResultId = "SELECT id FROM public.results WHERE description = :description AND team_id = :teamId";
 
-        parameters.addValue("teamId", results.getTeamId());
-        parameters.addValue("roundsPlayed", results.getRoundsPlayed());
-        parameters.addValue("wins", results.getWins());
-        parameters.addValue("draws", results.getDraws());
-        parameters.addValue("loses", results.getLoses());
-        parameters.addValue("goalsFor", results.getGoals().getOrDefault("FOR", 0));
-        parameters.addValue("goalsAgainst", results.getGoals().getOrDefault("AGAINST", 0));
         parameters.addValue("description", results.getDescription());
+        parameters.addValue("teamId", results.getTeam().getExternalTeamId());
+        if (!checkIfObjectAlreadyExist(SportObjectEnum.RESULTS, results.getDescription(), results.getTeam().getExternalTeamId())) {
+            parameters.addValue("roundsPlayed", results.getRoundsPlayed());
+            parameters.addValue("wins", results.getWins());
+            parameters.addValue("draws", results.getDraws());
+            parameters.addValue("loses", results.getLoses());
+            parameters.addValue("goalsFor", results.getGoals().getOrDefault("FOR", 0));
+            parameters.addValue("goalsAgainst", results.getGoals().getOrDefault("AGAINST", 0));
 
-        if (!checkIfObjectAlreadyExist(SportObjectEnum.RESULTS, results.getDescription(), results.getTeamId())) {
-            return this.namedParameterJdbcTemplate.queryForObject(persistResults, parameters, Integer.class);
+            log.info("{}s results stored in db.", results.getTeam().getName());
+            return this.namedParameterJdbcTemplate.queryForObject(queryPersistResults, parameters, Integer.class);
         } else {
-            return this.namedParameterJdbcTemplate.queryForObject(getResultId, parameters, Integer.class);
+            log.info("{}s results updated in db.", results.getTeam().getName());
+            return this.namedParameterJdbcTemplate.queryForObject(queryGetResultId, parameters, Integer.class);
         }
     }
-
 
     private boolean checkIfObjectAlreadyExist(SportObjectEnum object, Object internalId, Object externalId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
