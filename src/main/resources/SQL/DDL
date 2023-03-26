@@ -73,3 +73,28 @@ CREATE TABLE public.fixture (
 	played bool NULL,
 	CONSTRAINT fixture_fixture_id_key UNIQUE (fixture_id)
 );
+
+CREATE TABLE public.standing (
+	"rank" int4 NOT NULL,
+	team text NOT NULL,
+	points int4 NOT NULL,
+	goals_diff text NOT NULL,
+	form text NULL,
+	league_id int4 NOT NULL,
+	season int4 NOT NULL,
+	position_description text NULL,
+	actual_results_id int4 NULL,
+	home_results_id int4 NULL,
+	away_results_id int4 NULL,
+	updated timestamp NOT NULL
+);
+
+CREATE TABLE public.results (
+	id serial4 NOT NULL,
+	rounds_played int4 NOT NULL,
+	wins int4 NOT NULL,
+	draws int4 NOT NULL,
+	loses int4 NOT NULL,
+	goals_for int4 NOT NULL,
+	goals_against int4 NOT NULL
+);
