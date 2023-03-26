@@ -8,6 +8,7 @@ public enum SportObjectEnum {
     LEAGUE_COVERAGE,
     COUNTRY,
     FIXTURE,
-    STANDING
+    STANDING,
+    RESULTS
 
 }
