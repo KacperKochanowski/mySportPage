@@ -232,7 +232,7 @@ public class DataAcquisitionDao {
             parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
             parameters.addValue("updated", standing.getUpdated());
 
-            if (!checkIfObjectAlreadyExist(SportObjectEnum.STANDING, standing.getUpdated(), standing.getTeam())) {
+            if (!checkIfObjectAlreadyExist(SportObjectEnum.STANDING, standing.getUpdated(), standing.getTeam().getName())) {
                 this.namedParameterJdbcTemplate.update(persistStandings, parameters);
                 log.info("{}s standing updated in db.", standing.getTeam().getName());
             }
@@ -245,7 +245,7 @@ public class DataAcquisitionDao {
                 "VALUES(:teamId, :roundsPlayed, :wins, :draws, :loses, :goalsFor, :goalsAgainst, :description) " +
                 "RETURNING id";
 
-        String getResultId = "SELECT id FROM public.results WHERE description = :description AND team_id = :teamId)";
+        String getResultId = "SELECT id FROM public.results WHERE description = :description AND team_id = :teamId";
 
         parameters.addValue("teamId", results.getTeamId());
         parameters.addValue("roundsPlayed", results.getRoundsPlayed());
@@ -257,7 +257,7 @@ public class DataAcquisitionDao {
         parameters.addValue("description", results.getDescription());
 
         if (!checkIfObjectAlreadyExist(SportObjectEnum.RESULTS, results.getDescription(), results.getTeamId())) {
-            return this.namedParameterJdbcTemplate.update(persistResults, parameters);
+            return this.namedParameterJdbcTemplate.queryForObject(persistResults, parameters, Integer.class);
         } else {
             return this.namedParameterJdbcTemplate.queryForObject(getResultId, parameters, Integer.class);
         }
