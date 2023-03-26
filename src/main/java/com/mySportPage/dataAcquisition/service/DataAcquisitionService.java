@@ -30,27 +30,23 @@ public class DataAcquisitionService {
 
     private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void createTeamsAndStadiums(String data) {
+    public void createObjects(String data, SportObjectEnum sportObjectEnum) {
         if (data != null) {
-            dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data));
-            dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data));
+            switch (sportObjectEnum) {
+                case TEAM -> {
+                    dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data));
+                    dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data));
+                }
+                case LEAGUE -> {
+                    dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
+                    dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
+                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
+                }
+                case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
+                case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
+            }
         }
     }
-
-    public void createLeagues(String data) {
-        if (data != null) {
-            dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
-            dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
-            dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
-        }
-    }
-
-    public void createFixtures(String data) {
-        if (data != null) {
-            dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
-        }
-    }
-
 
     public List<Team> mapJSONObjectToTeamsList(String responseBody) {
         try {
@@ -226,6 +222,40 @@ public class DataAcquisitionService {
         return fixtures;
     }
 
+    public List<Standing> mapJSONObjectToStandingsList(String responseBody) {
+        Integer leagueId;
+        Integer season;
+        Standing standing = new Standing();
+        List<Standing> standings = new ArrayList<>();
+        JSONObject params = new JSONObject(responseBody).getJSONObject("parameters");
+        JSONArray response = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getJSONObject("league").getJSONArray("standings").getJSONArray(0);
+        if (params.get("league") != null) {
+            leagueId = Integer.parseInt((String) params.get("league"));
+        } else {
+            leagueId = null;
+        }
+        if (params.get("season") != null) {
+            season = Integer.parseInt((String) params.get("season"));
+        } else {
+            season = null;
+        }
+        for (int i = 0; i < response.length(); i++) {
+            standing.setSeason(season);
+            standing.setLeague(new League(leagueId));
+            JSONObject element = response.getJSONObject(i);
+            standing.setRank(element.getInt("rank"));
+            standing.setTeam(new Team(element.getJSONObject("team").getInt("id"), element.getJSONObject("team").getString("name")));
+            standing.setPoints(element.getInt("points"));
+            standing.setGoalsDiff(String.valueOf(element.getInt("goalsDiff")));
+            standing.setForm(element.getString("form"));
+            standing.setAdditionalPositionDescription(element.get("description") != null && !(element.get("description").toString()).equals("null") ? element.getString("description") : null);
+            standing.setResults(creteResults(element.getJSONObject("all")));
+            standing.setHomeResults(creteResults(element.getJSONObject("home")));
+            standing.setAwayResults(creteResults(element.getJSONObject("away")));
+        }
+        return standings;
+    }
+
     private void setFixtureStartDate(Fixture fixture, String date) {
         try {
             if (date.contains("+")) {
@@ -235,5 +265,20 @@ public class DataAcquisitionService {
         } catch (ParseException e) {
             log.error("DataAcquisitionService.setFixtureStartDate(): Couldn't parse event start for fixture id: {}", fixture.getId(), e);
         }
+    }
+
+    private Results creteResults(JSONObject data){
+        Results results = new Results();
+        results.setRoundsPlayed(data.getInt("played"));
+        results.setWins(data.getInt("win"));
+        results.setDraws(data.getInt("draw"));
+        results.setLoses(data.getInt("lose"));
+        results.setGoals(Stream.of(new Object[][]{
+                {"FOR", data.getJSONObject("goals").get("for") != null && !(data.getJSONObject("goals").get("for")).equals("null") ?
+                        data.getJSONObject("goals").getInt("for") : 0},
+                {"AGAINST", data.getJSONObject("goals").get("against") != null && !(data.getJSONObject("goals").get("against")).equals("null") ?
+                        data.getJSONObject("goals").getInt("against") : 0},
+        }).collect(Collectors.toMap(x -> (String) x[0], x -> (Integer) x[1])));
+        return results;
     }
 }
