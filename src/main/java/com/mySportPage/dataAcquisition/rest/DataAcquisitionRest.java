@@ -1,6 +1,7 @@
 package com.mySportPage.dataAcquisition.rest;
 
 import com.mySportPage.dataAcquisition.ExternalPaths;
+import com.mySportPage.dataAcquisition.model.SportObjectEnum;
 import com.mySportPage.dataAcquisition.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -41,7 +42,8 @@ public class DataAcquisitionRest {
             externalPath += leagueId != null ? "&" : "?";
             externalPath += "season=" + season;
         }
-        dataAcquisitionService.createTeamsAndStadiums(sendGetRequest(externalPath));
+        String response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,7 +75,7 @@ public class DataAcquisitionRest {
             externalPath += "name=" + name;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createLeagues(response);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -89,7 +91,21 @@ public class DataAcquisitionRest {
             externalPath += leagueId != null ? "&" : "?";
             externalPath += "season=" + season;
         }
-        dataAcquisitionService.createFixtures(sendGetRequest(externalPath));
+        String response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/createStandings")
+    public void createStandings(@RequestParam(required = false) String leagueId,
+                                @RequestParam Integer season) {
+        String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
+
+        if (leagueId != null) {
+            externalPath += "&league=" + leagueId;
+        }
+        String response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING);
     }
 
     public String sendGetRequest(String path) {
