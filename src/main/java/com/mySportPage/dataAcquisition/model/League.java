@@ -1,10 +1,14 @@
 package com.mySportPage.dataAcquisition.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class League {
 
     private Integer externalLeagueId;
@@ -23,4 +27,8 @@ public class League {
 
     private Country country;
 
+
+    public League(Integer externalLeagueId) {
+        this.externalLeagueId = externalLeagueId;
+    }
 }
