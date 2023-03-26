@@ -91,10 +91,12 @@ CREATE TABLE public.standing (
 
 CREATE TABLE public.results (
 	id serial4 NOT NULL,
+	team_id int4 NOT NULL,
 	rounds_played int4 NOT NULL,
 	wins int4 NOT NULL,
 	draws int4 NOT NULL,
 	loses int4 NOT NULL,
 	goals_for int4 NOT NULL,
-	goals_against int4 NOT NULL
+	goals_against int4 NOT NULL,
+	description text NOT NULL
 );

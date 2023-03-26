@@ -7,6 +7,8 @@ import java.util.Map;
 @Data
 public class Results {
 
+    private Integer teamId;
+
     private Integer roundsPlayed;
 
     private Integer wins;
@@ -16,4 +18,6 @@ public class Results {
     private Integer loses;
 
     private Map<String, Integer> goals;
+
+    private String description;
 }
