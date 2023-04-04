@@ -32,6 +32,8 @@ public class Fixture {
 
     private Map<String, Integer> fulltimeScore;
 
+    private String finalScore;
+
     private String winner;
 
     private Integer round;
