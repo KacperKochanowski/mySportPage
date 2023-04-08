@@ -1,7 +1,7 @@
 package com.mySportPage.dataAcquisition.service;
 
 import com.mySportPage.dataAcquisition.dao.FixtureDao;
-import com.mySportPage.dataAcquisition.model.Fixture;
+import com.mySportPage.dataAcquisition.model.FixtureDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class FixtureService {
     @Autowired
     private FixtureDao fixtureDao;
 
-    public List<Fixture> getFixtures() {
+    public List<FixtureDTO> getFixtures() {
         return fixtureDao.getFixtures();
     }
 

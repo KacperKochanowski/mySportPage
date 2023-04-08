@@ -1,6 +1,6 @@
 package com.mySportPage.dataAcquisition.dao;
 
-import com.mySportPage.dataAcquisition.model.Fixture;
+import com.mySportPage.dataAcquisition.model.FixtureDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -16,16 +16,19 @@ public class FixtureDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Fixture> getFixtures() {
-        List<Fixture> fixtureList = new ArrayList<>();
+    public List<FixtureDTO> getFixtures() {
+        List<FixtureDTO> fixtureList = new ArrayList<>();
 
-        Query query = entityManager.createNamedQuery(FixtureQueries.GET_FIXTURES.getQuery());
+        Query query = entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery());
         List<Object[]> results = query.getResultList();
         for (Object[] value : results) {
-            Fixture fixture = new Fixture();
-            fixture.setEvent((String) value[0]);
-            fixture.setStart((Date) value[1]);
-            fixture.setFinalScore((String) value[2]);
+            FixtureDTO fixture = new FixtureDTO();
+            fixture.setLeagueId((Integer) value[0]);
+            fixture.setEvent((String) value[1]);
+            fixture.setStart((Date) value[2]);
+            fixture.setFinished((boolean) value[3]);
+            fixture.setResult((String) value[4]);
+            fixture.setRound((Integer) value[5]);
             fixtureList.add(fixture);
         }
         return fixtureList;
