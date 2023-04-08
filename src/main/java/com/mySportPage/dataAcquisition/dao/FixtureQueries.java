@@ -5,6 +5,10 @@ import lombok.Getter;
 @Getter
 public enum FixtureQueries {
 
+    /**
+     * Used to fetch fixtures from specific (current) round by every league
+     */
+    
     GET_FIXTURES("SELECT league_id, event, start, played, result, round " +
                  "FROM fixture " +
                  "GROUP BY event, start, result, round, league_id, played " +
