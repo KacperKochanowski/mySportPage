@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FixtureService {
@@ -21,4 +22,7 @@ public class FixtureService {
         return fixtureDao.getFixtures();
     }
 
+    public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
+        return fixtureDao.getFixtures(leagueId, round);
+    }
 }
