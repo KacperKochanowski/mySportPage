@@ -15,6 +15,7 @@ public class FixtureDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @SuppressWarnings("unchecked")
     public List<FixtureDTO> getFixtures() {
         List<FixtureDTO> fixtureList = new ArrayList<>();
         List<Object[]> results = entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery()).getResultList();
@@ -31,19 +32,14 @@ public class FixtureDao {
         return fixtureList;
     }
 
+    @SuppressWarnings("unchecked")
     public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
         List<FixtureDTO> list = new ArrayList<>();
-        String query = FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery();
-        Query queryObject;
-        if (round != null && round > 0) {
-            query += query + "AND round = :round ";
-            queryObject = entityManager.createNativeQuery(query);
-            queryObject.setParameter("round", round);
-        } else {
-            queryObject = entityManager.createNativeQuery(query);
-        }
-        queryObject.setParameter("leagueId", leagueId);
-        List<Object[]> results = queryObject.getResultList();
+        Query query = round != null ?
+                entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery()).setParameter("round", round) :
+                entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery());
+        query.setParameter("leagueId", leagueId);
+        List<Object[]> results = query.getResultList();
         for (Object[] value : results) {
             FixtureDTO fixture = new FixtureDTO();
             fixture.setLeagueId((Integer) value[0]);
