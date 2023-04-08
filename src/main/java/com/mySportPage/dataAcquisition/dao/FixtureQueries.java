@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum FixtureQueries {
 
     /**
-     * Used to fetch fixtures from specific (current) round by every league
+     * GET_FIXTURES is used to fetch fixtures from specific (current) round by every league
      */
     
     GET_FIXTURES("SELECT league_id, event, start, played, result, round " +
@@ -16,7 +16,10 @@ public enum FixtureQueries {
 
     GET_FIXTURES_BY_LEAGUE_ID("SELECT league_id, event, start, played, result, round " +
                               "FROM fixture " +
-                              "WHERE league_id = :leagueId ");
+                              "WHERE league_id = :leagueId "),
+
+    GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO(GET_FIXTURES_BY_LEAGUE_ID.getQuery() + "AND round = :round ");
+
     private final String query;
 
     FixtureQueries(String query) {
