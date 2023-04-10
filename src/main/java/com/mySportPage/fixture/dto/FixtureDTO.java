@@ -1,4 +1,4 @@
-package com.mySportPage.dataAcquisition.model;
+package com.mySportPage.fixture.dto;
 
 import lombok.Data;
 

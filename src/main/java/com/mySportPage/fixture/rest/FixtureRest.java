@@ -1,7 +1,7 @@
-package com.mySportPage.dataAcquisition.rest;
+package com.mySportPage.fixture.rest;
 
-import com.mySportPage.dataAcquisition.model.FixtureDTO;
-import com.mySportPage.dataAcquisition.service.FixtureService;
+import com.mySportPage.fixture.dto.FixtureDTO;
+import com.mySportPage.fixture.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +16,23 @@ public class FixtureRest {
     @Autowired
     FixtureService fixtureService;
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("current")
     public List<FixtureDTO> getFixtures() {
         return fixtureService.getFixtures();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @GetMapping("{leagueId}")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("league/{leagueId}")
     public Map<Integer, List<FixtureDTO>> getFixtures(@PathVariable("leagueId") Integer leagueId,
                                                       @RequestParam(required = false) Integer round) {
         return fixtureService.getFixtures(leagueId, round);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("team/{teamId}")
+    public List<FixtureDTO> getFixtures(@PathVariable("teamId") Integer teamId,
+                                        @RequestParam(required = false) String place) {
+        return fixtureService.getFixtures(teamId, place);
     }
 }
