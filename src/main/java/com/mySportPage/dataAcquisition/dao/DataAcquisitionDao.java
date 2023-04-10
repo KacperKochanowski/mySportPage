@@ -181,12 +181,14 @@ public class DataAcquisitionDao {
         for (Fixture fixture : fixtures) {
             parameters.addValue("id", fixture.getId());
             if (!checkIfObjectAlreadyExist(SportObjectEnum.FIXTURE, fixture.getId(), null)) {
-                String halftimeResult = String.format("%s:%s",
+                String halftimeResult = fixture.isFinished() ?
+                        String.format("%s:%s",
                         fixture.getHalftimeScore().get("HOST"),
-                        fixture.getHalftimeScore().get("GUEST"));
-                String fulltimeResult = String.format("%s:%s",
+                        fixture.getHalftimeScore().get("GUEST")) : null;
+                String fulltimeResult = fixture.isFinished() ?
+                        String.format("%s:%s",
                         fixture.getFulltimeScore().get("HOST"),
-                        fixture.getFulltimeScore().get("GUEST"));
+                        fixture.getFulltimeScore().get("GUEST")) : null;
                 parameters.addValue("event", fixture.getEvent());
                 parameters.addValue("leagueId", fixture.getLeagueId());
                 parameters.addValue("round", fixture.getRound());
@@ -197,7 +199,7 @@ public class DataAcquisitionDao {
                 parameters.addValue("winner", fixture.getWinner());
                 parameters.addValue("stadiumId", fixture.getStadiumId());
                 parameters.addValue("referee", fixture.getReferee().getName());
-                parameters.addValue("result", String.format("%s (%s)", fulltimeResult, halftimeResult));
+                parameters.addValue("result", fixture.isFinished() ? String.format("%s (%s)", fulltimeResult, halftimeResult) : null);
                 parameters.addValue("halftimeScore", halftimeResult);
                 parameters.addValue("fulltimeScore", fulltimeResult);
                 parameters.addValue("finished", fixture.isFinished());
