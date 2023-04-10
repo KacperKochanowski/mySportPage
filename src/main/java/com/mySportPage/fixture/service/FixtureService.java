@@ -1,7 +1,7 @@
-package com.mySportPage.dataAcquisition.service;
+package com.mySportPage.fixture.service;
 
-import com.mySportPage.dataAcquisition.dao.FixtureDao;
-import com.mySportPage.dataAcquisition.model.FixtureDTO;
+import com.mySportPage.fixture.dao.FixtureDao;
+import com.mySportPage.fixture.dto.FixtureDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,5 +24,9 @@ public class FixtureService {
 
     public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
         return fixtureDao.getFixtures(leagueId, round);
+    }
+
+    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
+        return fixtureDao.getFixtures(teamId, place);
     }
 }

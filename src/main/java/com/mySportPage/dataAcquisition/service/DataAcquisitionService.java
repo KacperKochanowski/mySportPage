@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.dataAcquisition.dao.DataAcquisitionDao;
 import com.mySportPage.dataAcquisition.model.*;
+import com.mySportPage.fixture.model.Fixture;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
