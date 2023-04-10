@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,6 +28,10 @@ public class DataAcquisitionService {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionService.class);
 
     private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    private final Map<String, String> incorrectNames = new HashMap<>() {{
+        put("Tychy 71", "GKS Tychy");
+    }};
 
     public void createObjects(String data, SportObjectEnum sportObjectEnum) {
         if (data != null) {
@@ -55,7 +57,9 @@ public class DataAcquisitionService {
             ObjectMapper objectMapper = new ObjectMapper();
             JSONArray response = new JSONObject(responseBody).getJSONArray("response");
             for (int i = 0; i < response.length(); i++) {
-                teams.add(objectMapper.readValue(response.getJSONObject(i).getJSONObject("team").toString(), Team.class));
+                Team team = objectMapper.readValue(response.getJSONObject(i).getJSONObject("team").toString(), Team.class);
+                team.setName(checkIfTeamNameIsCorrect(team.getName()));
+                teams.add(team);
             }
             return teams;
         } catch (JsonProcessingException e) {
@@ -187,7 +191,10 @@ public class DataAcquisitionService {
             fixture.setFinished((element.getJSONObject("status").getString("short")).equals("FT"));
             fixture.setRound(response.getJSONObject(i).getJSONObject("league").getString("round"));
             element = response.getJSONObject(i).getJSONObject("teams").getJSONObject("home");
-            fixture.setHost(new Team(element.getInt("id"), element.getString("name")));
+            fixture.setHost(new Team(
+                    element.getInt("id"),
+                    checkIfTeamNameIsCorrect(element.getString("name")))
+            );
             if (element.get("winner") != null &&
                     !(element.get("winner").toString()).equals("null") &&
                     element.getBoolean("winner")) {
@@ -202,19 +209,21 @@ public class DataAcquisitionService {
             }
             fixture.setEvent(fixture.getHost().getName(), fixture.getGuest().getName());
             element = response.getJSONObject(i).getJSONObject("score").getJSONObject("halftime");
-            fixture.setHalftimeScore(Stream.of(new Object[][]{
-                    {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
-                            element.getInt("home") : 0},
-                    {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
-                            element.getInt("away") : 0},
-            }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
-            element = response.getJSONObject(i).getJSONObject("score").getJSONObject("fulltime");
-            fixture.setFulltimeScore(Stream.of(new Object[][]{
-                    {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
-                            element.getInt("home") : 0},
-                    {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
-                            element.getInt("away") : 0},
-            }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+            if(fixture.isFinished()) {
+                fixture.setHalftimeScore(Stream.of(new Object[][]{
+                        {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
+                                element.getInt("home") : 0},
+                        {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
+                                element.getInt("away") : 0},
+                }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+                element = response.getJSONObject(i).getJSONObject("score").getJSONObject("fulltime");
+                fixture.setFulltimeScore(Stream.of(new Object[][]{
+                        {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
+                                element.getInt("home") : 0},
+                        {"GUEST", element.get("away") != null && !(element.get("away").toString()).equals("null") ?
+                                element.getInt("away") : 0},
+                }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
+            }
             if(fixture.getWinner() == null && fixture.getStart().before(new Date())) {
                 fixture.setWinner("-");
             }
@@ -245,7 +254,10 @@ public class DataAcquisitionService {
             standing.setLeague(new League(leagueId));
             JSONObject element = response.getJSONObject(i);
             standing.setRank(element.getInt("rank"));
-            standing.setTeam(new Team(element.getJSONObject("team").getInt("id"), element.getJSONObject("team").getString("name")));
+            standing.setTeam(new Team(
+                    element.getJSONObject("team").getInt("id"),
+                    checkIfTeamNameIsCorrect(element.getJSONObject("team").getString("name")))
+            );
             standing.setPoints(element.getInt("points"));
             standing.setGoalsDiff(String.valueOf(element.getInt("goalsDiff")));
             standing.setForm(element.getString("form"));
@@ -285,5 +297,9 @@ public class DataAcquisitionService {
                         data.getJSONObject("goals").getInt("against") : 0},
         }).collect(Collectors.toMap(x -> (String) x[0], x -> (Integer) x[1])));
         return results;
+    }
+
+    private String checkIfTeamNameIsCorrect (String teamName) {
+        return incorrectNames.getOrDefault(teamName, teamName);
     }
 }
