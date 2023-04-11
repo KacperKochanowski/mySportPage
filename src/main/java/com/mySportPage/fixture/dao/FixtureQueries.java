@@ -28,6 +28,8 @@ public enum FixtureQueries {
                             "FROM fixture f " +
                             "JOIN team_name ON f.host = team_name.name OR f.guest = team_name.name "),
 
+    GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.played = :played"),
+
     GET_FIXTURES_BY_TEAM_ID_HOME(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.host = team_name.name "),
 
     GET_FIXTURES_BY_TEAM_ID_AWAY(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.guest = team_name.name ");

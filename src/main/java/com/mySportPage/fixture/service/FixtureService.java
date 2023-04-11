@@ -29,4 +29,8 @@ public class FixtureService {
     public List<FixtureDTO> getFixtures(Integer teamId, String place) {
         return fixtureDao.getFixtures(teamId, place);
     }
+
+    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
+        return fixtureDao.getFixtures(teamId, played);
+    }
 }

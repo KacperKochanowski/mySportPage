@@ -60,6 +60,15 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
+    @SuppressWarnings("unchecked")
+    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
+        List<Object[]> results = entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery())
+                .setParameter("played", played)
+                .setParameter("teamId", teamId)
+                .getResultList();
+        return mapToFixturesList(results);
+    }
+
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
         List<FixtureDTO> fixtures = new ArrayList<>();
         for (Object[] value : results) {

@@ -35,4 +35,11 @@ public class FixtureRest {
                                         @RequestParam(required = false) String place) {
         return fixtureService.getFixtures(teamId, place);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("team/{teamId}/played/{played}")
+    public List<FixtureDTO> getFixtures(@PathVariable("teamId") Integer teamId,
+                                        @PathVariable("played") boolean played) {
+        return fixtureService.getFixtures(teamId, played);
+    }
 }
