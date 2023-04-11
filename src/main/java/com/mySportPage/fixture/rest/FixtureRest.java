@@ -14,7 +14,7 @@ import java.util.Map;
 public class FixtureRest {
 
     @Autowired
-    FixtureService fixtureService;
+    private FixtureService fixtureService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("current")
