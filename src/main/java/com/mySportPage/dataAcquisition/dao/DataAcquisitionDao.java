@@ -2,6 +2,7 @@ package com.mySportPage.dataAcquisition.dao;
 
 import com.mySportPage.dataAcquisition.model.*;
 import com.mySportPage.fixture.model.Fixture;
+import com.mySportPage.team.model.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.mySportPage.fixture.model;
 
 import com.mySportPage.dataAcquisition.model.Referee;
-import com.mySportPage.dataAcquisition.model.Team;
+import com.mySportPage.team.model.Team;
 import lombok.Data;
 
 import java.util.Date;

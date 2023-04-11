@@ -1,4 +1,4 @@
-package com.mySportPage.dataAcquisition.model;
+package com.mySportPage.team.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
