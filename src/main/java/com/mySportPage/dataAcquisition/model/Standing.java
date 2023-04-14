@@ -1,5 +1,6 @@
 package com.mySportPage.dataAcquisition.model;
 
+import com.mySportPage.league.model.League;
 import com.mySportPage.team.model.Team;
 import lombok.Data;
 

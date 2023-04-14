@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.dataAcquisition.dao.DataAcquisitionDao;
 import com.mySportPage.dataAcquisition.model.*;
 import com.mySportPage.fixture.model.Fixture;
+import com.mySportPage.league.model.League;
 import com.mySportPage.team.model.Team;
 import org.json.JSONArray;
 import org.json.JSONObject;
