@@ -8,14 +8,15 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
+@SuppressWarnings("unchecked")
 public class TeamDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @SuppressWarnings("unchecked")
     public TeamDTO getTeam(Integer teamId) {
-        List<Object[]> result = entityManager.createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery())
+        List<Object[]> result = entityManager
+                .createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery())
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToTeam(result.get(0));

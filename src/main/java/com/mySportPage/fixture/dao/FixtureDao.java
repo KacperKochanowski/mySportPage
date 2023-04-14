@@ -10,31 +10,32 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@SuppressWarnings("unchecked")
 public class FixtureDao {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @SuppressWarnings("unchecked")
     public List<FixtureDTO> getFixtures() {
-        List<Object[]> results = entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery())
+        List<Object[]> results = entityManager
+                .createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery())
                 .getResultList();
         return mapToFixturesList(results);
     }
 
-    @SuppressWarnings("unchecked")
     public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
         Query query = round != null ?
-                entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery())
+                entityManager
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery())
                         .setParameter("round", round) :
-                entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery());
+                entityManager
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery());
         query.setParameter("leagueId", leagueId);
         List<Object[]> results = query.getResultList();
         List<FixtureDTO> fixtures = mapToFixturesList(results);
         return fixtures.stream().collect(Collectors.groupingBy(FixtureDTO::getRound));
     }
 
-    @SuppressWarnings("unchecked")
     public List<FixtureDTO> getFixtures(Integer teamId, String place) {
         Query query;
         switch (place) {
@@ -60,9 +61,9 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
-    @SuppressWarnings("unchecked")
     public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
-        List<Object[]> results = entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery())
+        List<Object[]> results = entityManager
+                .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery())
                 .setParameter("played", played)
                 .setParameter("teamId", teamId)
                 .getResultList();

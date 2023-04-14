@@ -16,6 +16,8 @@ public enum FixtureQueries {
                  "GROUP BY event, start, result, round, league_id, played " +
                  "HAVING round = MIN(CAST((SELECT round FROM fixture WHERE played = false LIMIT 1) AS integer)) "),
 
+    GET_FIXTURES_FOR_NEXT_TWO_WEEKS(GET_FIXTURES.getQuery() + ),
+
     GET_FIXTURES_BY_LEAGUE_ID("SELECT  " + CORE_COLUMNS.getQuery() +
                               "FROM fixture " +
                               "WHERE league_id = :leagueId "),
@@ -28,7 +30,7 @@ public enum FixtureQueries {
                             "FROM fixture f " +
                             "JOIN team_name ON f.host = team_name.name OR f.guest = team_name.name "),
 
-    GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.played = :played"),
+    GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.played = :played "),
 
     GET_FIXTURES_BY_TEAM_ID_HOME(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.host = team_name.name "),
 
