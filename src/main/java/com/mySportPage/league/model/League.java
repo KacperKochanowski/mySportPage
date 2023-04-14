@@ -1,5 +1,6 @@
-package com.mySportPage.dataAcquisition.model;
+package com.mySportPage.league.model;
 
+import com.mySportPage.dataAcquisition.model.Country;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
