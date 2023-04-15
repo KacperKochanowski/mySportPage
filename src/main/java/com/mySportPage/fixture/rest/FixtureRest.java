@@ -23,6 +23,12 @@ public class FixtureRest {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("for-two-weeks")
+    public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+        return fixtureService.getFixturesByDateLeagueRound();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("league/{leagueId}")
     public Map<Integer, List<FixtureDTO>> getFixtures(@PathVariable("leagueId") Integer leagueId,
                                                       @RequestParam(required = false) Integer round) {

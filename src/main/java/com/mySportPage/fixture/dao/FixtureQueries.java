@@ -16,7 +16,11 @@ public enum FixtureQueries {
                  "GROUP BY event, start, result, round, league_id, played " +
                  "HAVING round = MIN(CAST((SELECT round FROM fixture WHERE played = false LIMIT 1) AS integer)) "),
 
-    GET_FIXTURES_FOR_NEXT_TWO_WEEKS(GET_FIXTURES.getQuery() + ),
+    GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK("SELECT league_id, event, start, played, result, round " +
+                                        "FROM fixture " +
+                                        "WHERE start >= date(now() - interval '7 day') " +
+                                        "AND start < date(now() + interval '8 day') " +
+                                        "ORDER BY start, league_id, round "),
 
     GET_FIXTURES_BY_LEAGUE_ID("SELECT  " + CORE_COLUMNS.getQuery() +
                               "FROM fixture " +

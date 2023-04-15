@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Component
 @SuppressWarnings("unchecked")
 public class FixtureDao {
@@ -69,6 +71,15 @@ public class FixtureDao {
                 .getResultList();
         return mapToFixturesList(results);
     }
+
+public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+    List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery())
+            .getResultList());
+    return fixturesList.stream().collect(
+            Collectors.groupingBy(v -> String.valueOf(v.getStart()).substring(0, 10),
+                    Collectors.groupingBy(FixtureDTO::getLeagueId,
+                            Collectors.groupingBy(FixtureDTO::getRound, toList()))));
+}
 
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
         List<FixtureDTO> fixtures = new ArrayList<>();
