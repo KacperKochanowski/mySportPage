@@ -72,13 +72,13 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
-public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
     List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery())
             .getResultList());
     return fixturesList.stream().collect(
             Collectors.groupingBy(v -> String.valueOf(v.getStart()).substring(0, 10),
-                    Collectors.groupingBy(FixtureDTO::getLeagueId,
-                            Collectors.groupingBy(FixtureDTO::getRound, toList()))));
+                    Collectors.groupingBy(FixtureDTO::getLeagueName,
+                            Collectors.groupingBy(v-> String.format("round: %s", v.getRound()), toList()))));
 }
 
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
@@ -86,11 +86,12 @@ public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDa
         for (Object[] value : results) {
             FixtureDTO fixture = new FixtureDTO();
             fixture.setLeagueId((Integer) value[0]);
-            fixture.setEvent((String) value[1]);
-            fixture.setStart((Date) value[2]);
-            fixture.setFinished((boolean) value[3]);
-            fixture.setResult((String) value[4]);
-            fixture.setRound((Integer) value[5]);
+            fixture.setLeagueName((String) value[1]);
+            fixture.setEvent((String) value[2]);
+            fixture.setStart((Date) value[3]);
+            fixture.setFinished((boolean) value[4]);
+            fixture.setResult((String) value[5]);
+            fixture.setRound((Integer) value[6]);
             fixtures.add(fixture);
         }
         return fixtures;
