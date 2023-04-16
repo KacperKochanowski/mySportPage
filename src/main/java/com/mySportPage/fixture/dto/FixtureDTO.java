@@ -9,6 +9,8 @@ public class FixtureDTO {
 
     private Integer leagueId;
 
+    private String leagueName;
+
     private Integer round;
 
     private Date start;
