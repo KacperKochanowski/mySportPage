@@ -30,7 +30,7 @@ public class FixtureRest {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("league/{leagueId}")
-    public Map<Integer, List<FixtureDTO>> getFixtures(@PathVariable("leagueId") Integer leagueId,
+    public Map<String, List<FixtureDTO>> getFixtures(@PathVariable("leagueId") Integer leagueId,
                                                       @RequestParam(required = false) Integer round) {
         return fixtureService.getFixtures(leagueId, round);
     }
