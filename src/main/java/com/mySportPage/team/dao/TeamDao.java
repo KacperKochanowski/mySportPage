@@ -14,9 +14,10 @@ public class TeamDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public TeamDTO getTeam(Integer teamId) {
+    public TeamDTO getTeam(Integer teamId, String schema) {
         List<Object[]> result = entityManager
-                .createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery())
+                .createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery()
+                        .replace("{schema}", schema))
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToTeam(result.get(0));

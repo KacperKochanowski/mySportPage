@@ -18,40 +18,46 @@ public class FixtureDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<FixtureDTO> getFixtures() {
+    public List<FixtureDTO> getFixtures(String schema) {
         List<Object[]> results = entityManager
-                .createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery())
+                .createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery()
+                        .replace("{schema}", schema))
                 .getResultList();
         return mapToFixturesList(results);
     }
 
-    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
+    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round, String schema) {
         Query query = round != null ?
                 entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery())
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery()
+                                .replace("{schema}", schema))
                         .setParameter("round", round) :
                 entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery());
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID.getQuery()
+                                .replace("{schema}", schema));
         query.setParameter("leagueId", leagueId);
         List<Object[]> results = query.getResultList();
         List<FixtureDTO> fixtures = mapToFixturesList(results);
         return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s", v.getRound())));
     }
 
-    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
+    public List<FixtureDTO> getFixtures(Integer teamId, String place, String schema) {
         Query query;
         switch (place) {
             case null:
                 query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery());
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery()
+                                .replace("{schema}", schema));
                 break;
             case "home":
                 query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery());
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery()
+                                .replace("{schema}", schema));
                 break;
             case "away":
                 query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery());
+                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery()
+                                .replace("{schema}", schema));
                 break;
             default:
                 return new ArrayList<>();
@@ -63,17 +69,19 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
+    public List<FixtureDTO> getFixtures(Integer teamId, boolean played, String schema) {
         List<Object[]> results = entityManager
-                .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery())
+                .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery()
+                        .replace("{schema}", schema))
                 .setParameter("played", played)
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToFixturesList(results);
     }
 
-    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
-        List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery())
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound(String schema) {
+        List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery()
+                        .replace("{schema}", schema))
                 .getResultList());
         return fixturesList.stream().collect(
                 Collectors.groupingBy(v -> String.valueOf(v.getStart()).substring(0, 10),
