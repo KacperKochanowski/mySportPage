@@ -30,7 +30,7 @@ public class FixtureService {
         return fixtureDao.getFixtures(teamId, played);
     }
 
-    public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
         return fixtureDao.getFixturesByDateLeagueRound();
     }
 }

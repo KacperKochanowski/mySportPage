@@ -24,7 +24,7 @@ public class FixtureRest {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("for-two-weeks")
-    public Map<String, Map<Integer, Map<Integer, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
         return fixtureService.getFixturesByDateLeagueRound();
     }
 
