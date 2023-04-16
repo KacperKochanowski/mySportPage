@@ -25,7 +25,7 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
-    public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
+    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
         Query query = round != null ?
                 entityManager
                         .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO.getQuery())
@@ -35,7 +35,7 @@ public class FixtureDao {
         query.setParameter("leagueId", leagueId);
         List<Object[]> results = query.getResultList();
         List<FixtureDTO> fixtures = mapToFixturesList(results);
-        return fixtures.stream().collect(Collectors.groupingBy(FixtureDTO::getRound));
+        return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s",v.getRound())));
     }
 
     public List<FixtureDTO> getFixtures(Integer teamId, String place) {

@@ -18,7 +18,7 @@ public class FixtureService {
         return fixtureDao.getFixtures();
     }
 
-    public Map<Integer, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
+    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
         return fixtureDao.getFixtures(leagueId, round);
     }
 
