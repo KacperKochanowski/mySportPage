@@ -35,7 +35,7 @@ public class FixtureDao {
         query.setParameter("leagueId", leagueId);
         List<Object[]> results = query.getResultList();
         List<FixtureDTO> fixtures = mapToFixturesList(results);
-        return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s",v.getRound())));
+        return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s", v.getRound())));
     }
 
     public List<FixtureDTO> getFixtures(Integer teamId, String place) {
@@ -72,14 +72,14 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
-public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
-    List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery())
-            .getResultList());
-    return fixturesList.stream().collect(
-            Collectors.groupingBy(v -> String.valueOf(v.getStart()).substring(0, 10),
-                    Collectors.groupingBy(FixtureDTO::getLeagueName,
-                            Collectors.groupingBy(v-> String.format("round: %s", v.getRound()), toList()))));
-}
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+        List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery())
+                .getResultList());
+        return fixturesList.stream().collect(
+                Collectors.groupingBy(v -> String.valueOf(v.getStart()).substring(0, 10),
+                        Collectors.groupingBy(FixtureDTO::getLeagueName,
+                                Collectors.groupingBy(v -> String.format("round: %s", v.getRound()), toList()))));
+    }
 
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
         List<FixtureDTO> fixtures = new ArrayList<>();
