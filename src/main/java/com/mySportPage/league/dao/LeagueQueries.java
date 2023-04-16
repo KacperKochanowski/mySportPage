@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum LeagueQueries {
 
     GET_LEAGUES("SELECT name, type, country " +
-                "FROM league "),
+                "FROM {schema}.league "),
 
     GET_LEAGUES_BY_COUNTRY(GET_LEAGUES.getQuery() + "WHERE country = :country ");
 
