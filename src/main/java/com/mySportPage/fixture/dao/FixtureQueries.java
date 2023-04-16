@@ -5,28 +5,30 @@ import lombok.Getter;
 @Getter
 public enum FixtureQueries {
 
-    CORE_COLUMNS("league_id, event, start, played, result, round "),
+    CORE_COLUMNS("f.league_id, l.name, f.event, f.start, f.played, f.result, f.round "),
 
     /**
      * GET_FIXTURES is used to fetch fixtures from specific (current) round by every league
      */
     
     GET_FIXTURES("SELECT " + CORE_COLUMNS.getQuery() +
-                 "FROM fixture " +
-                 "GROUP BY event, start, result, round, league_id, played " +
-                 "HAVING round = MIN(CAST((SELECT round FROM fixture WHERE played = false LIMIT 1) AS integer)) "),
+                 "FROM fixture f" +
+                 "JOIN league l ON f.league_id = l.league_id " +
+                 "GROUP BY f.event, f.start, f.result, f.round, f.league_id, f.played " +
+                 "HAVING f.round = MIN(CAST((SELECT round FROM fixture WHERE played = false LIMIT 1) AS integer)) "),
 
-    GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK("SELECT league_id, event, start, played, result, round " +
-                                        "FROM fixture " +
-                                        "WHERE start >= date(now() - interval '7 day') " +
-                                        "AND start < date(now() + interval '8 day') " +
-                                        "ORDER BY start, league_id, round "),
+    GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK("SELECT " + CORE_COLUMNS.getQuery() +
+                                        "FROM fixture f " +
+                                        "JOIN league l ON f.league_id = l.league_id " +
+                                        "WHERE f.start >= date(now() - interval '7 day') " +
+                                        "AND f.start < date(now() + interval '8 day') " +
+                                        "ORDER BY f.start, f.league_id, f.round "),
 
     GET_FIXTURES_BY_LEAGUE_ID("SELECT  " + CORE_COLUMNS.getQuery() +
-                              "FROM fixture " +
-                              "WHERE league_id = :leagueId "),
+                              "FROM fixture f" +
+                              "WHERE f.league_id = :leagueId "),
 
-    GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO(GET_FIXTURES_BY_LEAGUE_ID.getQuery() + "AND round = :round "),
+    GET_FIXTURES_BY_LEAGUE_ID_AND_ROUND_NO(GET_FIXTURES_BY_LEAGUE_ID.getQuery() + "AND f.round = :round "),
 
     GET_FIXTURES_BY_TEAM_ID("WITH team_name AS( " +
                             "SELECT name FROM team WHERE team_id = :teamId) " +
