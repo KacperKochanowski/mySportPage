@@ -1,6 +1,7 @@
 package com.mySportPage.dataAcquisition.rest;
 
 import com.mySportPage.dataAcquisition.ExternalPaths;
+import com.mySportPage.dataAcquisition.model.SportEnum;
 import com.mySportPage.dataAcquisition.model.SportObjectEnum;
 import com.mySportPage.dataAcquisition.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
@@ -30,9 +31,10 @@ public class DataAcquisitionRest {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/createTeamsAndStadiums")
+    @PostMapping("/createTeamsAndStadiums/")
     public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
-                                       @RequestParam("season") Integer season) {
+                                       @RequestParam("season") Integer season,
+                                       @RequestParam("sportId") Integer sportId) {
         String externalPath = ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl();
         if (leagueId != null) {
             externalPath += "?league=" + leagueId;
@@ -42,7 +44,7 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM, SportEnum.getById(sportId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -51,7 +53,8 @@ public class DataAcquisitionRest {
                               @RequestParam(required = false) String season,
                               @RequestParam(required = false) String code,
                               @RequestParam(required = false) String country,
-                              @RequestParam(required = false) String name) {
+                              @RequestParam(required = false) String name,
+                              @RequestParam("sportId") Integer sportId) {
         String externalPath = ExternalPaths.GET_LEAGUES_V3.getUrl();
         if (leagueId != null) {
             externalPath += externalPath.contains("?") ? "&" : "?";
@@ -74,13 +77,14 @@ public class DataAcquisitionRest {
             externalPath += "name=" + name;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE, SportEnum.getById(sportId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createFixtures")
     public void createLeagues(@RequestParam(required = false) String leagueId,
-                              @RequestParam(required = false) Integer season) {
+                              @RequestParam(required = false) Integer season,
+                              @RequestParam("sportId") Integer sportId) {
         String externalPath = ExternalPaths.GET_FIXTURES_V3.getUrl();
 
         if (leagueId != null) {
@@ -91,20 +95,21 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE, SportEnum.getById(sportId));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createStandings")
     public void createStandings(@RequestParam(required = false) String leagueId,
-                                @RequestParam Integer season) {
+                                @RequestParam Integer season,
+                                @RequestParam("sportId") Integer sportId) {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
             externalPath += "&league=" + leagueId;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING, SportEnum.getById(sportId));
     }
 
     public String sendGetRequest(String path) {
