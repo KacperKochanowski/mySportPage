@@ -1,5 +1,6 @@
 package com.mySportPage.league.rest;
 
+import com.mySportPage.dataAcquisition.model.SportEnum;
 import com.mySportPage.league.dto.LeagueDTO;
 import com.mySportPage.league.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,17 @@ public class LeagueRest {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("all")
-    public List<LeagueDTO> getLeagues() {
-        return leagueService.getLeagues();
+    public List<LeagueDTO> getLeagues(@RequestParam("sportId") Integer sportId) {
+        return leagueService.getLeagues(SportEnum.getById(sportId));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("country/{country}")
-    public List<LeagueDTO> getLeagues(@PathVariable("country") String country) {
+    public List<LeagueDTO> getLeagues(
+            @PathVariable("country") String country,
+            @RequestParam("sportId") Integer sportId) {
         return country != null ?
-                leagueService.getLeagues(country):
+                leagueService.getLeagues(country, SportEnum.getById(sportId)):
                 new ArrayList<>();
     }
 }

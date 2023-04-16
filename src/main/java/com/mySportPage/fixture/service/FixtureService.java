@@ -1,5 +1,6 @@
 package com.mySportPage.fixture.service;
 
+import com.mySportPage.dataAcquisition.model.SportEnum;
 import com.mySportPage.fixture.dao.FixtureDao;
 import com.mySportPage.fixture.dto.FixtureDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +15,23 @@ public class FixtureService {
     @Autowired
     private FixtureDao fixtureDao;
 
-    public List<FixtureDTO> getFixtures() {
-        return fixtureDao.getFixtures();
+    public List<FixtureDTO> getFixtures(SportEnum sport) {
+        return fixtureDao.getFixtures(sport.getSchema());
     }
 
-    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
-        return fixtureDao.getFixtures(leagueId, round);
+    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round, SportEnum sport) {
+        return fixtureDao.getFixtures(leagueId, round, sport.getSchema());
     }
 
-    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
-        return fixtureDao.getFixtures(teamId, place);
+    public List<FixtureDTO> getFixtures(Integer teamId, String place,SportEnum sport) {
+        return fixtureDao.getFixtures(teamId, place, sport.getSchema());
     }
 
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
-        return fixtureDao.getFixtures(teamId, played);
+    public List<FixtureDTO> getFixtures(Integer teamId, boolean played, SportEnum sport) {
+        return fixtureDao.getFixtures(teamId, played, sport.getSchema());
     }
 
-    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
-        return fixtureDao.getFixturesByDateLeagueRound();
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound(SportEnum sport) {
+        return fixtureDao.getFixturesByDateLeagueRound(sport.getSchema());
     }
 }

@@ -35,20 +35,20 @@ public class DataAcquisitionService {
         put("Tychy 71", "GKS Tychy");
     }};
 
-    public void createObjects(String data, SportObjectEnum sportObjectEnum) {
+    public void createObjects(String data, SportObjectEnum sportObjectEnum, SportEnum sportEnum) {
         if (data != null) {
             switch (sportObjectEnum) {
                 case TEAM -> {
-                    dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data));
-                    dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data));
+                    dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data), sportEnum.getSchema());
+                    dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data), sportEnum.getSchema());
                 }
                 case LEAGUE -> {
-                    dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
-                    dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
-                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
+                    dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data), sportEnum.getSchema());
+                    dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data), sportEnum.getSchema());
+                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data), sportEnum.getSchema());
                 }
-                case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
-                case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
+                case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data), sportEnum.getSchema());
+                case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data), sportEnum.getSchema());
             }
         }
     }

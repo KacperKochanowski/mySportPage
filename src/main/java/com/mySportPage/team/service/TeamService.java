@@ -1,5 +1,6 @@
 package com.mySportPage.team.service;
 
+import com.mySportPage.dataAcquisition.model.SportEnum;
 import com.mySportPage.fixture.service.FixtureService;
 import com.mySportPage.team.dao.TeamDao;
 import com.mySportPage.team.dto.TeamDTO;
@@ -16,7 +17,7 @@ public class TeamService {
     @Autowired
     private TeamDao teamDao;
 
-    public TeamDTO getTeam(Integer teamId) {
-        return teamDao.getTeam(teamId);
+    public TeamDTO getTeam(Integer teamId, SportEnum sportEnum) {
+        return teamDao.getTeam(teamId, sportEnum.getSchema());
     }
 }
