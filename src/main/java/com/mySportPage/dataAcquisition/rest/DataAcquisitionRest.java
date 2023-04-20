@@ -33,8 +33,7 @@ public class DataAcquisitionRest {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createTeamsAndStadiums/")
     public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
-                                       @RequestParam("season") Integer season,
-                                       @RequestParam("sportId") Integer sportId) {
+                                       @RequestParam("season") Integer season) {
         String externalPath = ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl();
         if (leagueId != null) {
             externalPath += "?league=" + leagueId;
@@ -44,7 +43,7 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM, SportEnum.getById(sportId));
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,8 +52,7 @@ public class DataAcquisitionRest {
                               @RequestParam(required = false) String season,
                               @RequestParam(required = false) String code,
                               @RequestParam(required = false) String country,
-                              @RequestParam(required = false) String name,
-                              @RequestParam("sportId") Integer sportId) {
+                              @RequestParam(required = false) String name) {
         String externalPath = ExternalPaths.GET_LEAGUES_V3.getUrl();
         if (leagueId != null) {
             externalPath += externalPath.contains("?") ? "&" : "?";
@@ -77,14 +75,13 @@ public class DataAcquisitionRest {
             externalPath += "name=" + name;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE, SportEnum.getById(sportId));
+        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createFixtures")
     public void createLeagues(@RequestParam(required = false) String leagueId,
-                              @RequestParam(required = false) Integer season,
-                              @RequestParam("sportId") Integer sportId) {
+                              @RequestParam(required = false) Integer season) {
         String externalPath = ExternalPaths.GET_FIXTURES_V3.getUrl();
 
         if (leagueId != null) {
@@ -95,21 +92,20 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE, SportEnum.getById(sportId));
+        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createStandings")
     public void createStandings(@RequestParam(required = false) String leagueId,
-                                @RequestParam Integer season,
-                                @RequestParam("sportId") Integer sportId) {
+                                @RequestParam Integer season) {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
             externalPath += "&league=" + leagueId;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING, SportEnum.getById(sportId));
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING);
     }
 
     public String sendGetRequest(String path) {
