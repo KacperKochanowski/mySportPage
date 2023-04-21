@@ -41,3 +41,4 @@ src/test/
 
 ### Sensitive Data ###
 src/main/resources/application.properties
+src/main/resources/Dockerfile
