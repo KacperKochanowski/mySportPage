@@ -23,7 +23,7 @@ resources/templates
 *.ipr
 mvnw
 mvnw.cmd
-
+Dockerfile
 
 ### NetBeans ###
 /nbproject/private/
@@ -41,4 +41,3 @@ src/test/
 
 ### Sensitive Data ###
 src/main/resources/application.properties
-src/main/resources/Dockerfile
