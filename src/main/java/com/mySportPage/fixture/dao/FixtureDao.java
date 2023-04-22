@@ -4,14 +4,14 @@ import com.mySportPage.fixture.dto.FixtureDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-@Component
+@Repository
 @SuppressWarnings("unchecked")
 public class FixtureDao {
 
