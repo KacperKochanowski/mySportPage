@@ -36,7 +36,7 @@ public enum FixtureQueries {
                             "SELECT " + CORE_COLUMNS.getQuery() +
                             "FROM {schema}.fixture f " +
                             "JOIN {schema}.league l ON f.league_id = l.league_id " +
-                            "JOIN {schema}.team_name ON f.host = team_name.name OR f.guest = team_name.name "),
+                            "JOIN team_name ON f.host = team_name.name OR f.guest = team_name.name "),
 
     GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.played = :played "),
 
