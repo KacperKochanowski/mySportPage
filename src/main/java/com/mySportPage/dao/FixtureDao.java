@@ -5,6 +5,10 @@ import com.mySportPage.dao.dto.FixtureDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -14,11 +18,29 @@ import static java.util.stream.Collectors.toList;
 
 @Repository
 @SuppressWarnings("unchecked")
+@Slf4j
 public class FixtureDao {
+
+    private static final String ALL_FIXTURES = "allFixtures";
+    private static final String FIXTURES_FOR_TWO_WEEKS = "twoWeeksFixtures";
+    private static final String FIXTURES_BY_TEAM = "fixturesByTeam";
+    private static final String FIXTURES_BY_TEAM_AND_WEATHER_PLAYED = "fixturesByTeamAndWeatherPlayed";
+    private static final String FIXTURES_BY_LEAGUE_AND_ADDITIONALLY_ROUND = "fixturesByLeagueAndAdditionallyRound";
+
+    private CacheManager cacheManager;
 
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Scheduled(fixedRate = 3_600_000)
+    private void evictCaches() {
+        Objects.requireNonNull(cacheManager.getCache(ALL_FIXTURES)).clear();
+        Objects.requireNonNull(cacheManager.getCache(FIXTURES_FOR_TWO_WEEKS)).clear();
+        Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM)).clear();
+        Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM_AND_WEATHER_PLAYED)).clear();
+    }
+
+    @Cacheable(ALL_FIXTURES)
     public List<FixtureDTO> getFixtures(String schema) {
         List<Object[]> results = entityManager
                 .createNativeQuery(FixtureQueries.GET_FIXTURES.getQuery()
@@ -27,6 +49,7 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
+    @Cacheable(FIXTURES_BY_LEAGUE_AND_ADDITIONALLY_ROUND)
     public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round, String schema) {
         Query query = round != null ?
                 entityManager
@@ -42,6 +65,7 @@ public class FixtureDao {
         return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s", v.getRound())));
     }
 
+    @Cacheable(FIXTURES_BY_TEAM)
     public List<FixtureDTO> getFixtures(Integer teamId, String place, String schema) {
         Query query;
         switch (place) {
@@ -70,6 +94,7 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
+    @Cacheable(FIXTURES_BY_TEAM_AND_WEATHER_PLAYED)
     public List<FixtureDTO> getFixtures(Integer teamId, boolean played, String schema) {
         List<Object[]> results = entityManager
                 .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery()
@@ -80,6 +105,7 @@ public class FixtureDao {
         return mapToFixturesList(results);
     }
 
+    @Cacheable(value = FIXTURES_FOR_TWO_WEEKS)
     public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound(String schema) {
         List<FixtureDTO> fixturesList = mapToFixturesList(entityManager.createNativeQuery(FixtureQueries.GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK.getQuery()
                         .replace("{schema}", schema))
