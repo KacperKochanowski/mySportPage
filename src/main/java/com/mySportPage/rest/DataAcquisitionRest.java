@@ -42,6 +42,7 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.TEAM);
         dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
     }
 
