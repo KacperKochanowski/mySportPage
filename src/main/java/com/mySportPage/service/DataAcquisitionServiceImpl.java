@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class DataAcquisitionServiceImpl implements DataAcquisitionService{
+public class DataAcquisitionServiceImpl implements DataAcquisitionService {
 
     @Autowired
     private DataAcquisitionDao dataAcquisitionDao;
@@ -95,15 +95,18 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService{
         JSONArray response = new JSONObject(responseBody).getJSONArray("response");
         for (int i = 0; i < response.length(); i++) {
             JSONObject element = response.getJSONObject(i);
-            Stadium stadium = new Stadium();
-            stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
-            element = response.getJSONObject(i).getJSONObject("venue");
-            stadium.setId(element.getInt("id"));
-            stadium.setStadium(element.getString("name"));
-            stadium.setAddress(element.getString("address"));
-            stadium.setCity(element.getString("city"));
-            stadium.setCapacity(element.getLong("capacity"));
-            stadiums.add(stadium);
+            if(!element.getJSONObject("venue").get("id").toString().equals("null") ||
+                    !element.getJSONObject("venue").get("city").toString().equals("null")) {
+                Stadium stadium = new Stadium();
+                stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
+                element = response.getJSONObject(i).getJSONObject("venue");
+                stadium.setId(element.getInt("id"));
+                stadium.setStadium(!element.get("name").toString().equals("null") ? element.getString("name") : null);
+                stadium.setAddress(!element.get("address").toString().equals("null") ? element.getString("address") : null);
+                stadium.setCity(element.getString("city"));
+                stadium.setCapacity(!element.get("capacity").toString().equals("null") ? element.getLong("capacity") : null);
+                stadiums.add(stadium);
+            }
         }
         return stadiums;
     }
@@ -212,7 +215,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService{
             }
             fixture.setEvent(fixture.getHost().getName(), fixture.getGuest().getName());
             element = response.getJSONObject(i).getJSONObject("score").getJSONObject("halftime");
-            if(fixture.isFinished()) {
+            if (fixture.isFinished()) {
                 fixture.setHalftimeScore(Stream.of(new Object[][]{
                         {"HOST", element.get("home") != null && !(element.get("home").toString()).equals("null") ?
                                 element.getInt("home") : 0},
@@ -227,7 +230,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService{
                                 element.getInt("away") : 0},
                 }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
             }
-            if(fixture.getWinner() == null && fixture.getStart().before(new Date())) {
+            if (fixture.getWinner() == null && fixture.getStart().before(new Date())) {
                 fixture.setWinner("-");
             }
             fixtures.add(fixture);
@@ -302,7 +305,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService{
                 .build();
     }
 
-    private String checkIfTeamNameIsCorrect (String teamName) {
+    private String checkIfTeamNameIsCorrect(String teamName) {
         return incorrectNames.getOrDefault(teamName, teamName);
     }
 }

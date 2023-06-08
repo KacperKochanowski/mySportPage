@@ -29,7 +29,7 @@ public class LeagueRest {
             @PathVariable("country") String country,
             @RequestParam("sportId") Integer sportId) {
         return country != null ?
-                leagueService.getLeagues(country, SportEnum.getById(sportId)):
+                leagueService.getLeagues(country, SportEnum.getById(sportId)) :
                 new ArrayList<>();
     }
 }

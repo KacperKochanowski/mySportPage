@@ -2,9 +2,11 @@ package com.mySportPage.rest;
 
 import com.mySportPage.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
+import com.mySportPage.response.DataAcquisitionResponse;
 import com.mySportPage.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +33,8 @@ public class DataAcquisitionRest {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createTeamsAndStadiums")
-    public void createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
-                                       @RequestParam("season") Integer season) {
+    public DataAcquisitionResponse createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
+                                                          @RequestParam("season") Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl();
         if (leagueId != null) {
             externalPath += "?league=" + leagueId;
@@ -41,18 +43,20 @@ public class DataAcquisitionRest {
             externalPath += leagueId != null ? "&" : "?";
             externalPath += "season=" + season;
         }
-        String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.TEAM);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
+        Response response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.TEAM);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STADIUM);
+
+        return new DataAcquisitionResponse(response.code(), response.message());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createLeagues")
-    public void createLeagues(@RequestParam(required = false) String leagueId,
+    public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
                               @RequestParam(required = false) String season,
                               @RequestParam(required = false) String code,
                               @RequestParam(required = false) String country,
-                              @RequestParam(required = false) String name) {
+                              @RequestParam(required = false) String name) throws IOException {
         String externalPath = ExternalPaths.GET_LEAGUES_V3.getUrl();
         if (leagueId != null) {
             externalPath += externalPath.contains("?") ? "&" : "?";
@@ -74,14 +78,16 @@ public class DataAcquisitionRest {
             externalPath += externalPath.contains("?") ? "&" : "?";
             externalPath += "name=" + name;
         }
-        String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE);
+        Response response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.LEAGUE);
+
+        return new DataAcquisitionResponse(response.code(), response.message());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createFixtures")
-    public void createLeagues(@RequestParam(required = false) String leagueId,
-                              @RequestParam(required = false) Integer season) {
+    public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
+                              @RequestParam(required = false) Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_FIXTURES_V3.getUrl();
 
         if (leagueId != null) {
@@ -91,24 +97,28 @@ public class DataAcquisitionRest {
             externalPath += leagueId != null ? "&" : "?";
             externalPath += "season=" + season;
         }
-        String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE);
+        Response response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE);
+
+        return new DataAcquisitionResponse(response.code(), response.message());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createStandings")
-    public void createStandings(@RequestParam(required = false) String leagueId,
-                                @RequestParam Integer season) {
+    public DataAcquisitionResponse createStandings(@RequestParam(required = false) String leagueId,
+                                @RequestParam Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
             externalPath += "&league=" + leagueId;
         }
-        String response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING);
+        Response response = sendGetRequest(externalPath);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STANDING);
+
+        return new DataAcquisitionResponse(response.code(), response.message());
     }
 
-    public String sendGetRequest(String path) {
+    private Response sendGetRequest(String path) {
         if (path != null && !path.trim().isEmpty()) {
             try {
                 OkHttpClient client = new OkHttpClient();
@@ -118,7 +128,7 @@ public class DataAcquisitionRest {
                         .addHeader("X-RapidAPI-Key", X_RAPID_API_KEY)
                         .addHeader("X-RapidAPI-Host", X_RAPID_API_HOST)
                         .build();
-                return client.newCall(request).execute().body().string();
+                return client.newCall(request).execute();
             } catch (IOException ex) {
                 log.info("DataAcquisitionRest.sendGetRequest(): Couldn't fetch data from request. Message: " + ex.getMessage());
             }
