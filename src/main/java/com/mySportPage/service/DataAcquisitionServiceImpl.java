@@ -95,7 +95,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         JSONArray response = new JSONObject(responseBody).getJSONArray("response");
         for (int i = 0; i < response.length(); i++) {
             JSONObject element = response.getJSONObject(i);
-            if(!element.getJSONObject("venue").get("id").toString().equals("null") ||
+            if (!element.getJSONObject("venue").get("id").toString().equals("null") &&
                     !element.getJSONObject("venue").get("city").toString().equals("null")) {
                 Stadium stadium = new Stadium();
                 stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
