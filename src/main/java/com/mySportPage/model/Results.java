@@ -1,12 +1,18 @@
 package com.mySportPage.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Data
 @Component
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(setterPrefix = "with")
 public class Results {
 
     private Team team;
@@ -23,3 +29,4 @@ public class Results {
 
     private String description;
 }
+

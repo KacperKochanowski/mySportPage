@@ -1,7 +1,7 @@
 package com.mySportPage.dao;
 
 import com.mySportPage.dao.queries.LeagueQueries;
-import com.mySportPage.dao.dto.LeagueDTO;
+import com.mySportPage.model.dto.LeagueDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -37,10 +37,11 @@ public class LeagueDao {
     private List<LeagueDTO> mapToLeaguesList(List<Object[]> results) {
         List<LeagueDTO> fixtures = new ArrayList<>();
         for (Object[] value : results) {
-            LeagueDTO league = new LeagueDTO();
-            league.setName((String) value[0]);
-            league.setType((String) value[1]);
-            league.setCountry((String) value[2]);
+            fixtures.add(LeagueDTO.builder()
+                    .withName((String) value[0])
+                    .withType((String) value[1])
+                    .withCountry((String) value[2])
+                    .build());
         }
         return fixtures;
     }

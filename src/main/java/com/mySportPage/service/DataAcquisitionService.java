@@ -284,21 +284,21 @@ public class DataAcquisitionService {
         }
     }
 
-    private Results creteResults(JSONObject data, String typeOfResults, Team team){
-        Results results = new Results();
-        results.setDescription(typeOfResults);
-        results.setTeam(team);
-        results.setRoundsPlayed(data.getInt("played"));
-        results.setWins(data.getInt("win"));
-        results.setDraws(data.getInt("draw"));
-        results.setLoses(data.getInt("lose"));
-        results.setGoals(Stream.of(new Object[][]{
-                {"FOR", data.getJSONObject("goals").get("for") != null && !(data.getJSONObject("goals").get("for")).equals("null") ?
-                        data.getJSONObject("goals").getInt("for") : 0},
-                {"AGAINST", data.getJSONObject("goals").get("against") != null && !(data.getJSONObject("goals").get("against")).equals("null") ?
-                        data.getJSONObject("goals").getInt("against") : 0},
-        }).collect(Collectors.toMap(x -> (String) x[0], x -> (Integer) x[1])));
-        return results;
+    private Results creteResults(JSONObject data, String typeOfResults, Team team) {
+        return Results.builder()
+                .withDescription(typeOfResults)
+                .withTeam(team)
+                .withRoundsPlayed(data.getInt("played"))
+                .withWins(data.getInt("win"))
+                .withDraws(data.getInt("draw"))
+                .withLoses(data.getInt("lose"))
+                .withGoals(Stream.of(new Object[][]{
+                        {"FOR", data.getJSONObject("goals").get("for") != null && !(data.getJSONObject("goals").get("for")).equals("null") ?
+                                data.getJSONObject("goals").getInt("for") : 0},
+                        {"AGAINST", data.getJSONObject("goals").get("against") != null && !(data.getJSONObject("goals").get("against")).equals("null") ?
+                                data.getJSONObject("goals").getInt("against") : 0},
+                }).collect(Collectors.toMap(x -> (String) x[0], x -> (Integer) x[1])))
+                .build();
     }
 
     private String checkIfTeamNameIsCorrect (String teamName) {

@@ -1,7 +1,7 @@
 package com.mySportPage.dao;
 
 import com.mySportPage.dao.queries.FixtureQueries;
-import com.mySportPage.dao.dto.FixtureDTO;
+import com.mySportPage.model.dto.FixtureDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Repository
 @SuppressWarnings("unchecked")
-@Slf4j
 public class FixtureDao {
 
     private static final String ALL_FIXTURES = "allFixtures";
@@ -119,15 +119,15 @@ public class FixtureDao {
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
         List<FixtureDTO> fixtures = new ArrayList<>();
         for (Object[] value : results) {
-            FixtureDTO fixture = new FixtureDTO();
-            fixture.setLeagueId((Integer) value[0]);
-            fixture.setLeagueName((String) value[1]);
-            fixture.setEvent((String) value[2]);
-            fixture.setStart((Date) value[3]);
-            fixture.setFinished((boolean) value[4]);
-            fixture.setResult((String) value[5]);
-            fixture.setRound((Integer) value[6]);
-            fixtures.add(fixture);
+            fixtures.add(FixtureDTO.builder()
+                    .withLeagueId((Integer) value[0])
+                    .withLeagueName((String) value[1])
+                    .withEvent((String) value[2])
+                    .withStart((Date) value[3])
+                    .withFinished((boolean) value[4])
+                    .withResult((String) value[5])
+                    .withRound((Integer) value[6])
+                    .build());
         }
         return fixtures;
     }

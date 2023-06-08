@@ -1,7 +1,7 @@
 package com.mySportPage.dao;
 
 import com.mySportPage.dao.queries.TeamQueries;
-import com.mySportPage.dao.dto.TeamDTO;
+import com.mySportPage.model.dto.TeamDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -26,11 +26,11 @@ public class TeamDao {
 
 
     private TeamDTO mapToTeam(Object[] result) {
-        TeamDTO team = new TeamDTO();
-        team.setName((String) result[0]);
-        team.setShortCut((String) result[1]);
-        team.setClubFounded((Integer) result[2]);
-        team.setCountry((String) result[3]);
-        return team;
+        return TeamDTO.builder()
+                .withName((String) result[0])
+                .withShortCut((String) result[1])
+                .withClubFounded((Integer) result[2])
+                .withCountry((String) result[3])
+                .build();
     }
 }

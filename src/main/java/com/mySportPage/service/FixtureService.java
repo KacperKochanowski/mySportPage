@@ -2,7 +2,7 @@ package com.mySportPage.service;
 
 import com.mySportPage.model.SportEnum;
 import com.mySportPage.dao.FixtureDao;
-import com.mySportPage.dao.dto.FixtureDTO;
+import com.mySportPage.model.dto.FixtureDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

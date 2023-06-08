@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
-import com.mySportPage.dao.dto.FixtureDTO;
+import com.mySportPage.model.dto.FixtureDTO;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

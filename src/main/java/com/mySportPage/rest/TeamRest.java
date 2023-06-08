@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
-import com.mySportPage.dao.dto.TeamDTO;
+import com.mySportPage.model.dto.TeamDTO;
 import com.mySportPage.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
