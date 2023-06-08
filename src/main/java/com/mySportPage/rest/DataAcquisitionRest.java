@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -31,7 +30,6 @@ public class DataAcquisitionRest {
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createTeamsAndStadiums")
     public DataAcquisitionResponse createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
                                                           @RequestParam("season") Integer season) throws IOException {
@@ -50,7 +48,6 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createLeagues")
     public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
                               @RequestParam(required = false) String season,
@@ -84,7 +81,6 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createFixtures")
     public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
                               @RequestParam(required = false) Integer season) throws IOException {
@@ -103,7 +99,6 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/createStandings")
     public DataAcquisitionResponse createStandings(@RequestParam(required = false) String leagueId,
                                 @RequestParam Integer season) throws IOException {
