@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
 import com.mySportPage.model.dto.LeagueDTO;
-import com.mySportPage.service.LeagueService;
+import com.mySportPage.service.LeagueServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +15,12 @@ import java.util.List;
 public class LeagueRest {
 
     @Autowired
-    private LeagueService leagueService;
+    private LeagueServiceImpl leagueServiceImpl;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("all")
     public List<LeagueDTO> getLeagues(@RequestParam("sportId") Integer sportId) {
-        return leagueService.getLeagues(SportEnum.getById(sportId));
+        return leagueServiceImpl.getLeagues(SportEnum.getById(sportId));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -29,7 +29,7 @@ public class LeagueRest {
             @PathVariable("country") String country,
             @RequestParam("sportId") Integer sportId) {
         return country != null ?
-                leagueService.getLeagues(country, SportEnum.getById(sportId)):
+                leagueServiceImpl.getLeagues(country, SportEnum.getById(sportId)):
                 new ArrayList<>();
     }
 }

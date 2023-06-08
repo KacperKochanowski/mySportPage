@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
 import com.mySportPage.model.dto.FixtureDTO;
-import com.mySportPage.service.FixtureService;
+import com.mySportPage.service.FixtureServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class FixtureRest {
 
     @Autowired
-    private FixtureService fixtureService;
+    private FixtureServiceImpl fixtureService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("current")
