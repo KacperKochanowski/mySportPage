@@ -14,6 +14,7 @@ public class LeagueServiceImpl implements LeagueService{
     @Autowired
     private LeagueDao leagueDao;
 
+    @Override
     public List<LeagueDTO> getLeagues(SportEnum sportEnum) {
         return leagueDao.getLeagues(sportEnum.getSchema());
     }

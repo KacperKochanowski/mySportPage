@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
-import com.mySportPage.service.DataAcquisitionServiceImpl;
+import com.mySportPage.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class DataAcquisitionRest {
     private String X_RAPID_API_HOST;
 
     @Autowired
-    private DataAcquisitionServiceImpl dataAcquisitionServiceImpl;
+    private DataAcquisitionService dataAcquisitionService;
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
@@ -42,8 +42,8 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionServiceImpl.createObjects(response, SportObjectEnum.TEAM);
-        dataAcquisitionServiceImpl.createObjects(response, SportObjectEnum.STADIUM);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.TEAM);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STADIUM);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -75,7 +75,7 @@ public class DataAcquisitionRest {
             externalPath += "name=" + name;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionServiceImpl.createObjects(response, SportObjectEnum.LEAGUE);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.LEAGUE);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -92,7 +92,7 @@ public class DataAcquisitionRest {
             externalPath += "season=" + season;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionServiceImpl.createObjects(response, SportObjectEnum.FIXTURE);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.FIXTURE);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -105,7 +105,7 @@ public class DataAcquisitionRest {
             externalPath += "&league=" + leagueId;
         }
         String response = sendGetRequest(externalPath);
-        dataAcquisitionServiceImpl.createObjects(response, SportObjectEnum.STANDING);
+        dataAcquisitionService.createObjects(response, SportObjectEnum.STANDING);
     }
 
     public String sendGetRequest(String path) {
