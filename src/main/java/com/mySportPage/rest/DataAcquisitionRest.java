@@ -50,10 +50,10 @@ public class DataAcquisitionRest {
 
     @PostMapping("/createLeagues")
     public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
-                              @RequestParam(required = false) String season,
-                              @RequestParam(required = false) String code,
-                              @RequestParam(required = false) String country,
-                              @RequestParam(required = false) String name) throws IOException {
+                                                 @RequestParam(required = false) String season,
+                                                 @RequestParam(required = false) String code,
+                                                 @RequestParam(required = false) String country,
+                                                 @RequestParam(required = false) String name) throws IOException {
         String externalPath = ExternalPaths.GET_LEAGUES_V3.getUrl();
         if (leagueId != null) {
             externalPath += externalPath.contains("?") ? "&" : "?";
@@ -83,7 +83,7 @@ public class DataAcquisitionRest {
 
     @PostMapping("/createFixtures")
     public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
-                              @RequestParam(required = false) Integer season) throws IOException {
+                                                 @RequestParam(required = false) Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_FIXTURES_V3.getUrl();
 
         if (leagueId != null) {
@@ -101,7 +101,7 @@ public class DataAcquisitionRest {
 
     @PostMapping("/createStandings")
     public DataAcquisitionResponse createStandings(@RequestParam(required = false) String leagueId,
-                                @RequestParam Integer season) throws IOException {
+                                                   @RequestParam Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
