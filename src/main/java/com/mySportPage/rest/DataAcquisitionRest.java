@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
-import com.mySportPage.response.DataAcquisitionResponse;
+import com.mySportPage.rest.response.DataAcquisitionResponse;
 import com.mySportPage.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
-import com.mySportPage.model.dto.TeamDTO;
+import com.mySportPage.rest.response.TeamResponse;
 import com.mySportPage.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,11 +14,14 @@ public class TeamRest {
     @Autowired
     private TeamService teamService;
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("team-id/{teamId}")
-    public TeamDTO getTeam(
+    public TeamResponse getTeam(
             @PathVariable("teamId") Integer teamId,
             @RequestParam("sportId") Integer sportId) {
-        return teamService.getTeam(teamId, SportEnum.getById(sportId));
+        return TeamResponse.builder()
+                .withTeams(teamService.getTeam(teamId, SportEnum.getById(sportId)))
+                .withCode(HttpStatus.OK.value())
+                .withMessage(HttpStatus.OK.getReasonPhrase())
+                .build();
     }
 }

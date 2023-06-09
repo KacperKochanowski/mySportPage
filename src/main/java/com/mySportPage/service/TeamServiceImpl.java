@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
     @Autowired
     private TeamDao teamDao;
@@ -16,5 +16,4 @@ public class TeamServiceImpl implements TeamService{
     public TeamDTO getTeam(Integer teamId, SportEnum sportEnum) {
         return teamDao.getTeam(teamId, sportEnum.getSchema());
     }
-
 }
