@@ -128,9 +128,9 @@ public class DataAcquisitionRest {
             if (entry.getValue() == null) {
                 continue;
             }
-            if (sb.isEmpty()){
+            if (sb.isEmpty()) {
                 sb.append(entry.getKey()).append("=").append(entry.getValue());
-            } else{
+            } else {
                 sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
             }
         }
