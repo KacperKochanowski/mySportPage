@@ -5,10 +5,9 @@ import com.mySportPage.rest.response.LeagueCoverageResponse;
 import com.mySportPage.service.LeagueCoverageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("coverage")
@@ -21,6 +20,17 @@ private LeagueCoverageService leagueCoverageService;
     public LeagueCoverageResponse getCoverage(@RequestParam("sportId") Integer sportId) {
         return LeagueCoverageResponse.builder()
                 .withCoverage(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)))
+                .withCode(HttpStatus.OK.value())
+                .withMessage(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
+
+    @GetMapping("leagueId/{leagueId}")
+    public LeagueCoverageResponse getCoverage(@RequestParam("sportId") Integer sportId,
+                                              @PathVariable("leagueId") Integer leagueId) {
+        return LeagueCoverageResponse.builder()
+                .withCoverage(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)).stream()
+                        .filter(v -> v.getExternalLeagueId().equals(leagueId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
