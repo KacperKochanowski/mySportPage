@@ -41,7 +41,7 @@ public class DataAcquisitionRest {
             put("season", String.valueOf(season));
         }};
 
-        String externalPath = prepareParams(ExternalPaths.GET_LEAGUES_V3.getUrl(), requestParams);
+        String externalPath = prepareParams(ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.TEAM);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STADIUM);
@@ -76,11 +76,11 @@ public class DataAcquisitionRest {
                                                  @RequestParam(required = false) Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("leagueId", leagueId);
+            put("league", leagueId);
             put("season", String.valueOf(season));
         }};
 
-        String externalPath = prepareParams(ExternalPaths.GET_LEAGUES_V3.getUrl(), requestParams);
+        String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE);
 
@@ -123,13 +123,13 @@ public class DataAcquisitionRest {
         if (params == null || params.isEmpty()) {
             return null;
         }
-        StringBuilder sb = new StringBuilder().append("?");
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (entry.getValue() == null) {
                 continue;
             }
             if (sb.isEmpty()) {
-                sb.append(entry.getKey()).append("=").append(entry.getValue());
+                sb.append("?").append(entry.getKey()).append("=").append(entry.getValue());
             } else {
                 sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
             }
