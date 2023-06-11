@@ -1,10 +1,16 @@
 package com.mySportPage.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Data
 @Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class LeagueCoverage {
 
     private Integer externalLeagueId;

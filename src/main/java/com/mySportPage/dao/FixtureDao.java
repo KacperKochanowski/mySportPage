@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,13 +28,14 @@ public class FixtureDao {
     private static final String FIXTURES_BY_TEAM_AND_WEATHER_PLAYED = "fixturesByTeamAndWeatherPlayed";
     private static final String FIXTURES_BY_LEAGUE_AND_ADDITIONALLY_ROUND = "fixturesByLeagueAndAdditionallyRound";
 
+    @Autowired
     private CacheManager cacheManager;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Scheduled(fixedRate = 3_600_000)
-    private void evictCaches() {
+    public void evictCaches() {
         Objects.requireNonNull(cacheManager.getCache(ALL_FIXTURES)).clear();
         Objects.requireNonNull(cacheManager.getCache(FIXTURES_FOR_TWO_WEEKS)).clear();
         Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM)).clear();
