@@ -118,6 +118,12 @@ public class FixtureDao {
                                 Collectors.groupingBy(v -> String.format("round: %s", v.getRound()), toList()))));
     }
 
+    public Integer checkForMissingResulting(String schema) {
+        return (Integer) entityManager.createNativeQuery(FixtureQueries.ANY_MISSING_RESULT.getQuery()
+                    .replace("{schema}", schema))
+                .getSingleResult();
+    }
+
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {
         List<FixtureDTO> fixtures = new ArrayList<>();
         for (Object[] value : results) {

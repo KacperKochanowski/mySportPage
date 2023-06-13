@@ -42,7 +42,12 @@ public enum FixtureQueries {
 
     GET_FIXTURES_BY_TEAM_ID_HOME(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.host = team_name.name "),
 
-    GET_FIXTURES_BY_TEAM_ID_AWAY(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.guest = team_name.name ");
+    GET_FIXTURES_BY_TEAM_ID_AWAY(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.guest = team_name.name "),
+
+    ANY_MISSING_RESULT("SELECT CAST(COUNT(*) AS integer) " +
+                       "FROM {schema}.fixture f " +
+                       "WHERE f.start < NOW() - INTERVAL '3 hours' " +
+                       "AND f.result IS NULL");
 
     private final String query;
 
