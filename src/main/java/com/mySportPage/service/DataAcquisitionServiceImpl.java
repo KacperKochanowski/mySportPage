@@ -50,6 +50,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                 }
                 case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
                 case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
+                case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
             }
         }
     }
@@ -275,6 +276,11 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             standings.add(standing);
         }
         return standings;
+    }
+
+    private List<FixtureStatistics> mapJSONObjectToFixtureStatisticsList(String responseBody) {
+        //TODO implement it!
+        return null;
     }
 
     private Date parseDate(String date) {

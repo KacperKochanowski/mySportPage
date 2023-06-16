@@ -244,6 +244,10 @@ public class DataAcquisitionDao {
         }
     }
 
+    public void persistFixtureStats(List<FixtureStatistics> fixtureStatistics) {
+        //TODO Implement it
+    }
+
     private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
 
         String queryPersistResults = "INSERT INTO football.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +

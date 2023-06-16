@@ -9,6 +9,7 @@ public enum SportObjectEnum {
     COUNTRY,
     FIXTURE,
     STANDING,
-    RESULTS
+    RESULTS,
+    FIXTURE_STATS
 
 }

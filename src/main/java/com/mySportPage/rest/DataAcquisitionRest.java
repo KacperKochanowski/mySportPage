@@ -101,6 +101,24 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
+    @PostMapping("/createFixtureStatistics")
+    public DataAcquisitionResponse createFixtureStatistics(@RequestParam Integer fixture,
+                                                           @RequestParam(required = false) Integer team,
+                                                           @RequestParam(required = false) String type) throws IOException {
+
+        Map<String, String> requestParams = new HashMap<>() {{
+            put("fixture", String.valueOf(fixture));
+            put("team", String.valueOf(team));
+            put("type", type);
+        }};
+
+        String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_STATISTICS_V3.getUrl(), requestParams);
+        Response response = sendGetRequest(externalPath);
+
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE_STATS);
+        return new DataAcquisitionResponse(response.code(), response.message());
+    }
+
     private Response sendGetRequest(String path) {
         if (path != null && !path.trim().isEmpty()) {
             try {
