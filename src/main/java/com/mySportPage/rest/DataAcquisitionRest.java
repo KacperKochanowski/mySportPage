@@ -103,13 +103,11 @@ public class DataAcquisitionRest {
 
     @PostMapping("/createFixtureStatistics")
     public DataAcquisitionResponse createFixtureStatistics(@RequestParam Integer fixture,
-                                                           @RequestParam(required = false) Integer team,
-                                                           @RequestParam(required = false) String type) throws IOException {
+                                                           @RequestParam(required = false) Integer team) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("fixture", String.valueOf(fixture));
             put("team", String.valueOf(team));
-            put("type", type);
         }};
 
         String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_STATISTICS_V3.getUrl(), requestParams);

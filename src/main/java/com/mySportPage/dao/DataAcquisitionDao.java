@@ -244,7 +244,7 @@ public class DataAcquisitionDao {
         }
     }
 
-    public void persistFixtureStats(List<FixtureStatistics> fixtureStatistics) {
+    public void persistFixtureStats(Map<Integer, Map<Integer, FixtureStatistics>> fixtureStatistics) {
         //TODO Implement it
     }
 

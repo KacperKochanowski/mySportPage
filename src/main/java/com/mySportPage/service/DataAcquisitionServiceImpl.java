@@ -278,9 +278,32 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return standings;
     }
 
-    private List<FixtureStatistics> mapJSONObjectToFixtureStatisticsList(String responseBody) {
-        //TODO implement it!
-        return null;
+
+    private Map<Integer, Map<Integer, FixtureStatistics>> mapJSONObjectToFixtureStatisticsList(String responseBody) {
+        Map<Integer, Map<Integer, FixtureStatistics>> fixtureStats = new HashMap<>();
+        Map<Integer, FixtureStatistics> fixturesByTeam = new HashMap<>();
+        final Integer fixtureId = Integer.valueOf(new JSONObject(responseBody).getJSONObject("parameters").getString("fixture"));
+        Integer teamId;
+        JSONArray response = new JSONObject(responseBody).getJSONArray("response").getJSONArray(0);
+
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject element = response.getJSONObject(i).getJSONObject("team");
+            teamId = element.getInt("id");
+            JSONArray teamStatsJson = response.getJSONObject(i).getJSONArray("statistics").getJSONArray(0);
+            Map<FixtureStatisticsEnum, String> fixtureStatisticsByTeam = new HashMap<>();
+            for (int j = 0; j < teamStatsJson.length(); j++) {
+                JSONObject teamStatsJsonElement = teamStatsJson.getJSONObject(j);
+                if (FixtureStatisticsEnum.getByDescription(teamStatsJsonElement.getString("type")) != null) {
+                    fixtureStatisticsByTeam.put(
+                            FixtureStatisticsEnum.getByDescription(teamStatsJsonElement.getString("type")),
+                            String.valueOf(teamStatsJsonElement.get("value"))
+                    );
+                }
+            }
+            fixturesByTeam.put(teamId, new FixtureStatistics(fixtureStatisticsByTeam));
+        }
+        fixtureStats.put(fixtureId, fixturesByTeam);
+        return fixtureStats;
     }
 
     private Date parseDate(String date) {

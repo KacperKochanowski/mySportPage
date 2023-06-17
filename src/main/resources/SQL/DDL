@@ -100,3 +100,25 @@ CREATE TABLE football.results (
 	goals_against int4 NOT NULL,
 	description text NOT NULL
 );
+
+CREATE TABLE football.fixture_statistics (
+	fixture_id int4 NOT NULL,
+	team_id int4 NOT NULL,
+	shots_on_goal int,
+	shots_off_goal int,
+	total_shots int,
+	blocked_shots int,
+	shots_inside_box int,
+	shots_outside_box int,
+	fouls int,
+	corner_kicks int,
+	offsides int,
+	ball_possession text,
+	yellow_cards int,
+	red_cards int,
+	goalkeeper_saves int,
+	total_passes int,
+	passes_accurate int,
+	passes_percent text,
+	expected_goals int
+);
