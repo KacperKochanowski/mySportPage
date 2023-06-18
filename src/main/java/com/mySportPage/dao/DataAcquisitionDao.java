@@ -13,9 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class DataAcquisitionDao {
@@ -246,6 +244,7 @@ public class DataAcquisitionDao {
 
     public void persistFixtureStats(Map<Integer, Map<Integer, FixtureStatistics>> fixtureStatistics) {
         //TODO Implement it
+        List<String> queriesPersistFixturesStats = glueQueryForStatistics(fixtureStatistics);
     }
 
     private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
@@ -272,6 +271,34 @@ public class DataAcquisitionDao {
             log.info("{}s results updated in db.", results.getTeam().getName());
             return this.namedParameterJdbcTemplate.queryForObject(queryGetResultId, parameters, Integer.class);
         }
+    }
+
+    private List<String> glueQueryForStatistics(Map<Integer, Map<Integer, FixtureStatistics>> fixtureStatistics) {
+        List<String> queries = new ArrayList<>();
+        Integer fixtureId = fixtureStatistics.keySet().stream().findFirst().orElse(null);
+        StringBuilder firstPartOfQuery = new StringBuilder("INSERT INTO football.fixture_statistics (fixture_id");
+        StringBuilder secondPartOfQuery = new StringBuilder("VALUES(" + fixtureId);
+        for (var entry : fixtureStatistics.get(fixtureId).entrySet()) {
+            firstPartOfQuery.append(firstPartOfQuery)
+                    .append(", team_id");
+            secondPartOfQuery.append(secondPartOfQuery)
+                    .append(", ")
+                    .append(entry.getKey());
+            for (var specificTeamStats : entry.getValue().getFixtureStatistics().entrySet()) {
+                firstPartOfQuery.append(firstPartOfQuery)
+                        .append(", ")
+                        .append(specificTeamStats.getKey().getDatabaseColumnName());
+                secondPartOfQuery.append(secondPartOfQuery)
+                        .append(", ")
+                        .append(specificTeamStats.getValue());
+            }
+            firstPartOfQuery.append(firstPartOfQuery)
+                    .append(")");
+            secondPartOfQuery.append(secondPartOfQuery)
+                    .append(")");
+            queries.add(firstPartOfQuery + secondPartOfQuery.toString());
+        }
+        return queries;
     }
 
     private boolean checkIfObjectAlreadyExist(SportObjectEnum object, Object internalId, Object externalId) {
