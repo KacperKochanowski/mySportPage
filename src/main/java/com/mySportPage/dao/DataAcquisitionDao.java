@@ -277,7 +277,7 @@ public class DataAcquisitionDao {
         List<String> queries = new ArrayList<>();
         Integer fixtureId = fixtureStatistics.keySet().stream().findFirst().orElse(null);
         StringBuilder firstPartOfQuery = new StringBuilder("INSERT INTO football.fixture_statistics (fixture_id");
-        StringBuilder secondPartOfQuery = new StringBuilder("VALUES(" + fixtureId);
+        StringBuilder secondPartOfQuery = new StringBuilder(" VALUES(" + fixtureId);
         for (var entry : fixtureStatistics.get(fixtureId).entrySet()) {
             firstPartOfQuery.append(firstPartOfQuery)
                     .append(", team_id");
