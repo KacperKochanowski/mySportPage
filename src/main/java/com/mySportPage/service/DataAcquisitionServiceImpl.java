@@ -284,7 +284,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         Map<Integer, FixtureStatistics> fixturesByTeam = new HashMap<>();
         final Integer fixtureId = Integer.valueOf(new JSONObject(responseBody).getJSONObject("parameters").getString("fixture"));
         Integer teamId;
-        JSONArray response = new JSONObject(responseBody).getJSONArray("response").getJSONArray(0);
+        JSONArray response = new JSONObject(responseBody).getJSONArray("response");
 
         for (int i = 0; i < response.length(); i++) {
             JSONObject element = response.getJSONObject(i).getJSONObject("team");
