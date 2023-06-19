@@ -22,8 +22,7 @@ public class MissingResultingTask {
         Integer issues = fixtureDao.checkForMissingResulting(SportEnum.FOOTBALL.getSchema());
         if (issues > 0) {
             log.error("MissingResultingTask: found {} not settled results!", issues);
-        } else {
-            log.info(">>>> FINISHED MissingResultingTask <<<<");
         }
+        log.info(">>>> FINISHED MissingResultingTask <<<<");
     }
 }

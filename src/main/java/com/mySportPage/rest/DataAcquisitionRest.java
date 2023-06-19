@@ -107,7 +107,9 @@ public class DataAcquisitionRest {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("fixture", String.valueOf(fixture));
-            put("team", String.valueOf(team));
+            if(team != null) {
+                put("team", String.valueOf(team));
+            };
         }};
 
         String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_STATISTICS_V3.getUrl(), requestParams);
