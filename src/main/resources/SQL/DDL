@@ -120,5 +120,5 @@ CREATE TABLE football.fixture_statistics (
 	total_passes int,
 	passes_accurate int,
 	passes_percent text,
-	expected_goals int
+	expected_goals double precision
 );
