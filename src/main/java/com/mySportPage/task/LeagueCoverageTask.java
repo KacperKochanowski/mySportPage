@@ -21,11 +21,13 @@ public class LeagueCoverageTask {
     @Autowired
     private LeagueCoverageDao leagueCoverageDao;
 
-    @Scheduled(fixedDelay = 3_600_000L)
+    private final Integer HOUR = 3_600_000;
+
+    @Scheduled(fixedDelay = HOUR)
     private void setLeagueCoverage() {
-        log.info("STARTED LeagueCoverageTask");
+        log.info(">>>> STARTED LeagueCoverageTask <<<<");
         Map<SportEnum, List<LeagueCoverage>> coverages = leagueCoverageDao.getCoverageForAllLeagues();
         LeagueCoverageContainer.setLeagueCoverage(coverages);
-        log.info("FINISHED LeagueCoverageTask");
+        log.info(">>>> FINISHED LeagueCoverageTask <<<<");
     }
 }

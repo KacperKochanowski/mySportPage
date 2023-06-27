@@ -16,7 +16,9 @@ public class MissingResultingTask {
     @Autowired
     private FixtureDao fixtureDao;
 
-    @Scheduled(fixedDelay = 3_600_000L)
+    private final Integer HOUR = 3_600_000;
+
+    @Scheduled(fixedDelay = HOUR)
     private void checkForMissingResults() {
         log.info(">>>> STARTED MissingResultingTask <<<<");
         Integer issues = fixtureDao.checkForMissingResulting(SportEnum.FOOTBALL.getSchema());
