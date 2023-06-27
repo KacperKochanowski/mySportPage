@@ -289,7 +289,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         for (int i = 0; i < response.length(); i++) {
             JSONObject element = response.getJSONObject(i).getJSONObject("team");
             teamId = element.getInt("id");
-            JSONArray teamStatsJson = response.getJSONObject(i).getJSONArray("statistics").getJSONArray(0);
+            JSONArray teamStatsJson = response.getJSONObject(i).getJSONArray("statistics");
             Map<FixtureStatisticsEnum, String> fixtureStatisticsByTeam = new HashMap<>();
             for (int j = 0; j < teamStatsJson.length(); j++) {
                 JSONObject teamStatsJsonElement = teamStatsJson.getJSONObject(j);
