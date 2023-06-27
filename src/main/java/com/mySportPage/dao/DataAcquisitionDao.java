@@ -296,8 +296,16 @@ public class DataAcquisitionDao {
                         .append(", ")
                         .append(specificTeamStats.getKey().getDatabaseColumnName());
                 secondPartOfQuery
-                        .append(", ")
-                        .append(specificTeamStats.getValue());
+                        .append(", ");
+                if (specificTeamStats.getKey().getValueType() == String.class) {
+                    secondPartOfQuery
+                            .append("'")
+                            .append(specificTeamStats.getValue())
+                            .append("'");
+                } else {
+                    secondPartOfQuery
+                            .append(specificTeamStats.getValue());
+                }
             }
             firstPartOfQuery
                     .append(")");
