@@ -16,7 +16,7 @@ public class MissingResultingTask {
     @Autowired
     private FixtureDao fixtureDao;
 
-    private final Integer HOUR = 3_600_000;
+    private final long HOUR = 3_600_000;
 
     @Scheduled(fixedDelay = HOUR)
     private void checkForMissingResults() {

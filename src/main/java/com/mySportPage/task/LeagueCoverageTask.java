@@ -21,9 +21,9 @@ public class LeagueCoverageTask {
     @Autowired
     private LeagueCoverageDao leagueCoverageDao;
 
-    private final Integer HOUR = 3_600_000;
+    private final String HOUR = "3600000";
 
-    @Scheduled(fixedDelay = HOUR)
+    @Scheduled(fixedDelayString = HOUR)
     private void setLeagueCoverage() {
         log.info(">>>> STARTED LeagueCoverageTask <<<<");
         Map<SportEnum, List<LeagueCoverage>> coverages = leagueCoverageDao.getCoverageForAllLeagues();
