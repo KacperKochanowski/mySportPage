@@ -6,7 +6,6 @@ import com.mySportPage.model.SportEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,7 +15,7 @@ public class FixtureStatisticsImpl implements FixtureStatisticsService{
     private FixtureStatisticsDao fixtureStatisticsDao;
 
     @Override
-    public Map<Integer, List<FixtureStatistics>> getFixtureStatistics(Integer fixtureId, SportEnum sportEnum) {
+    public Map<Integer, FixtureStatistics> getFixtureStatistics(Integer fixtureId, SportEnum sportEnum) {
         return fixtureStatisticsDao.getFixtureStatistics(fixtureId, sportEnum.getSchema());
     }
 }
