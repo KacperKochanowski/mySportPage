@@ -15,7 +15,6 @@ public class FixtureStatisticsRest {
     private FixtureStatisticsImpl fixtureStatistics;
 
 
-    //TODO: add postman request
     @GetMapping("fixture-id/{fixtureId}")
     private FixtureStatisticsResponse fixtureStatistics(@PathVariable Integer fixtureId,
                                                         @RequestParam("sportId") Integer sportId) {

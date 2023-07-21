@@ -278,7 +278,6 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return standings;
     }
 
-    //TODO: map data to custom json instead of Map<Integer, FixtureStatistics>
     private Map<Integer, Map<Integer, FixtureStatistics>> mapJSONObjectToFixtureStatisticsList(String responseBody) {
         Map<Integer, Map<Integer, FixtureStatistics>> fixtureStats = new HashMap<>();
         Map<Integer, FixtureStatistics> fixturesByTeam = new HashMap<>();
@@ -290,7 +289,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             JSONObject element = response.getJSONObject(i).getJSONObject("team");
             teamId = element.getInt("id");
             JSONArray teamStatsJson = response.getJSONObject(i).getJSONArray("statistics");
-            Map<FixtureStatisticsEnum, String> fixtureStatisticsByTeam = new HashMap<>();
+            Map<FixtureStatisticsEnum, Object> fixtureStatisticsByTeam = new HashMap<>();
             for (int j = 0; j < teamStatsJson.length(); j++) {
                 JSONObject teamStatsJsonElement = teamStatsJson.getJSONObject(j);
                 if (FixtureStatisticsEnum.getByDescription(teamStatsJsonElement.getString("type")) != null) {
