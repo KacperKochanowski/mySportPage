@@ -24,4 +24,7 @@ public class FixtureStatisticsRest {
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
+
+    //TODO: add fixture stats for only one team
+
 }
