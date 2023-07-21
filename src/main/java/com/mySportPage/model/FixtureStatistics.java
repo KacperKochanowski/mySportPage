@@ -13,5 +13,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class FixtureStatistics {
 
-    private Map<FixtureStatisticsEnum, String> fixtureStatistics;
+    private Map<FixtureStatisticsEnum, Object> fixtureStatistics;
+
 }
