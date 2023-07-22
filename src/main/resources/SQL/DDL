@@ -122,3 +122,17 @@ CREATE TABLE football.fixture_statistics (
 	passes_percent text,
 	expected_goals double precision
 );
+
+CREATE TABLE football.coach (
+external_id int NOT NULL,
+name text NOT NULL,
+first_name text NOT NULL,
+last_name text NOT NULL,
+age int,
+birth_date date,
+birth_country text,
+nationality text,
+height int,
+weight int,
+photo text
+);
