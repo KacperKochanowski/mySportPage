@@ -255,6 +255,10 @@ public class DataAcquisitionDao {
         }
     }
 
+    public void persistCoach(Coach coach) {
+        System.out.println(coach);
+    }
+
     private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
 
         String queryPersistResults = "INSERT INTO football.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +

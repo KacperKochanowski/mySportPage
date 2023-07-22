@@ -119,6 +119,17 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
+    @PostMapping("/createCoachWithHistory/{teamId}")
+    public DataAcquisitionResponse createCoachWithHistory(@PathVariable Integer teamId) throws IOException {
+
+        String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{put("team", String.valueOf(teamId));}});
+        Response response = sendGetRequest(externalPath);
+
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.COACH);
+        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.COACH_HISTORY);
+        return new DataAcquisitionResponse(response.code(), response.message());
+    }
+
     private Response sendGetRequest(String path) {
         if (path != null && !path.trim().isEmpty()) {
             try {

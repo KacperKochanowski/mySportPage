@@ -2,6 +2,9 @@ package com.mySportPage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mySportPage.dao.DataAcquisitionDao;
 import com.mySportPage.model.*;
 import com.mySportPage.model.Fixture;
@@ -29,7 +32,8 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionServiceImpl.class);
 
-    private final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final DateFormat formatWithTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final DateFormat formatWithoutTime = new SimpleDateFormat("yyyy-MM-dd");
 
     private final Map<String, String> incorrectNames = new HashMap<>() {{
         put("Tychy 71", "GKS Tychy");
@@ -51,6 +55,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                 case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
                 case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
                 case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
+                case COACH -> dataAcquisitionDao.persistCoach(mapJSONObjectToCoachObject(data));
             }
         }
     }
@@ -305,15 +310,49 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return fixtureStats;
     }
 
+    private Coach mapJSONObjectToCoachObject(String responseBody) {
+        JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+
+        JsonArray responseArray = jsonObject.getAsJsonArray("response");
+
+        if (responseArray != null && !responseArray.isJsonNull() && responseArray.size() > 0) {
+            JsonObject coachDataObject = responseArray.get(0).getAsJsonObject();
+
+            return Coach.builder()
+                    .externalId(coachDataObject.getAsJsonPrimitive("id").getAsInt())
+                    .name(coachDataObject.getAsJsonPrimitive("name").getAsString())
+                    .firstName(coachDataObject.getAsJsonPrimitive("firstname").getAsString())
+                    .lastName(coachDataObject.getAsJsonPrimitive("lastname").getAsString())
+                    .age(coachDataObject.getAsJsonPrimitive("age").getAsInt())
+                    .birthDate(parseDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
+                    .birthPlace(parsePlace(coachDataObject.getAsJsonObject("birth")))
+                    .birthCountry(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("country").getAsString())
+                    .nationality(coachDataObject.getAsJsonPrimitive("nationality").getAsString())
+                    .photo(coachDataObject.getAsJsonPrimitive("photo").getAsString())
+                    .build();
+        }
+        return null;
+    }
+
     private Date parseDate(String date) {
         try {
             if (date.contains("+")) {
                 date = date.substring(0, date.lastIndexOf("+"));
             }
-            return format.parse(date.replace("T", " "));
+            if (date.contains("T")) {
+                return formatWithTime.parse(date.replace("T", " "));
+            }
+            return formatWithoutTime.parse(date);
         } catch (ParseException e) {
             return null;
         }
+    }
+
+    private String parsePlace(JsonObject jsonObject) {
+        if (jsonObject.has("place") && !jsonObject.get("place").isJsonNull()) {
+            return jsonObject.getAsJsonPrimitive("place").getAsString();
+        }
+        return null;
     }
 
     private Results creteResults(JSONObject data, String typeOfResults, Team team) {

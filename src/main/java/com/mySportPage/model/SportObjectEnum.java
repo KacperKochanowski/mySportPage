@@ -10,6 +10,8 @@ public enum SportObjectEnum {
     FIXTURE,
     STANDING,
     RESULTS,
-    FIXTURE_STATS
+    FIXTURE_STATS,
+    COACH,
+    COACH_HISTORY
 
 }
