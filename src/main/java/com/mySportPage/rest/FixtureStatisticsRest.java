@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("fixture/statistics")
 public class FixtureStatisticsRest {
@@ -17,14 +19,13 @@ public class FixtureStatisticsRest {
 
     @GetMapping("fixture-id/{fixtureId}")
     private FixtureStatisticsResponse fixtureStatistics(@PathVariable Integer fixtureId,
-                                                        @RequestParam("sportId") Integer sportId) {
+                                                        @RequestParam("sportId") Integer sportId,
+                                                        @RequestParam(required = false) Integer teamId) {
+        Map<Integer, Map<String, Object>> fixtureStats = fixtureStatistics.getFixtureStatistics(fixtureId, SportEnum.getById(sportId));
         return FixtureStatisticsResponse.builder()
-                .withFixtureStatistics(fixtureStatistics.getFixtureStatistics(fixtureId, SportEnum.getById(sportId)))
+                .withFixtureStatistics(teamId != null ? fixtureStats.get(teamId) : fixtureStats)
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
-
-    //TODO: add fixture stats for only one team
-
 }
