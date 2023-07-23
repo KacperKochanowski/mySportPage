@@ -124,9 +124,9 @@ public class DataAcquisitionRest {
 
         String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{put("team", String.valueOf(teamId));}});
         Response response = sendGetRequest(externalPath);
-
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.COACH);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.COACH_HISTORY);
+        String responseBody = response.body().string();
+        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH);
+        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH_HISTORY);
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
