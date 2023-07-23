@@ -2,9 +2,8 @@ package com.mySportPage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.mySportPage.dao.DataAcquisitionDao;
 import com.mySportPage.model.*;
 import com.mySportPage.model.Fixture;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,6 +56,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                 case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
                 case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
                 case COACH -> dataAcquisitionDao.persistCoach(mapJSONObjectToCoachObject(data));
+                case COACH_HISTORY -> dataAcquisitionDao.persistCoachHistory(mapJSONObjectToCoachHistoryList(data));
             }
         }
     }
@@ -332,6 +333,15 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                     .build();
         }
         return null;
+    }
+
+    private Map<Integer, List<CoachHistory>> mapJSONObjectToCoachHistoryList(String responseBody) {
+        Integer coachId = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getInt("id");
+        String coachCareer = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getJSONArray("career").toString();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        Type coachHistoryListType = new TypeToken<List<CoachHistory>>() {}.getType();
+
+        return Map.of(coachId, gson.fromJson(coachCareer, coachHistoryListType));
     }
 
     private Date parseDate(String date) {
