@@ -136,3 +136,10 @@ height int,
 weight int,
 photo text
 );
+
+CREATE TABLE football.coach_career (
+coach_id int PRIMARY KEY,
+team_id int NOT NULL,
+start date NOT NULL,
+"end" date
+);
