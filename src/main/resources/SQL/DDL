@@ -124,23 +124,23 @@ CREATE TABLE football.fixture_statistics (
 );
 
 CREATE TABLE football.coach (
-external_id int NOT NULL,
-name text NOT NULL,
-first_name text NOT NULL,
-last_name text NOT NULL,
-age int,
-birth_date date,
-birth_country text,
-nationality text,
-height int,
-weight int,
-photo text,
-CONSTRAINT pk_coach_external_id PRIMARY KEY (external_id)
+	external_id int4 NOT NULL,
+	"name" text NOT NULL,
+	first_name text NOT NULL,
+	last_name text NOT NULL,
+	age int4 NULL,
+	birth_date date NULL,
+	birth_country text NULL,
+	nationality text NULL,
+	height int4 NULL,
+	weight int4 NULL,
+	photo text NULL,
+	CONSTRAINT pk_coach_external_id PRIMARY KEY (external_id)
 );
 
 CREATE TABLE football.coach_career (
-coach_id int NOT NULL,
-team_id int NOT NULL,
-start date NOT NULL,
-"end" date
+	coach_id int4 NOT NULL,
+	team_id int4 NOT NULL,
+	"start" date NOT NULL,
+	"end" date NULL
 );
