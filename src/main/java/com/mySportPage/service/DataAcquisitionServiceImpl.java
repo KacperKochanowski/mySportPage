@@ -56,7 +56,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                 case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
                 case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
                 case COACH -> dataAcquisitionDao.persistCoach(mapJSONObjectToCoachObject(data));
-                case COACH_HISTORY -> dataAcquisitionDao.persistCoachHistory(mapJSONObjectToCoachHistoryList(data));
+                case COACH_HISTORY -> dataAcquisitionDao.persistCoachCareer(mapJSONObjectToCoachHistoryList(data));
             }
         }
     }
