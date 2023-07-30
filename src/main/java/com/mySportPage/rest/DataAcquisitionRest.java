@@ -37,7 +37,7 @@ public class DataAcquisitionRest {
                                                           @RequestParam("season") Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("leagueId", String.valueOf(leagueId));
+            put("league", String.valueOf(leagueId));
             put("season", String.valueOf(season));
         }};
 

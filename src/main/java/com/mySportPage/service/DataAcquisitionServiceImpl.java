@@ -63,12 +63,14 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
 
     private List<Team> mapJSONObjectToTeamsList(String responseBody) {
         try {
+            int leagueId = Integer.parseInt(new JSONObject(responseBody).getJSONObject("parameters").getString("league"));
             List<Team> teams = new ArrayList<>();
             ObjectMapper objectMapper = new ObjectMapper();
             JSONArray response = new JSONObject(responseBody).getJSONArray("response");
             for (int i = 0; i < response.length(); i++) {
                 Team team = objectMapper.readValue(response.getJSONObject(i).getJSONObject("team").toString(), Team.class);
                 team.setName(checkIfTeamNameIsCorrect(team.getName()));
+                team.setLeagueId(leagueId);
                 teams.add(team);
             }
             return teams;

@@ -21,4 +21,6 @@ public class TeamDTO {
 
     private Integer clubFounded;
 
+    private Integer leagueId;
+
 }

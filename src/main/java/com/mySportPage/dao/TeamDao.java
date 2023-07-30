@@ -31,6 +31,7 @@ public class TeamDao {
                 .withShortCut((String) result[1])
                 .withClubFounded((Integer) result[2])
                 .withCountry((String) result[3])
+                .withLeagueId((Integer) result[4])
                 .build();
     }
 }

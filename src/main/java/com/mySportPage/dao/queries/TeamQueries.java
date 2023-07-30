@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum TeamQueries {
 
-    GET_TEAM_BY_TEAM_ID("SELECT name, shortcut, club_founded, country " +
+    GET_TEAM_BY_TEAM_ID("SELECT name, shortcut, club_founded, country, league_id " +
                         "FROM {schema}.team " +
                         "WHERE team_id = :teamId ");
 

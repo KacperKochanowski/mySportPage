@@ -47,8 +47,8 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String queryPersistTeam = "INSERT INTO football.team (team_id, name, shortcut, club_crest, club_founded, country) " +
-                "VALUES(:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country)";
+        String queryPersistTeam = "INSERT INTO football.team (team_id, name, shortcut, club_crest, club_founded, country, league_id) " +
+                "VALUES(:externalTeamId, :name, :shortcut, :clubCrest, :clubFounded, :country, :leagueId)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Team team : teams) {
@@ -59,6 +59,7 @@ public class DataAcquisitionDao {
                 parameters.addValue("clubCrest", team.getClubCrest());
                 parameters.addValue("clubFounded", team.getClubFounded());
                 parameters.addValue("country", team.getCountry());
+                parameters.addValue("leagueId", team.getLeagueId());
 
                 this.namedParameterJdbcTemplate.update(queryPersistTeam, parameters);
                 log.info("Team: {} stored in database.", team.getName());
