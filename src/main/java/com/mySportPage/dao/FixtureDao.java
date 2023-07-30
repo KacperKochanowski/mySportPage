@@ -5,7 +5,6 @@ import com.mySportPage.model.dto.FixtureDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @Repository
 @SuppressWarnings("unchecked")
 public class FixtureDao {
