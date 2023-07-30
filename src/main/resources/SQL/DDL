@@ -134,11 +134,12 @@ birth_country text,
 nationality text,
 height int,
 weight int,
-photo text
+photo text,
+CONSTRAINT pk_coach_external_id PRIMARY KEY (external_id)
 );
 
 CREATE TABLE football.coach_career (
-coach_id int PRIMARY KEY,
+coach_id int NOT NULL,
 team_id int NOT NULL,
 start date NOT NULL,
 "end" date
