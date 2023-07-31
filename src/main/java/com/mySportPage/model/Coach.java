@@ -23,7 +23,6 @@ public class Coach {
     private String lastName;
     private int age;
     private Date birthDate;
-    private String birthCountry;
     private String nationality;
     private Integer height;
     private Integer weight;

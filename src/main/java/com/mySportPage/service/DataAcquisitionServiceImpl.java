@@ -328,7 +328,6 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                     .withLastName(coachDataObject.getAsJsonPrimitive("lastname").getAsString())
                     .withAge(coachDataObject.getAsJsonPrimitive("age").getAsInt())
                     .withBirthDate(parseDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
-                    .withBirthCountry(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("country").getAsString())
                     .withNationality(coachDataObject.getAsJsonPrimitive("nationality").getAsString())
                     .withPhoto(coachDataObject.getAsJsonPrimitive("photo").getAsString())
                     .build();
