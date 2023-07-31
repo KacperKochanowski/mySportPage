@@ -22,16 +22,15 @@ public class CoachDao {
     private EntityManager entityManager;
 
     public List<Coach> getCoachesByLeague(int leagueId, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_LEAGUE_ID.getQuery()
-                        .replace("{schema}", schema))
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_LEAGUE_ID.getQuery())
                 .setParameter("leagueId", leagueId)
                 .getResultList();
         return mapToCoachList(result);
     }
 
     public List<Coach> getCoachesByTeam(int teamId, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_TEAM_ID.getQuery()
-                        .replace("{schema}", schema))
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_TEAM_ID.getQuery()
+                )
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToCoachList(result);
@@ -39,8 +38,7 @@ public class CoachDao {
 
 
     public List<Coach> getCoachesByCountryCode(String countryCode, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_COUNTRY_CODE.getQuery()
-                        .replace("{schema}", schema))
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_COUNTRY_CODE.getQuery())
                 .setParameter("countryCode", countryCode)
                 .getResultList();
         return mapToCoachList(result);
