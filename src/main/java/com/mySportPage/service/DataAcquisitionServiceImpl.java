@@ -322,16 +322,15 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             JsonObject coachDataObject = responseArray.get(0).getAsJsonObject();
 
             return Coach.builder()
-                    .externalId(coachDataObject.getAsJsonPrimitive("id").getAsInt())
-                    .name(coachDataObject.getAsJsonPrimitive("name").getAsString())
-                    .firstName(coachDataObject.getAsJsonPrimitive("firstname").getAsString())
-                    .lastName(coachDataObject.getAsJsonPrimitive("lastname").getAsString())
-                    .age(coachDataObject.getAsJsonPrimitive("age").getAsInt())
-                    .birthDate(parseDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
-                    .birthPlace(parsePlace(coachDataObject.getAsJsonObject("birth")))
-                    .birthCountry(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("country").getAsString())
-                    .nationality(coachDataObject.getAsJsonPrimitive("nationality").getAsString())
-                    .photo(coachDataObject.getAsJsonPrimitive("photo").getAsString())
+                    .withExternalId(coachDataObject.getAsJsonPrimitive("id").getAsInt())
+                    .withName(coachDataObject.getAsJsonPrimitive("name").getAsString())
+                    .withFirstName(coachDataObject.getAsJsonPrimitive("firstname").getAsString())
+                    .withLastName(coachDataObject.getAsJsonPrimitive("lastname").getAsString())
+                    .withAge(coachDataObject.getAsJsonPrimitive("age").getAsInt())
+                    .withBirthDate(parseDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
+                    .withBirthCountry(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("country").getAsString())
+                    .withNationality(coachDataObject.getAsJsonPrimitive("nationality").getAsString())
+                    .withPhoto(coachDataObject.getAsJsonPrimitive("photo").getAsString())
                     .build();
         }
         return null;

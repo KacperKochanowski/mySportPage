@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CoachQueries {
-    CORE_COLUMNS("external_id, name, first_name, last_name, age, birth_date, birth_country, nationality, height, weight, photo "),
+    CORE_COLUMNS("c.external_id, c.name, c.first_name, c.last_name, c.age, c.birth_date, c.birth_country, c.nationality, c.height, c.weight, c.photo "),
     GET_COACH_BY_LEAGUE_ID("SELECT " + CORE_COLUMNS.getQuery() +
                            "FROM {schema}.coach c " +
                            "LEFT JOIN {schema}.coach_career cc on c.external_id = cc.coach_id " +

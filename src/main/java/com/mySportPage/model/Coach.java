@@ -1,5 +1,6 @@
 package com.mySportPage.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@Builder
+@Builder(setterPrefix = "with")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Coach {
 
     private Integer externalId;
@@ -21,7 +23,6 @@ public class Coach {
     private String lastName;
     private int age;
     private Date birthDate;
-    private String birthPlace;
     private String birthCountry;
     private String nationality;
     private Integer height;
