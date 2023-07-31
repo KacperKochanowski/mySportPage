@@ -4,11 +4,15 @@ import com.mySportPage.dao.queries.CoachQueries;
 import com.mySportPage.model.Coach;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
+import static com.mySportPage.dao.queries.CoachQueries.*;
 
 @SuppressWarnings("unchecked")
 @Repository
@@ -18,11 +22,64 @@ public class CoachDao {
     private EntityManager entityManager;
 
     public List<Coach> getCoachesByLeague(int leagueId, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CoachQueries.GET_COACH_BY_LEAGUE_ID.getQuery()
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_LEAGUE_ID.getQuery()
                         .replace("{schema}", schema))
                 .setParameter("leagueId", leagueId)
                 .getResultList();
         return mapToCoachList(result);
+    }
+
+    public List<Coach> getCoachesByTeam(int teamId, String schema) {
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_TEAM_ID.getQuery()
+                        .replace("{schema}", schema))
+                .setParameter("teamId", teamId)
+                .getResultList();
+        return mapToCoachList(result);
+    }
+
+
+    public List<Coach> getCoachesByCountryCode(String countryCode, String schema) {
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_COUNTRY_CODE.getQuery()
+                        .replace("{schema}", schema))
+                .setParameter("countryCode", countryCode)
+                .getResultList();
+        return mapToCoachList(result);
+    }
+
+    public List<Coach> getCoaches(Map<String, Object> params, String schema) {
+        StringBuilder coachQuery = new StringBuilder().append(CORE_QUERY.getQuery().replace("{schema}", schema));
+        boolean isFirstParam = true;
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            switch (entry.getKey()) {
+                case "leagueId" -> {
+                    isFirstParam(coachQuery, isFirstParam);
+                    coachQuery.append(GET_COACH_BY_LEAGUE_ID.getQuery());
+                }
+                case "teamId" -> {
+                    isFirstParam(coachQuery, isFirstParam);
+                    coachQuery.append(GET_COACH_BY_TEAM_ID.getQuery());
+                }
+                case "languageCode" -> {
+                    isFirstParam(coachQuery, isFirstParam);
+                    coachQuery.append(GET_COACH_BY_COUNTRY_CODE.getQuery());
+                }
+            }
+            isFirstParam = false;
+        }
+        Query query = entityManager.createNativeQuery(coachQuery.toString());
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            query.setParameter(entry.getKey(), entry.getValue());
+        }
+
+        List<Object[]> result = query.getResultList();
+        return mapToCoachList(result);
+    }
+
+    private void isFirstParam(StringBuilder query, boolean firstParam) {
+        if (!firstParam) {
+            query.append(AND.getQuery());
+        }
     }
 
 
@@ -37,11 +94,10 @@ public class CoachDao {
                     .withLastName((String) row[3])
                     .withAge((int) row[4])
                     .withBirthDate((Date) row[5])
-                    .withBirthCountry((String) row[6])
-                    .withNationality((String) row[7])
-                    .withHeight((Integer) row[8])
-                    .withWeight((Integer) row[9])
-                    .withPhoto((String) row[10])
+                    .withNationality((String) row[6])
+                    .withHeight((Integer) row[7])
+                    .withWeight((Integer) row[8])
+                    .withPhoto((String) row[9])
                     .build();
             coaches.add(coach);
         }
