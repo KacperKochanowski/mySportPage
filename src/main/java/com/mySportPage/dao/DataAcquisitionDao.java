@@ -354,6 +354,11 @@ public class DataAcquisitionDao {
         }
     }
 
+    /**
+     * I am aware of how the function below works and looks, but I wanted to try many ways of expressing this type of logic,
+     * so I took on the task, at the expense of adapting the remaining layers of logic like the model, dao, etc., related to fixture statistics.
+     */
+
     private List<String> glueQueryForStatistics(Map<Integer, FixtureStatistics> fixtureStatistics, Integer fixtureId) {
         List<String> queries = new ArrayList<>();
         for (var entry : fixtureStatistics.entrySet()) {
