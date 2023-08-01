@@ -285,7 +285,7 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String queryPersistCoach = "INSERT INTO football.coach (external_id, name, first_name, last_name, age, birth_date, birth_country, nationality, height, weight, photo) " +
+        String queryPersistCoach = "INSERT INTO football.coach (external_id, name, first_name, last_name, age, birth_date, nationality, height, weight, photo) " +
                 "VALUES(:externalId, :name, :firstName, :lastName, :age, :birthDate, :nationality, :height, :weight, :photo)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
