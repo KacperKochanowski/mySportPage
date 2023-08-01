@@ -107,7 +107,7 @@ public class DataAcquisitionRest {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("fixture", String.valueOf(fixture));
-            if(team != null) {
+            if (team != null) {
                 put("team", String.valueOf(team));
             }
         }};
@@ -122,7 +122,9 @@ public class DataAcquisitionRest {
     @PostMapping("/createCoachWithHistory/{teamId}")
     public DataAcquisitionResponse createCoachWithHistory(@PathVariable Integer teamId) throws IOException {
 
-        String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{put("team", String.valueOf(teamId));}});
+        String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{
+            put("team", String.valueOf(teamId));
+        }});
         Response response = sendGetRequest(externalPath);
         String responseBody = response.body().string();
         dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH);

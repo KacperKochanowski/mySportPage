@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("coverage")
 public class LeagueCoverageRest {
 
-@Autowired
-private LeagueCoverageService leagueCoverageService;
+    @Autowired
+    private LeagueCoverageService leagueCoverageService;
 
     @GetMapping
     public LeagueCoverageResponse getCoverage(@RequestParam("sportId") Integer sportId) {
