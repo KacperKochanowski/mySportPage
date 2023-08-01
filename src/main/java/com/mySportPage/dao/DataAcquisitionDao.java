@@ -365,6 +365,9 @@ public class DataAcquisitionDao {
                     .append(", ")
                     .append(entry.getKey());
             for (var specificTeamStats : entry.getValue().getFixtureStatistics().entrySet()) {
+                if (specificTeamStats.getValue() == null || specificTeamStats.getValue().equals("null")) {
+                    continue;
+                }
                 firstPartOfQuery
                         .append(", ")
                         .append(specificTeamStats.getKey().getDatabaseColumnName());

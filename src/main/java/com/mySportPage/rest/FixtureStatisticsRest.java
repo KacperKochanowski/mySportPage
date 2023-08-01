@@ -16,7 +16,6 @@ public class FixtureStatisticsRest {
     @Autowired
     private FixtureStatisticsImpl fixtureStatistics;
 
-    //TODO: fix returned data
     @GetMapping("fixture-id/{fixtureId}")
     private FixtureStatisticsResponse fixtureStatistics(@PathVariable Integer fixtureId,
                                                         @RequestParam("sportId") Integer sportId,
