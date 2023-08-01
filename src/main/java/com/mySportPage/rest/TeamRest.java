@@ -24,4 +24,10 @@ public class TeamRest {
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
+
+    //TODO: get teams by league
+
+    //TODO: get teams by country code
+
+
 }
