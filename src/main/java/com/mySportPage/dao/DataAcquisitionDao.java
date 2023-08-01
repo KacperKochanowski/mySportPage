@@ -28,7 +28,7 @@ public class DataAcquisitionDao {
                 "SELECT EXISTS (SELECT 1 FROM football.stadium WHERE stadium_id = :internalId AND :externalId = ANY(team_id))"));
         put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM football.league WHERE league_id = :internalId AND country = CAST(:externalId AS text))"));
         put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM football.league_coverage WHERE external_league_id = :internalId)"));
-        put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM football.country WHERE name = :internalId)"));
+        put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
         put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture WHERE fixture_id = :internalId)"));
         put(SportObjectEnum.RESULTS, List.of("SELECT EXISTS (SELECT 1 FROM football.results WHERE description = :internalId AND team_id = :externalId)"));
         put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM football.standing WHERE updated = :internalId AND team = :externalId)"));
@@ -166,7 +166,7 @@ public class DataAcquisitionDao {
             return;
         }
 
-        String queryPersistCountry = "INSERT INTO football.country (\"name\", code, flag) VALUES(:name, :code, :flag)";
+        String queryPersistCountry = "INSERT INTO public.country (\"name\", code, flag) VALUES(:name, :code, :flag)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Country country : countries) {

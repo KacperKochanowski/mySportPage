@@ -12,7 +12,7 @@ public enum CoachQueries {
                            "FROM {schema}.coach c " +
                            "LEFT JOIN {schema}.coach_career cc on c.external_id = cc.coach_id " +
                            "LEFT JOIN {schema}.team t on t.team_id = cc.team_id " +
-                           "LEFT JOIN {schema}.country c2 on c2.name = c.birth_country " +
+                           "LEFT JOIN public.country c2 on c2.name = c.birth_country " +
                            "WHERE "),
 
     GET_COACH_BY_LEAGUE_ID(" t.league_id = :leagueId"),

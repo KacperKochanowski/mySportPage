@@ -31,7 +31,7 @@ CREATE TABLE football.league (
 	CONSTRAINT league_league_id_key UNIQUE (league_id)
 );
 
-CREATE TABLE football.country (
+CREATE TABLE public.country (
 	"name" text NOT NULL,
 	code text NOT NULL,
 	flag text NULL,
