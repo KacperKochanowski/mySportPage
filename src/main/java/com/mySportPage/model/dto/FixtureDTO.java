@@ -1,5 +1,6 @@
 package com.mySportPage.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FixtureDTO {
 
     private Integer leagueId;
