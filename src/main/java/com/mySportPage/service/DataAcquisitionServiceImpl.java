@@ -1,6 +1,8 @@
 package com.mySportPage.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -50,13 +52,14 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                 case LEAGUE -> {
                     dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
                     dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
-                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
+                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesListAdditionalPart(data));
                 }
                 case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
                 case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
                 case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
                 case COACH -> dataAcquisitionDao.persistCoach(mapJSONObjectToCoachObject(data));
                 case COACH_HISTORY -> dataAcquisitionDao.persistCoachCareer(mapJSONObjectToCoachHistoryList(data));
+                case COUNTRY -> dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
             }
         }
     }
@@ -80,7 +83,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return new ArrayList<>();
     }
 
-    private List<Country> mapJSONObjectToCountriesList(String responseBody) {
+    private List<Country> mapJSONObjectToCountriesListAdditionalPart(String responseBody) {
         try {
             List<Country> countries = new ArrayList<>();
             ObjectMapper objectMapper = new ObjectMapper();
@@ -344,6 +347,22 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return Map.of(coachId, gson.fromJson(coachCareer, coachHistoryListType));
     }
 
+    private List<Country> mapJSONObjectToCountriesList(String responseBody) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = null;
+        try {
+            rootNode = objectMapper.readTree(responseBody);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        JsonNode responseNode = Objects.requireNonNull(rootNode).get("response");
+
+        if (responseNode != null && responseNode.isArray()) {
+            return objectMapper.convertValue(responseNode, new TypeReference<>() {});
+        }
+        return new ArrayList<>();
+    }
+
     private Date parseDate(String date) {
         try {
             if (date.contains("+")) {
@@ -356,13 +375,6 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         } catch (ParseException e) {
             return null;
         }
-    }
-
-    private String parsePlace(JsonObject jsonObject) {
-        if (jsonObject.has("place") && !jsonObject.get("place").isJsonNull()) {
-            return jsonObject.getAsJsonPrimitive("place").getAsString();
-        }
-        return null;
     }
 
     private Results creteResults(JSONObject data, String typeOfResults, Team team) {
