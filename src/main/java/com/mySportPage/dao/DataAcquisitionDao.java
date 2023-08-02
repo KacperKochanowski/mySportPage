@@ -44,6 +44,7 @@ public class DataAcquisitionDao {
 
     public void persistTeams(List<Team> teams) {
         if (teams.isEmpty()) {
+            log.debug("persistTeams(): forwarded empty list.");
             return;
         }
 
@@ -71,6 +72,7 @@ public class DataAcquisitionDao {
 
     public void persistStadiums(List<Stadium> stadiums) {
         if (stadiums.isEmpty()) {
+            log.debug("persistStadiums(): forwarded empty list.");
             return;
         }
         String queryPersistStadium = "INSERT INTO football.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
@@ -101,6 +103,7 @@ public class DataAcquisitionDao {
 
     public void persistLeague(List<League> leagues) {
         if (leagues.isEmpty()) {
+            log.debug("persistLeague(): forwarded empty list.");
             return;
         }
 
@@ -129,6 +132,7 @@ public class DataAcquisitionDao {
 
     public void persistLeagueCoverage(List<LeagueCoverage> leagueCoverages) {
         if (leagueCoverages.isEmpty()) {
+            log.debug("persistLeagueCoverage(): forwarded empty list.");
             return;
         }
 
@@ -163,6 +167,7 @@ public class DataAcquisitionDao {
 
     public void persistCountry(List<Country> countries) {
         if (countries.isEmpty()) {
+            log.debug("persistCountry(): forwarded empty list.");
             return;
         }
 
@@ -186,6 +191,7 @@ public class DataAcquisitionDao {
     @CacheEvict(value = {"allFixtures", "twoWeeksFixtures", "fixturesByTeam", "fixturesByTeamAndWeatherPlayed", "fixturesByLeagueAndAdditionallyRound"}, allEntries = true)
     public void persistFixture(List<Fixture> fixtures) {
         if (fixtures.isEmpty()) {
+            log.debug("persistFixture(): forwarded empty list.");
             return;
         }
         String queryPersistFixture = "INSERT INTO football.fixture " +
@@ -230,6 +236,7 @@ public class DataAcquisitionDao {
 
     public void persistStanding(List<Standing> standings) {
         if (standings.isEmpty()) {
+            log.debug("persistStanding(): forwarded empty list.");
             return;
         }
 
@@ -277,6 +284,7 @@ public class DataAcquisitionDao {
 
     public void persistCoach(Coach coach) {
         if (coach == null) {
+            log.debug("persistCoach(): forwarded nullable object.");
             return;
         }
 
