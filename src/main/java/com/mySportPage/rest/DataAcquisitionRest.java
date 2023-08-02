@@ -132,6 +132,15 @@ public class DataAcquisitionRest {
         return new DataAcquisitionResponse(response.code(), response.message());
     }
 
+    @PostMapping("createCountries")
+    public DataAcquisitionResponse createCountries() throws IOException {
+        String externalPath = ExternalPaths.GET_COUNTIES.getUrl();
+        Response response = sendGetRequest(externalPath);
+        String responseBody = response.body().string();
+        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COUNTRY);
+        return new DataAcquisitionResponse(response.code(), response.message());
+    }
+
     private Response sendGetRequest(String path) {
         if (path != null && !path.trim().isEmpty()) {
             try {
