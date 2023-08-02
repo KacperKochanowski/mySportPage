@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
 import com.mySportPage.rest.response.CoachResponse;
-import com.mySportPage.service.CoachServiceImpl;
+import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import java.util.*;
 public class CoachRest {
 
     @Autowired
-    private CoachServiceImpl coachService;
+    private CoachService coachService;
 
     @GetMapping("leagueId/{leagueId}")
     private CoachResponse getCoachesByLeague(
