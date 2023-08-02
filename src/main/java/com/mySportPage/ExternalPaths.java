@@ -11,7 +11,8 @@ public enum ExternalPaths {
     GET_FIXTURES_V3(BASE.getUrl() + "fixtures"),
     GET_STANDINGS_V3(BASE.getUrl() + "standings?season={season}"),
     GET_FIXTURES_STATISTICS_V3(BASE.getUrl() + "fixtures/statistics"),
-    GET_COACH_WITH_HISTORY_V3(BASE.getUrl() + "coachs");
+    GET_COACH_WITH_HISTORY_V3(BASE.getUrl() + "coachs"),
+    GET_COUNTIES(BASE.getUrl() + "countries");
 
     private final String url;
 
