@@ -2,7 +2,7 @@ package com.mySportPage.rest;
 
 import com.mySportPage.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
-import com.mySportPage.rest.response.DataAcquisitionResponse;
+import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -33,8 +33,8 @@ public class DataAcquisitionRest {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
     @PostMapping("/createTeamsAndStadiums")
-    public DataAcquisitionResponse createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
-                                                          @RequestParam("season") Integer season) throws IOException {
+    public SportPageResponse createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
+                                                    @RequestParam("season") Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", String.valueOf(leagueId));
@@ -46,11 +46,11 @@ public class DataAcquisitionRest {
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.TEAM);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STADIUM);
 
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("/createLeagues")
-    public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
+    public SportPageResponse createLeagues(@RequestParam(required = false) String leagueId,
                                                  @RequestParam(required = false) String season,
                                                  @RequestParam(required = false) String code,
                                                  @RequestParam(required = false) String country,
@@ -68,11 +68,11 @@ public class DataAcquisitionRest {
         Response response = sendGetRequest(externalPath);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.LEAGUE);
 
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("/createFixtures")
-    public DataAcquisitionResponse createLeagues(@RequestParam(required = false) String leagueId,
+    public SportPageResponse createLeagues(@RequestParam(required = false) String leagueId,
                                                  @RequestParam(required = false) Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
@@ -84,11 +84,11 @@ public class DataAcquisitionRest {
         Response response = sendGetRequest(externalPath);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE);
 
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("/createStandings")
-    public DataAcquisitionResponse createStandings(@RequestParam(required = false) String leagueId,
+    public SportPageResponse createStandings(@RequestParam(required = false) String leagueId,
                                                    @RequestParam Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
@@ -98,11 +98,11 @@ public class DataAcquisitionRest {
         Response response = sendGetRequest(externalPath);
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STANDING);
 
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("/createFixtureStatistics")
-    public DataAcquisitionResponse createFixtureStatistics(@RequestParam Integer fixture,
+    public SportPageResponse createFixtureStatistics(@RequestParam Integer fixture,
                                                            @RequestParam(required = false) Integer team) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
@@ -116,11 +116,11 @@ public class DataAcquisitionRest {
         Response response = sendGetRequest(externalPath);
 
         dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE_STATS);
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("/createCoachWithHistory/{teamId}")
-    public DataAcquisitionResponse createCoachWithHistory(@PathVariable Integer teamId) throws IOException {
+    public SportPageResponse createCoachWithHistory(@PathVariable Integer teamId) throws IOException {
 
         String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{
             put("team", String.valueOf(teamId));
@@ -129,16 +129,16 @@ public class DataAcquisitionRest {
         String responseBody = response.body().string();
         dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH);
         dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH_HISTORY);
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     @PostMapping("createCountries")
-    public DataAcquisitionResponse createCountries() throws IOException {
+    public SportPageResponse createCountries() throws IOException {
         String externalPath = ExternalPaths.GET_COUNTIES.getUrl();
         Response response = sendGetRequest(externalPath);
         String responseBody = response.body().string();
         dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COUNTRY);
-        return new DataAcquisitionResponse(response.code(), response.message());
+        return new SportPageResponse(response.code(), response.message());
     }
 
     private Response sendGetRequest(String path) {

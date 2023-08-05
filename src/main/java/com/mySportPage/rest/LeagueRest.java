@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
-import com.mySportPage.rest.response.LeagueResponse;
+import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,20 +17,20 @@ public class LeagueRest {
     private LeagueService leagueService;
 
     @GetMapping("all")
-    public LeagueResponse getLeagues(@RequestParam("sportId") Integer sportId) {
-        return LeagueResponse.builder()
-                .withLeagues(leagueService.getLeagues(SportEnum.getById(sportId)))
+    public SportPageResponse getLeagues(@RequestParam("sportId") Integer sportId) {
+        return SportPageResponse.builder()
+                .withData(leagueService.getLeagues(SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
     @GetMapping("country/{country}")
-    public LeagueResponse getLeagues(
+    public SportPageResponse getLeagues(
             @PathVariable("country") String country,
             @RequestParam("sportId") Integer sportId) {
-        return LeagueResponse.builder()
-                .withLeagues(country != null ?
+        return SportPageResponse.builder()
+                .withData(country != null ?
                         leagueService.getLeagues(country, SportEnum.getById(sportId)) :
                         new ArrayList<>())
                 .withCode(HttpStatus.OK.value())

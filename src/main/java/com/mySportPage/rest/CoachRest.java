@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
-import com.mySportPage.rest.response.CoachResponse;
+import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,53 +17,53 @@ public class CoachRest {
     private CoachService coachService;
 
     @GetMapping("leagueId/{leagueId}")
-    private CoachResponse getCoachesByLeague(
+    private SportPageResponse getCoachesByLeague(
             @PathVariable Integer leagueId,
             @RequestParam("sportId") Integer sportId) {
-        return CoachResponse.builder()
-                .withCoaches(coachService.getCoachesByLeague(leagueId, SportEnum.getById(sportId)))
+        return SportPageResponse.builder()
+                .withData(coachService.getCoachesByLeague(leagueId, SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
     @GetMapping("teamId/{teamId}")
-    private CoachResponse getCoachesByTeam(
+    private SportPageResponse getCoachesByTeam(
             @PathVariable Integer teamId,
             @RequestParam("sportId") Integer sportId) {
-        return CoachResponse.builder()
-                .withCoaches(coachService.getCoachesByTeam(teamId, SportEnum.getById(sportId)))
+        return SportPageResponse.builder()
+                .withData(coachService.getCoachesByTeam(teamId, SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
     @GetMapping("countryCode/{countryCode}")
-    private CoachResponse getCoachesByCountry(
+    private SportPageResponse getCoachesByCountry(
             @PathVariable String countryCode,
             @RequestParam("sportId") Integer sportId) {
-        return CoachResponse.builder()
-                .withCoaches(coachService.getCoachesByCountry(countryCode, SportEnum.getById(sportId)))
+        return SportPageResponse.builder()
+                .withData(coachService.getCoachesByCountry(countryCode, SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
     @GetMapping()
-    private CoachResponse getCoach(
+    private SportPageResponse getCoach(
             @RequestParam("sportId") Integer sportId,
             @RequestParam(required = false) Integer leagueId,
             @RequestParam(required = false) Integer teamId,
             @RequestParam(required = false) String countryCode) {
         if (leagueId == null && teamId == null && countryCode == null) {
-            return CoachResponse.builder()
-                    .withCoaches("No search parameters")
+            return SportPageResponse.builder()
+                    .withData("No search parameters")
                     .withCode(HttpStatus.BAD_REQUEST.value())
                     .withMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
                     .build();
         }
-        return CoachResponse.builder()
-                .withCoaches(coachService.getCoaches(prepareParams(leagueId, teamId, countryCode), SportEnum.getById(sportId)))
+        return SportPageResponse.builder()
+                .withData(coachService.getCoaches(prepareParams(leagueId, teamId, countryCode), SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

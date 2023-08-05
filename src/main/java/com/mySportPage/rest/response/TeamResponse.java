@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(setterPrefix = "with")
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class TeamResponse extends BaseSportPageResponse {
+public class TeamResponse extends SportPageResponse {
 
     private Object teams;
 
