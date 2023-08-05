@@ -165,7 +165,6 @@ public class DataAcquisitionDao {
         }
     }
 
-    @CacheEvict(value ="allCountries")
     public void persistCountry(List<Country> countries) {
         if (countries.isEmpty()) {
             log.debug("persistCountry(): forwarded empty list.");

@@ -2,6 +2,7 @@ package com.mySportPage.service;
 
 import com.mySportPage.dao.CountryDao;
 import com.mySportPage.model.Country;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +15,27 @@ public class CountryServiceImpl implements CountryService {
     @Autowired
     private CountryDao countryDao;
 
+    private List<Country> cachedCountries;
+
     @Override
+    @PostConstruct
     public List<Country> getCountries() {
-        return countryDao.getCountries();
+        if (cachedCountries == null) {
+            cachedCountries = countryDao.getCountries();
+        }
+        return cachedCountries;
     }
 
     @Override
     public List<Country> getCountriesByName(String country) {
-        return getCountries().stream()
+        return cachedCountries.stream()
                 .filter(v -> v.getName().equalsIgnoreCase(country))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Country> getCountriesByCode(String countryCode) {
-        return getCountries().stream()
+        return cachedCountries.stream()
                 .filter(v -> v.getCode() != null)
                 .filter(v -> v.getCode().equalsIgnoreCase(countryCode))
                 .collect(Collectors.toList());
