@@ -25,9 +25,25 @@ public class TeamRest {
                 .build();
     }
 
-    //TODO: get teams by league
+    @GetMapping("league-id/{leagueId}")
+    public TeamResponse getTeamByLeague(
+            @PathVariable("leagueId") Integer leagueId,
+            @RequestParam("sportId") Integer sportId) {
+        return TeamResponse.builder()
+                .withTeams(teamService.getTeamByLeague(leagueId, SportEnum.getById(sportId)))
+                .withCode(HttpStatus.OK.value())
+                .withMessage(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
 
-    //TODO: get teams by country code
-
-
+    @GetMapping("country-name/{countryName}")
+    public TeamResponse getTeamByCountryName(
+            @PathVariable("countryName") String countryName,
+            @RequestParam("sportId") Integer sportId) {
+        return TeamResponse.builder()
+                .withTeams(teamService.getTeamByCountryName(countryName, SportEnum.getById(sportId)))
+                .withCode(HttpStatus.OK.value())
+                .withMessage(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
 }
