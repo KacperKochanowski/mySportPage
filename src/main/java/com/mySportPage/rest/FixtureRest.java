@@ -21,7 +21,6 @@ public class FixtureRest {
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
-    //TODO check response and field "start": "2024-03-01T23:00:00.000+00:00", make it looks better
 
     @GetMapping("for-two-weeks")
     public SportPageResponse getFixturesByDateLeagueRound() {

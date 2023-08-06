@@ -1,5 +1,6 @@
 package com.mySportPage.dao;
 
+import com.mySportPage.comonTools.Formatter;
 import com.mySportPage.dao.queries.FixtureQueries;
 import com.mySportPage.model.dto.FixtureDTO;
 import jakarta.persistence.EntityManager;
@@ -120,7 +121,7 @@ public class FixtureDao {
                     .withLeagueId((Integer) value[0])
                     .withLeagueName((String) value[1])
                     .withEvent((String) value[2])
-                    .withStart((Date) value[3])
+                    .withStart(Formatter.parseDate((Date) value[3], Formatter.dateTimeMin))
                     .withFinished((boolean) value[4])
                     .withResult((String) value[5])
                     .withRound((Integer) value[6])

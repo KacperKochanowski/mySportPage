@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Data
 @Component
 @Builder(setterPrefix = "with")
@@ -23,7 +21,7 @@ public class FixtureDTO {
 
     private Integer round;
 
-    private Date start;
+    private String start;
 
     private String event;
 
