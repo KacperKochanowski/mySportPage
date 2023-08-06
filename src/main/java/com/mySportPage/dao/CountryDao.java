@@ -12,12 +12,13 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class CountryDao {
 
+    private final String countriesQuery = "SELECT \"name\", code, flag FROM public.country";
+
     @PersistenceContext
     private EntityManager entityManager;
 
     public List<Country> getCountries() {
-        String query = "SELECT \"name\", code, flag FROM public.country";
-        List<Object[]> countries = entityManager.createNativeQuery(query).getResultList();
+        List<Object[]> countries = entityManager.createNativeQuery(countriesQuery).getResultList();
         return mapToCountry(countries);
     }
 

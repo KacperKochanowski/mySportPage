@@ -312,15 +312,15 @@ public class DataAcquisitionDao {
         log.info("Coach {} stored in database.", coach.getName());
     }
 
-    public void persistCoachCareer(Map<Integer, List<CoachHistory>> coachHistory) {
+    public void persistCoachCareer(Map<Integer, List<CoachCareer>> coachHistory) {
         Integer coachId = coachHistory.keySet().iterator().next();
         String queryPersistCoachCareer = "INSERT INTO football.coach_career (coach_id, team_id, start, \"end\") " +
                 "VALUES(:coachId, :teamId, :start, :end)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         Integer teamId;
-        for (List<CoachHistory> historyList : coachHistory.values()) {
-            for (CoachHistory history : historyList) {
+        for (List<CoachCareer> historyList : coachHistory.values()) {
+            for (CoachCareer history : historyList) {
                 teamId = history.getTeam().getExternalTeamId();
                 if (!coachCareerObjectAlreadyExists(coachId, history)) {
                     parameters.addValue("coachId", coachId);
@@ -424,7 +424,7 @@ public class DataAcquisitionDao {
      * the team's ID, the next step is to check based on the time periods when the coach was in charge of the particular team.
      */
 
-    private boolean coachCareerObjectAlreadyExists(Integer coachId, CoachHistory coachHistory) {
+    private boolean coachCareerObjectAlreadyExists(Integer coachId, CoachCareer coachHistory) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("coachId", coachId);
         parameters.addValue("start", coachHistory.getStart());

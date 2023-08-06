@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Component
 @Builder
-public class CoachHistory {
+public class CoachCareer {
 
     private Team team;
     private Date start;
