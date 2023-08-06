@@ -1,4 +1,4 @@
-package com.mySportPage.service;
+package com.mySportPage.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,6 +11,7 @@ import com.mySportPage.model.*;
 import com.mySportPage.model.Fixture;
 import com.mySportPage.model.League;
 import com.mySportPage.model.Team;
+import com.mySportPage.service.DataAcquisitionService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -338,11 +339,11 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         return null;
     }
 
-    private Map<Integer, List<CoachHistory>> mapJSONObjectToCoachHistoryList(String responseBody) {
+    private Map<Integer, List<CoachCareer>> mapJSONObjectToCoachHistoryList(String responseBody) {
         Integer coachId = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getInt("id");
         String coachCareer = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getJSONArray("career").toString();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        Type coachHistoryListType = new TypeToken<List<CoachHistory>>() {}.getType();
+        Type coachHistoryListType = new TypeToken<List<CoachCareer>>() {}.getType();
 
         return Map.of(coachId, gson.fromJson(coachCareer, coachHistoryListType));
     }

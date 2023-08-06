@@ -1,8 +1,9 @@
-package com.mySportPage.service;
+package com.mySportPage.service.impl;
 
 import com.mySportPage.dao.CoachDao;
 import com.mySportPage.model.Coach;
 import com.mySportPage.model.SportEnum;
+import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

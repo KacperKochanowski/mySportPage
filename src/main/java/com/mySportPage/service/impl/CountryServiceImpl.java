@@ -1,7 +1,8 @@
-package com.mySportPage.service;
+package com.mySportPage.service.impl;
 
 import com.mySportPage.dao.CountryDao;
 import com.mySportPage.model.Country;
+import com.mySportPage.service.CountryService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
