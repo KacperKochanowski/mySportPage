@@ -9,9 +9,9 @@ public enum CoachQueries {
     CORE_COLUMNS("DISTINCT(c.external_id), c.name, c.first_name, c.last_name, c.age, c.birth_date, c.nationality, c.height, c.weight, c.photo "),
 
     CORE_QUERY("SELECT " + CORE_COLUMNS.getQuery() +
-                           "FROM {schema}.coach c " +
-                           "LEFT JOIN {schema}.coach_career cc on c.external_id = cc.coach_id " +
-                           "LEFT JOIN {schema}.team t on t.team_id = cc.team_id " +
+                           "FROM football.coach c " +
+                           "LEFT JOIN football.coach_career cc on c.external_id = cc.coach_id " +
+                           "LEFT JOIN football.team t on t.team_id = cc.team_id " +
                            "LEFT JOIN public.country c2 on c2.name = c.birth_country " +
                            "WHERE "),
 

@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.FixtureStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ public class FixtureStatisticsRest {
     private FixtureStatisticsService fixtureStatisticsService;
 
     @GetMapping("fixture-id/{fixtureId}")
-    private SportPageResponse fixtureStatistics(@PathVariable Integer fixtureId,
-                                                @RequestParam("sportId") Integer sportId,
-                                                @RequestParam(required = false) Integer teamId) {
-        Map<Integer, Map<String, Object>> fixtureStats = fixtureStatisticsService.getFixtureStatistics(fixtureId, SportEnum.getById(sportId));
+    private SportPageResponse fixtureStatistics(
+            @PathVariable Integer fixtureId,
+            @RequestParam(required = false) Integer teamId) {
+        Map<Integer, Map<String, Object>> fixtureStats = fixtureStatisticsService.getFixtureStatistics(fixtureId);
         return SportPageResponse.builder()
                 .withData(teamId != null ? fixtureStats.get(teamId) : fixtureStats)
                 .withCode(HttpStatus.OK.value())

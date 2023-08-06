@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum TeamQueries {
 
     CORE_QUERY("SELECT name, shortcut, club_founded, country, league_id " +
-            "FROM {schema}.team " +
+            "FROM football.team " +
             "WHERE "),
 
     GET_TEAM_BY_TEAM_ID(CORE_QUERY.getQuery() +

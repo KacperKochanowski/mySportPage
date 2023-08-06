@@ -18,9 +18,9 @@ public class FixtureStatisticsDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Map<Integer, Map<String, Object>> getFixtureStatistics(Integer fixtureId, String schema) {
+    public Map<Integer, Map<String, Object>> getFixtureStatistics(Integer fixtureId) {
         List<Object[]> results = entityManager.createNativeQuery(
-                        FixtureStatisticsQueries.GET_FIXTURES_BY_FIXTURE_ID.getQuery().replace("{schema}", schema))
+                        FixtureStatisticsQueries.GET_FIXTURES_BY_FIXTURE_ID.getQuery())
                 .setParameter("fixtureId", fixtureId)
                 .getResultList();
         return mapToFixtureStatistics(results);

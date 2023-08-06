@@ -15,7 +15,8 @@ public class LeagueCoverageRest {
     private LeagueCoverageService leagueCoverageService;
 
     @GetMapping
-    public SportPageResponse getCoverage(@RequestParam("sportId") Integer sportId) {
+    public SportPageResponse getCoverage(
+            @RequestParam("sportId") Integer sportId) {
         return SportPageResponse.builder()
                 .withData(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
@@ -24,8 +25,9 @@ public class LeagueCoverageRest {
     }
 
     @GetMapping("leagueId/{leagueId}")
-    public SportPageResponse getCoverage(@RequestParam("sportId") Integer sportId,
-                                              @PathVariable("leagueId") Integer leagueId) {
+    public SportPageResponse getCoverage(
+            @RequestParam("sportId") Integer sportId,
+            @PathVariable("leagueId") Integer leagueId) {
         return SportPageResponse.builder()
                 .withData(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)).stream()
                         .filter(v -> v.getExternalLeagueId().equals(leagueId)))

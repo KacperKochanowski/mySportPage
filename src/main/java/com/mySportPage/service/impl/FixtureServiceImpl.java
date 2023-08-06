@@ -1,6 +1,5 @@
 package com.mySportPage.service.impl;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.dao.FixtureDao;
 import com.mySportPage.model.dto.FixtureDTO;
 import com.mySportPage.service.FixtureService;
@@ -17,27 +16,27 @@ public class FixtureServiceImpl implements FixtureService {
     private FixtureDao fixtureDao;
 
     @Override
-    public List<FixtureDTO> getFixtures(SportEnum sport) {
-        return fixtureDao.getFixtures(sport.getSchema());
+    public List<FixtureDTO> getFixtures() {
+        return fixtureDao.getFixtures();
     }
 
     @Override
-    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round, SportEnum sport) {
-        return fixtureDao.getFixtures(leagueId, round, sport.getSchema());
+    public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
+        return fixtureDao.getFixtures(leagueId, round);
     }
 
     @Override
-    public List<FixtureDTO> getFixtures(Integer teamId, String place, SportEnum sport) {
-        return fixtureDao.getFixtures(teamId, place, sport.getSchema());
+    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
+        return fixtureDao.getFixtures(teamId, place);
     }
 
     @Override
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played, SportEnum sport) {
-        return fixtureDao.getFixtures(teamId, played, sport.getSchema());
+    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
+        return fixtureDao.getFixtures(teamId, played);
     }
 
     @Override
-    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound(SportEnum sport) {
-        return fixtureDao.getFixturesByDateLeagueRound(sport.getSchema());
+    public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
+        return fixtureDao.getFixturesByDateLeagueRound();
     }
 }

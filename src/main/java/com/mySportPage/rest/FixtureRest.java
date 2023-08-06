@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,9 @@ public class FixtureRest {
     private FixtureService fixtureService;
 
     @GetMapping("current")
-    public SportPageResponse getFixtures(
-            @RequestParam("sportId") Integer sportId) {
+    public SportPageResponse getFixtures() {
         return SportPageResponse.builder()
-                .withData(fixtureService.getFixtures(SportEnum.getById(sportId)))
+                .withData(fixtureService.getFixtures())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -26,10 +24,9 @@ public class FixtureRest {
     //TODO check response and field "start": "2024-03-01T23:00:00.000+00:00", make it looks better
 
     @GetMapping("for-two-weeks")
-    public SportPageResponse getFixturesByDateLeagueRound(
-            @RequestParam("sportId") Integer sportId) {
+    public SportPageResponse getFixturesByDateLeagueRound() {
         return SportPageResponse.builder()
-                .withData(fixtureService.getFixturesByDateLeagueRound(SportEnum.getById(sportId)))
+                .withData(fixtureService.getFixturesByDateLeagueRound())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -38,10 +35,9 @@ public class FixtureRest {
     @GetMapping("league/{leagueId}")
     public SportPageResponse getFixtures(
             @PathVariable("leagueId") Integer leagueId,
-            @RequestParam(required = false) Integer round,
-            @RequestParam("sportId") Integer sportId) {
+            @RequestParam(required = false) Integer round) {
         return SportPageResponse.builder()
-                .withData(fixtureService.getFixtures(leagueId, round, SportEnum.getById(sportId)))
+                .withData(fixtureService.getFixtures(leagueId, round))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -50,10 +46,9 @@ public class FixtureRest {
     @GetMapping("team/{teamId}")
     public SportPageResponse getFixtures(
             @PathVariable("teamId") Integer teamId,
-            @RequestParam(required = false) String place,
-            @RequestParam("sportId") Integer sportId) {
+            @RequestParam(required = false) String place) {
         return SportPageResponse.builder()
-                .withData(fixtureService.getFixtures(teamId, place, SportEnum.getById(sportId)))
+                .withData(fixtureService.getFixtures(teamId, place))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -62,10 +57,9 @@ public class FixtureRest {
     @GetMapping("team/{teamId}/played/{played}")
     public SportPageResponse getFixtures(
             @PathVariable("teamId") Integer teamId,
-            @PathVariable("played") boolean played,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable("played") boolean played) {
         return SportPageResponse.builder()
-                .withData(fixtureService.getFixtures(teamId, played, SportEnum.getById(sportId)))
+                .withData(fixtureService.getFixtures(teamId, played))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

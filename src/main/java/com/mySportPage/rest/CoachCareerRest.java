@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachCareerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,9 @@ public class CoachCareerRest {
 
     @GetMapping("id/{coachId}")
     private SportPageResponse getCoachCareerById(
-            @PathVariable Integer coachId,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable Integer coachId) {
         return SportPageResponse.builder()
-                .withData(coachCareerService.getCoachCareerById(coachId, SportEnum.FOOTBALL))
+                .withData(coachCareerService.getCoachCareerById(coachId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -27,10 +25,9 @@ public class CoachCareerRest {
 
     @GetMapping("name/{coachName}")
     private SportPageResponse getCoachCareerByCoachName(
-            @PathVariable String coachName,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable String coachName) {
         return SportPageResponse.builder()
-                .withData(coachCareerService.getCoachCareerByName(coachName, SportEnum.FOOTBALL))
+                .withData(coachCareerService.getCoachCareerByName(coachName))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

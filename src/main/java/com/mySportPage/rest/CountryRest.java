@@ -30,7 +30,8 @@ public class CountryRest {
     }
 
     @GetMapping("name/{country}")
-    private SportPageResponse getCountriesByName(@PathVariable String country) {
+    private SportPageResponse getCountriesByName(
+            @PathVariable String country) {
         return validateParam(country) ?
                 SportPageResponse.builder()
                         .withData(countryService.getCountriesByName(country))
@@ -45,7 +46,8 @@ public class CountryRest {
     }
 
     @GetMapping({"code/{countryCode}"})
-    private SportPageResponse getCountriesByCode(@PathVariable String countryCode) {
+    private SportPageResponse getCountriesByCode(
+            @PathVariable String countryCode) {
         return validateParam(countryCode) ?
                 SportPageResponse.builder()
                         .withData(countryService.getCountriesByCode(countryCode))

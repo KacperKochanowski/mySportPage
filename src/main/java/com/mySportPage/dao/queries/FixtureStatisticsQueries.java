@@ -10,7 +10,7 @@ public enum FixtureStatisticsQueries {
             "fs.total_passes, fs.passes_accurate, fs.passes_percent, fs.expected_goals, fs.team_id "),
 
     GET_FIXTURES_BY_FIXTURE_ID("SELECT " + CORE_COLUMNS.getQuery() +
-                               "FROM {schema}.fixture_statistics fs " +
+                               "FROM football.fixture_statistics fs " +
                                "WHERE fs.fixture_id = :fixtureId");
 
     private final String query;

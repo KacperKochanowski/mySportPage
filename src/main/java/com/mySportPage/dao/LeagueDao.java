@@ -17,18 +17,16 @@ public class LeagueDao {
     private EntityManager entityManager;
 
 
-    public List<LeagueDTO> getLeagues(String schema) {
+    public List<LeagueDTO> getLeagues() {
         List<Object[]> results = entityManager
-                .createNativeQuery(LeagueQueries.GET_LEAGUES.getQuery()
-                        .replace("{schema}", schema))
+                .createNativeQuery(LeagueQueries.GET_LEAGUES.getQuery())
                 .getResultList();
         return mapToLeaguesList(results);
     }
 
-    public List<LeagueDTO> getLeagues(String country, String schema) {
+    public List<LeagueDTO> getLeagues(String country) {
         List<Object[]> results = entityManager
-                .createNativeQuery(LeagueQueries.GET_LEAGUES_BY_COUNTRY.getQuery()
-                        .replace("{schema}", schema))
+                .createNativeQuery(LeagueQueries.GET_LEAGUES_BY_COUNTRY.getQuery())
                 .setParameter("country", country)
                 .getResultList();
         return mapToLeaguesList(results);

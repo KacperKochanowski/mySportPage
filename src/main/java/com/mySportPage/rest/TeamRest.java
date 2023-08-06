@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.rest.response.TeamResponse;
 import com.mySportPage.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,9 @@ public class TeamRest {
 
     @GetMapping("team-id/{teamId}")
     public TeamResponse getTeam(
-            @PathVariable("teamId") Integer teamId,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable("teamId") Integer teamId) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeam(teamId, SportEnum.getById(sportId)))
+                .withTeams(teamService.getTeam(teamId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -27,10 +25,9 @@ public class TeamRest {
 
     @GetMapping("league-id/{leagueId}")
     public TeamResponse getTeamByLeague(
-            @PathVariable("leagueId") Integer leagueId,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable("leagueId") Integer leagueId) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeamByLeague(leagueId, SportEnum.getById(sportId)))
+                .withTeams(teamService.getTeamByLeague(leagueId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -38,10 +35,9 @@ public class TeamRest {
 
     @GetMapping("country-name/{countryName}")
     public TeamResponse getTeamByCountryName(
-            @PathVariable("countryName") String countryName,
-            @RequestParam("sportId") Integer sportId) {
+            @PathVariable("countryName") String countryName) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeamByCountryName(countryName, SportEnum.getById(sportId)))
+                .withTeams(teamService.getTeamByCountryName(countryName))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

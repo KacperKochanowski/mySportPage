@@ -1,6 +1,5 @@
 package com.mySportPage.dao;
 
-import com.mySportPage.dao.queries.CoachQueries;
 import com.mySportPage.model.Coach;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -21,31 +20,30 @@ public class CoachDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Coach> getCoachesByLeague(int leagueId, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_LEAGUE_ID.getQuery())
+    public List<Coach> getCoachesByLeague(int leagueId) {
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_LEAGUE_ID.getQuery())
                 .setParameter("leagueId", leagueId)
                 .getResultList();
         return mapToCoachList(result);
     }
 
-    public List<Coach> getCoachesByTeam(int teamId, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_TEAM_ID.getQuery()
-                )
+    public List<Coach> getCoachesByTeam(int teamId) {
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_TEAM_ID.getQuery())
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToCoachList(result);
     }
 
 
-    public List<Coach> getCoachesByCountryCode(String countryCode, String schema) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery().replace("{schema}", schema) + GET_COACH_BY_COUNTRY_CODE.getQuery())
+    public List<Coach> getCoachesByCountryCode(String countryCode) {
+        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_COUNTRY_CODE.getQuery())
                 .setParameter("countryCode", countryCode)
                 .getResultList();
         return mapToCoachList(result);
     }
 
-    public List<Coach> getCoaches(Map<String, Object> params, String schema) {
-        StringBuilder coachQuery = new StringBuilder().append(CORE_QUERY.getQuery().replace("{schema}", schema));
+    public List<Coach> getCoaches(Map<String, Object> params) {
+        StringBuilder coachQuery = new StringBuilder().append(CORE_QUERY.getQuery());
         boolean isFirstParam = true;
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             switch (entry.getKey()) {

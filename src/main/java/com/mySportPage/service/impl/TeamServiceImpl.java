@@ -1,6 +1,5 @@
 package com.mySportPage.service.impl;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.dao.TeamDao;
 import com.mySportPage.model.dto.TeamDTO;
 import com.mySportPage.service.TeamService;
@@ -16,17 +15,17 @@ public class TeamServiceImpl implements TeamService {
     private TeamDao teamDao;
 
     @Override
-    public List<TeamDTO> getTeam(Integer teamId, SportEnum sportEnum) {
-        return teamDao.getTeam(teamId, sportEnum.getSchema());
+    public List<TeamDTO> getTeam(Integer teamId) {
+        return teamDao.getTeam(teamId);
     }
 
     @Override
-    public List<TeamDTO> getTeamByLeague(Integer leagueId, SportEnum sportEnum) {
-        return teamDao.getTeamByLeague(leagueId, sportEnum.getSchema());
+    public List<TeamDTO> getTeamByLeague(Integer leagueId) {
+        return teamDao.getTeamByLeague(leagueId);
     }
 
     @Override
-    public List<TeamDTO> getTeamByCountryName(String countryName, SportEnum sportEnum) {
-        return teamDao.getTeamByCountryName(countryName, sportEnum.getSchema());
+    public List<TeamDTO> getTeamByCountryName(String countryName) {
+        return teamDao.getTeamByCountryName(countryName);
     }
 }

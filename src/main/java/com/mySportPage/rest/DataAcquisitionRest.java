@@ -33,8 +33,9 @@ public class DataAcquisitionRest {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
     @PostMapping("/createTeamsAndStadiums")
-    public SportPageResponse createTeamsAndStadiums(@RequestParam("leagueId") Integer leagueId,
-                                                    @RequestParam("season") Integer season) throws IOException {
+    public SportPageResponse createTeamsAndStadiums(
+            @RequestParam("leagueId") Integer leagueId,
+            @RequestParam("season") Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", String.valueOf(leagueId));
@@ -50,11 +51,12 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createLeagues")
-    public SportPageResponse createLeagues(@RequestParam(required = false) String leagueId,
-                                                 @RequestParam(required = false) String season,
-                                                 @RequestParam(required = false) String code,
-                                                 @RequestParam(required = false) String country,
-                                                 @RequestParam(required = false) String name) throws IOException {
+    public SportPageResponse createLeagues(
+            @RequestParam(required = false) String leagueId,
+            @RequestParam(required = false) String season,
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String country,
+            @RequestParam(required = false) String name) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("leagueId", leagueId);
@@ -72,8 +74,9 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createFixtures")
-    public SportPageResponse createLeagues(@RequestParam(required = false) String leagueId,
-                                                 @RequestParam(required = false) Integer season) throws IOException {
+    public SportPageResponse createLeagues(
+            @RequestParam(required = false) String leagueId,
+            @RequestParam(required = false) Integer season) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", leagueId);
@@ -88,8 +91,9 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createStandings")
-    public SportPageResponse createStandings(@RequestParam(required = false) String leagueId,
-                                                   @RequestParam Integer season) throws IOException {
+    public SportPageResponse createStandings(
+            @RequestParam(required = false) String leagueId,
+            @RequestParam Integer season) throws IOException {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
@@ -102,8 +106,9 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createFixtureStatistics")
-    public SportPageResponse createFixtureStatistics(@RequestParam Integer fixture,
-                                                           @RequestParam(required = false) Integer team) throws IOException {
+    public SportPageResponse createFixtureStatistics(
+            @RequestParam Integer fixture,
+            @RequestParam(required = false) Integer team) throws IOException {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("fixture", String.valueOf(fixture));
@@ -120,7 +125,8 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createCoachWithHistory/{teamId}")
-    public SportPageResponse createCoachWithHistory(@PathVariable Integer teamId) throws IOException {
+    public SportPageResponse createCoachWithHistory(
+            @PathVariable Integer teamId) throws IOException {
 
         String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{
             put("team", String.valueOf(teamId));

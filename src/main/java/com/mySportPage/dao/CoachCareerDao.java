@@ -21,7 +21,7 @@ public class CoachCareerDao {
 
     String coachCareerByIdQuery =
             "SELECT cc.team_id, t.name, cc.start, cc.end " +
-                    "FROM {schema}.coach_career cc " +
+                    "FROM football.coach_career cc " +
                     "LEFT JOIN football.team t on cc.team_id = t.team_id " +
                     "WHERE coach_id = :coachId " +
                     "ORDER BY start DESC";
@@ -34,15 +34,15 @@ public class CoachCareerDao {
                     "ORDER BY start DESC";
 
 
-    public List<CoachCareer> getCoachCareerById(Integer coachId, String schema) {
-        List<Object[]> coachCareerData = entityManager.createNativeQuery(coachCareerByIdQuery.replace("{schema}", schema))
+    public List<CoachCareer> getCoachCareerById(Integer coachId) {
+        List<Object[]> coachCareerData = entityManager.createNativeQuery(coachCareerByIdQuery)
                 .setParameter("coachId", coachId)
                 .getResultList();
         return mapToCoachCareer(coachCareerData);
     }
 
-    public List<CoachCareer> getCoachCareerByName(String coachName, String schema) {
-        List<Object[]> coachCareerData = entityManager.createNativeQuery(coachCareerByName.replace("{schema}", schema))
+    public List<CoachCareer> getCoachCareerByName(String coachName) {
+        List<Object[]> coachCareerData = entityManager.createNativeQuery(coachCareerByName)
                 .setParameter("coachName", coachName)
                 .getResultList();
         return mapToCoachCareer(coachCareerData);

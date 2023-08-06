@@ -1,6 +1,5 @@
 package com.mySportPage.service.impl;
 
-import com.mySportPage.model.SportEnum;
 import com.mySportPage.dao.LeagueDao;
 import com.mySportPage.model.dto.LeagueDTO;
 import com.mySportPage.service.LeagueService;
@@ -16,12 +15,12 @@ public class LeagueServiceImpl implements LeagueService {
     private LeagueDao leagueDao;
 
     @Override
-    public List<LeagueDTO> getLeagues(SportEnum sportEnum) {
-        return leagueDao.getLeagues(sportEnum.getSchema());
+    public List<LeagueDTO> getLeagues() {
+        return leagueDao.getLeagues();
     }
 
     @Override
-    public List<LeagueDTO> getLeagues(String country, SportEnum sportEnum) {
-        return leagueDao.getLeagues(country, sportEnum.getSchema());
+    public List<LeagueDTO> getLeagues(String country) {
+        return leagueDao.getLeagues(country);
     }
 }

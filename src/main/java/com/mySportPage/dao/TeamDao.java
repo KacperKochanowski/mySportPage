@@ -16,28 +16,25 @@ public class TeamDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<TeamDTO> getTeam(Integer teamId, String schema) {
+    public List<TeamDTO> getTeam(Integer teamId) {
         List<Object[]> result = entityManager
-                .createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery()
-                        .replace("{schema}", schema))
+                .createNativeQuery(TeamQueries.GET_TEAM_BY_TEAM_ID.getQuery())
                 .setParameter("teamId", teamId)
                 .getResultList();
         return mapToTeam(result);
     }
 
-    public List<TeamDTO> getTeamByLeague(Integer leagueId, String schema) {
+    public List<TeamDTO> getTeamByLeague(Integer leagueId) {
         List<Object[]> result = entityManager
-                .createNativeQuery(TeamQueries.GET_TEAM_BY_LEAGUE_ID.getQuery()
-                        .replace("{schema}", schema))
+                .createNativeQuery(TeamQueries.GET_TEAM_BY_LEAGUE_ID.getQuery())
                 .setParameter("leagueId", leagueId)
                 .getResultList();
         return mapToTeam(result);
     }
 
-    public List<TeamDTO> getTeamByCountryName(String countryName, String schema) {
+    public List<TeamDTO> getTeamByCountryName(String countryName) {
         List<Object[]> result = entityManager
-                .createNativeQuery(TeamQueries.GET_TEAM_BY_COUNTRY_NAME_ID.getQuery()
-                        .replace("{schema}", schema))
+                .createNativeQuery(TeamQueries.GET_TEAM_BY_COUNTRY_NAME_ID.getQuery())
                 .setParameter("countryName", countryName)
                 .getResultList();
         return mapToTeam(result);
