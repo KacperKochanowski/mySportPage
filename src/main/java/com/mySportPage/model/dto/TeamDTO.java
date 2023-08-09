@@ -1,14 +1,17 @@
 package com.mySportPage.model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Do not add the @Builder annotation here!
+ * It will prevent object mapping by MapStruct.
+ */
+
 @Data
 @Component
-@Builder(setterPrefix = "with")
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamDTO {
