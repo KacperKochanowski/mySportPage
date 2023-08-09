@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@Builder
+@Builder(setterPrefix = "with")
 public class CoachCareer {
 
     private Team team;

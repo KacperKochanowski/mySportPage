@@ -3,14 +3,12 @@ package com.mySportPage.mapper.mapStruct;
 import com.mySportPage.model.CoachCareer;
 import com.mySportPage.model.Team;
 import org.mapstruct.Mapper;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-@Component
+@Mapper
 public interface CoachCareerMapper {
 
     default List<CoachCareer> mapToCoachCareerList(List<Object[]> data) {

@@ -1,12 +1,13 @@
 package com.mySportPage.dao;
 
-import com.mySportPage.mapper.mapStruct.CoachCareerMapper;
 import com.mySportPage.model.CoachCareer;
+import com.mySportPage.model.Team;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,15 +17,13 @@ public class CoachCareerDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private CoachCareerMapper coachCareerMapper;
-
     String coachCareerByIdQuery =
             "SELECT cc.team_id, t.name, cc.start, cc.end " +
                     "FROM football.coach_career cc " +
                     "LEFT JOIN football.team t on cc.team_id = t.team_id " +
                     "WHERE coach_id = :coachId " +
                     "ORDER BY start DESC";
+
     String coachCareerByName =
             "SELECT cc.team_id, t.name, cc.start, cc.end " +
                     "FROM football.coach_career cc " +
@@ -49,6 +48,15 @@ public class CoachCareerDao {
     }
 
     private List<CoachCareer> mapToCoachCareer(List<Object[]> coachCareerData) {
-        return coachCareerMapper.mapToCoachCareerList(coachCareerData);
+        List<CoachCareer> coachCareer = new ArrayList<>();
+        for (Object[] data : coachCareerData) {
+            coachCareer.add(CoachCareer
+                    .builder()
+                    .withTeam(new Team((Integer) data[0], (String) data[1]))
+                    .withStart((Date) data[2])
+                    .withEnd((Date) data[3])
+                    .build());
+        }
+        return coachCareer;
     }
 }
