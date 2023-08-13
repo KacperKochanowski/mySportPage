@@ -86,7 +86,8 @@ CREATE TABLE football.standing (
 	actual_results_id int4 NULL,
 	home_results_id int4 NULL,
 	away_results_id int4 NULL,
-	updated timestamp NOT NULL
+	updated timestamp NOT NULL,
+	CONSTRAINT standing_team_key UNIQUE (team)
 );
 
 CREATE TABLE football.results (
