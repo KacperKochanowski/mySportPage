@@ -1,18 +1,17 @@
 package com.mySportPage.rest.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-/**
- * I have created this custom response class mainly to see how @SuperBuilder works.
- */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder (setterPrefix = "with")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SportPageResponse {
 
     private int code;

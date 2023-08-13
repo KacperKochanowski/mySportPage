@@ -1,7 +1,6 @@
 package com.mySportPage.task;
 
 import com.mySportPage.dao.FixtureDao;
-import com.mySportPage.model.SportEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * I have created this custom response class mainly to see how @SuperBuilder works.
+ */
+
 @Data
 @SuperBuilder(setterPrefix = "with")
 @AllArgsConstructor

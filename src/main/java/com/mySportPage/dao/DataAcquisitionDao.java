@@ -31,7 +31,8 @@ public class DataAcquisitionDao {
         put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
         put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture WHERE fixture_id = :internalId)"));
         put(SportObjectEnum.RESULTS, List.of("SELECT EXISTS (SELECT 1 FROM football.results WHERE description = :internalId AND team_id = :externalId)"));
-        put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM football.standing WHERE updated = :internalId AND team = :externalId)"));
+        put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM football.standing WHERE team = :internalId)",
+                "SELECT EXISTS (SELECT 1 FROM football.standing WHERE updated = :externalId AND team = :internalId)"));
         put(SportObjectEnum.FIXTURE_STATS, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture_statistics WHERE fixture_id = :internalId AND team_id = :externalId)"));
         put(SportObjectEnum.COACH, List.of("SELECT EXISTS (SELECT 1 FROM football.coach WHERE external_id = :externalId)"));
         put(SportObjectEnum.COACH_HISTORY, List.of("SELECT EXISTS (SELECT 1 FROM football.coach_career WHERE coach_id = :coachId AND team_id = :teamId AND start = :start AND CASE WHEN \"end\" IS NOT NULL THEN \"end\" = :end ELSE TRUE END)"));
@@ -244,27 +245,37 @@ public class DataAcquisitionDao {
                 "(rank, team, points, goals_diff, form, league_id, season, position_description, actual_results_id, home_results_id, away_results_id, updated) " +
                 "VALUES(:rank, :team, :points, :goalsDiff, :form, :leagueId, :season, :additionalPositionDescription, :resultsId, :homeResultsId, :awayResultsId, :updated)";
 
+        String queryUpdateStandings = "UPDATE football.standings " +
+                "SET rank = :rank, points = :points, goals_diff = :goalsDiff, form = :form, position_description = :additionalPositionDescription, actual_results_id= :resultsId, " +
+                "home_results_id = :homeResultsId, away_results_id = :awayResultsId, updated = :updated " +
+                "WHERE team = :team";
+
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Standing standing : standings) {
-            parameters.addValue("updated", standing.getUpdated());
             parameters.addValue("team", standing.getTeam().getName());
-            if (!objectAlreadyExists(SportObjectEnum.STANDING, standing.getUpdated(), standing.getTeam().getName())) {
-                parameters.addValue("resultsId", prepareResults(parameters, standing.getResults()));
-                parameters.addValue("homeResultsId", prepareResults(parameters, standing.getHomeResults()));
-                parameters.addValue("awayResultsId", prepareResults(parameters, standing.getAwayResults()));
-                parameters.addValue("rank", standing.getRank());
-                parameters.addValue("points", standing.getPoints());
-                parameters.addValue("goalsDiff", standing.getGoalsDiff());
-                parameters.addValue("form", standing.getForm());
-                parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
+            parameters.addValue("updated", standing.getUpdated());
+            parameters.addValue("rank", standing.getRank());
+            parameters.addValue("points", standing.getPoints());
+            parameters.addValue("goalsDiff", standing.getGoalsDiff());
+            parameters.addValue("form", standing.getForm());
+            parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
+            if (!objectAlreadyExists(SportObjectEnum.STANDING, standing.getTeam().getName(), null)) {
                 parameters.addValue("season", standing.getSeason());
-                parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
-
+                parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
+                parameters.addValue("resultsId", prepareAndUpsertResults(parameters, standing.getResults()));
+                parameters.addValue("homeResultsId", prepareAndUpsertResults(parameters, standing.getHomeResults()));
+                parameters.addValue("awayResultsId", prepareAndUpsertResults(parameters, standing.getAwayResults()));
                 this.namedParameterJdbcTemplate.update(queryPersistStandings, parameters);
+                log.info("{}s standing stored in database.", standing.getTeam().getName());
+            } else if (!objectAlreadyExists(SportObjectEnum.STANDING, standing.getTeam().getName(), standing.getUpdated())) {
+                parameters.addValue("resultsId", prepareAndUpsertResults(parameters, standing.getResults()));
+                parameters.addValue("homeResultsId", prepareAndUpsertResults(parameters, standing.getHomeResults()));
+                parameters.addValue("awayResultsId", prepareAndUpsertResults(parameters, standing.getAwayResults()));
+                this.namedParameterJdbcTemplate.update(queryUpdateStandings, parameters);
                 log.info("{}s standing updated in database.", standing.getTeam().getName());
-                continue;
+            } else {
+                log.debug("{}s standing already exists in database.", standing.getTeam().getName());
             }
-            log.debug("{}s standing already exists in database.", standing.getTeam().getName());
         }
     }
 
@@ -336,7 +347,7 @@ public class DataAcquisitionDao {
         }
     }
 
-    private Integer prepareResults(MapSqlParameterSource parameters, Results results) {
+    private Integer prepareAndUpsertResults(MapSqlParameterSource parameters, Results results) {
 
         String queryPersistResults = "INSERT INTO football.results (team_id, rounds_played, wins, draws, loses, goals_for, goals_against, description) " +
                 "VALUES(:teamId, :roundsPlayed, :wins, :draws, :loses, :goalsFor, :goalsAgainst, :description) " +
@@ -409,7 +420,9 @@ public class DataAcquisitionDao {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("internalId", internalId);
         parameters.addValue("externalId", externalId);
-        int queryIndex = (externalId != null && object.equals(SportObjectEnum.STADIUM)) ? 1 : 0;
+        int queryIndex = (externalId != null &&
+                (object.equals(SportObjectEnum.STADIUM) ||
+                        object.equals(SportObjectEnum.STANDING))) ? 1 : 0;
         return Boolean.TRUE.equals(
                 namedParameterJdbcTemplate.queryForObject(
                         queriesForChecking.get(object).get(queryIndex),
