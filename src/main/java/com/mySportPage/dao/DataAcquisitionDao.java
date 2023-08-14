@@ -235,7 +235,7 @@ public class DataAcquisitionDao {
                 this.namedParameterJdbcTemplate.update(queryPersistFixture, parameters);
                 log.info("Fixture {} stored in database.", event);
             } else if (fixture.getWinner() != null &&
-                    !objectAlreadyExists(SportObjectEnum.FIXTURE, Map.of("fixtureId", fixture.getId()), 1)) {
+                    objectAlreadyExists(SportObjectEnum.FIXTURE, Map.of("fixtureId", fixture.getId()), 1)) {
                 this.namedParameterJdbcTemplate.update(queryUpdateFixture, parameters);
                 log.info("Fixture {} settled in database.", event);
             } else {
