@@ -243,7 +243,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                                 element.getInt("away") : 0},
                 }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1])));
             }
-            if (fixture.getWinner() == null && fixture.getStart().before(new Date())) {
+            if (fixture.getWinner() == null && fixture.getStart().before(new Date()) && fixture.getFulltimeScore() != null) {
                 fixture.setWinner("-");
             }
             fixtures.add(fixture);
