@@ -22,7 +22,7 @@ public class MissingFootballResultingTask {
         log.info(">>>> STARTED MissingResultingTask <<<<");
         Integer issues = fixtureDao.checkForMissingResulting();
         if (issues > 0) {
-            log.error("MissingResultingTask: found {} not settled results!", issues);
+            log.warn("MissingResultingTask: found {} not settled results!", issues);
         }
         log.info(">>>> FINISHED MissingResultingTask <<<<");
     }
