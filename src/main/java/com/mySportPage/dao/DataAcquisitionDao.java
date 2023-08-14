@@ -23,18 +23,19 @@ public class DataAcquisitionDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final Map<SportObjectEnum, List<String>> queriesForChecking = new HashMap<>() {{
-        put(SportObjectEnum.TEAM, List.of("SELECT EXISTS (SELECT 1 FROM football.team WHERE team_id = :internalId)"));
-        put(SportObjectEnum.STADIUM, List.of("SELECT EXISTS (SELECT 1 FROM football.stadium WHERE stadium_id = :internalId)",
-                "SELECT EXISTS (SELECT 1 FROM football.stadium WHERE stadium_id = :internalId AND :externalId = ANY(team_id))"));
-        put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM football.league WHERE league_id = :internalId AND country = CAST(:externalId AS text))"));
-        put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM football.league_coverage WHERE external_league_id = :internalId)"));
-        put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :internalId)"));
-        put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture WHERE fixture_id = :internalId)"));
-        put(SportObjectEnum.RESULTS, List.of("SELECT EXISTS (SELECT 1 FROM football.results WHERE description = :internalId AND team_id = :externalId)"));
-        put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM football.standing WHERE team = :internalId)",
-                "SELECT EXISTS (SELECT 1 FROM football.standing WHERE updated = :externalId AND team = :internalId)"));
-        put(SportObjectEnum.FIXTURE_STATS, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture_statistics WHERE fixture_id = :internalId AND team_id = :externalId)"));
-        put(SportObjectEnum.COACH, List.of("SELECT EXISTS (SELECT 1 FROM football.coach WHERE external_id = :externalId)"));
+        put(SportObjectEnum.TEAM, List.of("SELECT EXISTS (SELECT 1 FROM football.team WHERE team_id = :teamId)"));
+        put(SportObjectEnum.STADIUM, List.of("SELECT EXISTS (SELECT 1 FROM football.stadium WHERE stadium_id = :stadiumId)",
+                "SELECT EXISTS (SELECT 1 FROM football.stadium WHERE stadium_id = :stadiumId AND :teamId = ANY(team_id))"));
+        put(SportObjectEnum.LEAGUE, List.of("SELECT EXISTS (SELECT 1 FROM football.league WHERE league_id = :leagueId AND country = CAST(:country AS text))"));
+        put(SportObjectEnum.LEAGUE_COVERAGE, List.of("SELECT EXISTS (SELECT 1 FROM football.league_coverage WHERE external_league_id = :leagueCoverageId)"));
+        put(SportObjectEnum.COUNTRY, List.of("SELECT EXISTS (SELECT 1 FROM public.country WHERE name = :country)"));
+        put(SportObjectEnum.FIXTURE, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture WHERE fixture_id = :fixtureId)",
+                "SELECT EXISTS (SELECT 1 FROM football.fixture WHERE fixture_id = :fixtureId AND winner IS NULL)"));
+        put(SportObjectEnum.RESULTS, List.of("SELECT EXISTS (SELECT 1 FROM football.results WHERE description = :description AND team_id = :teamId)"));
+        put(SportObjectEnum.STANDING, List.of("SELECT EXISTS (SELECT 1 FROM football.standing WHERE team = :team)",
+                "SELECT EXISTS (SELECT 1 FROM football.standing WHERE updated = :updated AND team = :team)"));
+        put(SportObjectEnum.FIXTURE_STATS, List.of("SELECT EXISTS (SELECT 1 FROM football.fixture_statistics WHERE fixture_id = :fixtureId AND team_id = :teamId)"));
+        put(SportObjectEnum.COACH, List.of("SELECT EXISTS (SELECT 1 FROM football.coach WHERE external_id = :coachId)"));
         put(SportObjectEnum.COACH_HISTORY, List.of("SELECT EXISTS (SELECT 1 FROM football.coach_career WHERE coach_id = :coachId AND team_id = :teamId AND start = :start AND CASE WHEN \"end\" IS NOT NULL THEN \"end\" = :end ELSE TRUE END)"));
     }};
 
@@ -54,7 +55,7 @@ public class DataAcquisitionDao {
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Team team : teams) {
-            if (!objectAlreadyExists(SportObjectEnum.TEAM, team.getExternalTeamId(), null)) {
+            if (!objectAlreadyExists(SportObjectEnum.TEAM, Map.of("teamId", team.getExternalTeamId()), 0)) {
                 parameters.addValue("externalTeamId", team.getExternalTeamId());
                 parameters.addValue("name", team.getName());
                 parameters.addValue("shortcut", team.getShortCut());
@@ -85,7 +86,7 @@ public class DataAcquisitionDao {
         for (Stadium stadium : stadiums) {
             parameters.addValue("id", stadium.getId());
             parameters.addValue("teamId", stadium.getExternalTeamId());
-            if (!objectAlreadyExists(SportObjectEnum.STADIUM, stadium.getId(), null)) {
+            if (!objectAlreadyExists(SportObjectEnum.STADIUM, Map.of("stadiumId", stadium.getId()), 0)) {
                 parameters.addValue("stadium", stadium.getStadium());
                 parameters.addValue("capacity", stadium.getCapacity());
                 parameters.addValue("address", stadium.getAddress());
@@ -93,7 +94,7 @@ public class DataAcquisitionDao {
 
                 this.namedParameterJdbcTemplate.update(queryPersistStadium, parameters);
                 log.info("Stadium: {} stored in database.", stadium.getStadium());
-            } else if (!objectAlreadyExists(SportObjectEnum.STADIUM, stadium.getId(), stadium.getExternalTeamId())) {
+            } else if (!objectAlreadyExists(SportObjectEnum.STADIUM, Map.of("stadiumId", stadium.getId(), "teamId", stadium.getExternalTeamId()), 1)) {
                 this.namedParameterJdbcTemplate.update(queryUpdateStadium, parameters);
                 log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getStadium(), stadium.getExternalTeamId());
             } else {
@@ -115,7 +116,7 @@ public class DataAcquisitionDao {
         for (League league : leagues) {
             parameters.addValue("leagueId", league.getExternalLeagueId());
             parameters.addValue("name", league.getName());
-            if (!objectAlreadyExists(SportObjectEnum.LEAGUE, league.getExternalLeagueId(), league.getCountry().getName())) {
+            if (!objectAlreadyExists(SportObjectEnum.LEAGUE, Map.of("leagueId", league.getExternalLeagueId(), "country", league.getCountry().getName()), 0)) {
                 parameters.addValue("type", league.getType());
                 parameters.addValue("logo", league.getLogo());
                 parameters.addValue("year", league.getYear());
@@ -144,7 +145,7 @@ public class DataAcquisitionDao {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (LeagueCoverage leagueCoverage : leagueCoverages) {
             parameters.addValue("externalLeagueId", leagueCoverage.getExternalLeagueId());
-            if (!objectAlreadyExists(SportObjectEnum.LEAGUE_COVERAGE, leagueCoverage.getExternalLeagueId(), null)) {
+            if (!objectAlreadyExists(SportObjectEnum.LEAGUE_COVERAGE, Map.of("leagueCoverageId", leagueCoverage.getExternalLeagueId()), 0)) {
                 parameters.addValue("events", leagueCoverage.isWithEvents());
                 parameters.addValue("lineups", leagueCoverage.isWithLineups());
                 parameters.addValue("statisticsFixtures", leagueCoverage.isWithStatisticsFixtures());
@@ -177,7 +178,7 @@ public class DataAcquisitionDao {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         for (Country country : countries) {
             parameters.addValue("name", country.getName());
-            if (!objectAlreadyExists(SportObjectEnum.COUNTRY, country.getName(), null)) {
+            if (!objectAlreadyExists(SportObjectEnum.COUNTRY, Map.of("country", country.getName()), 0)) {
                 parameters.addValue("code", country.getCode());
                 parameters.addValue("flag", country.getFlag());
 
@@ -195,43 +196,51 @@ public class DataAcquisitionDao {
             log.debug("persistFixture(): forwarded empty list.");
             return;
         }
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+
         String queryPersistFixture = "INSERT INTO football.fixture " +
                 "(fixture_id, \"event\", league_id, round, season, \"start\", host, guest, winner, stadium_id, referee, \"result\", halftime_score, fulltime_score, played) " +
                 "VALUES(:id, :event, :leagueId, :round, :season, :start, :host, :guest, :winner, :stadiumId, :referee, :result, :halftimeScore, :fulltimeScore, :finished);";
 
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        String queryUpdateFixture = "UPDATE football.fixture " +
+                "SET winner = :winner, referee = :referee, result = :result, halftime_score = :halftimeScore, fulltime_score = :fulltimeScore, played = :finished " +
+                "WHERE fixture_id = :id";
 
         for (Fixture fixture : fixtures) {
+            String event = fixture.getEvent();
             parameters.addValue("id", fixture.getId());
-            if (!objectAlreadyExists(SportObjectEnum.FIXTURE, fixture.getId(), null)) {
-                String halftimeResult = fixture.isFinished() ?
-                        String.format("%s:%s",
-                                fixture.getHalftimeScore().get("HOST"),
-                                fixture.getHalftimeScore().get("GUEST")) : null;
-                String fulltimeResult = fixture.isFinished() ?
-                        String.format("%s:%s",
-                                fixture.getFulltimeScore().get("HOST"),
-                                fixture.getFulltimeScore().get("GUEST")) : null;
-                parameters.addValue("event", fixture.getEvent());
+            parameters.addValue("winner", fixture.getWinner());
+            parameters.addValue("referee", fixture.getReferee().getName());
+            String halftimeResult = fixture.isFinished() ?
+                    String.format("%s:%s",
+                            fixture.getHalftimeScore().get("HOST"),
+                            fixture.getHalftimeScore().get("GUEST")) : null;
+            parameters.addValue("halftimeScore", halftimeResult);
+            String fulltimeResult = fixture.isFinished() ?
+                    String.format("%s:%s",
+                            fixture.getFulltimeScore().get("HOST"),
+                            fixture.getFulltimeScore().get("GUEST")) : null;
+            parameters.addValue("fulltimeScore", fulltimeResult);
+            parameters.addValue("result", fixture.isFinished() ? String.format("%s (%s)", fulltimeResult, halftimeResult) : null);
+            parameters.addValue("finished", fixture.isFinished());
+            if (!objectAlreadyExists(SportObjectEnum.FIXTURE, Map.of("fixtureId", fixture.getId()), 0)) {
+                parameters.addValue("event", event);
                 parameters.addValue("leagueId", fixture.getLeagueId());
                 parameters.addValue("round", fixture.getRound());
                 parameters.addValue("season", fixture.getSeason());
                 parameters.addValue("start", fixture.getStart());
                 parameters.addValue("host", fixture.getHost().getName());
                 parameters.addValue("guest", fixture.getGuest().getName());
-                parameters.addValue("winner", fixture.getWinner());
                 parameters.addValue("stadiumId", fixture.getStadiumId());
-                parameters.addValue("referee", fixture.getReferee().getName());
-                parameters.addValue("result", fixture.isFinished() ? String.format("%s (%s)", fulltimeResult, halftimeResult) : null);
-                parameters.addValue("halftimeScore", halftimeResult);
-                parameters.addValue("fulltimeScore", fulltimeResult);
-                parameters.addValue("finished", fixture.isFinished());
-
                 this.namedParameterJdbcTemplate.update(queryPersistFixture, parameters);
-                log.info("Fixture {} stored in database.", fixture.getEvent());
-                continue;
+                log.info("Fixture {} stored in database.", event);
+            } else if (fixture.getWinner() != null &&
+                    !objectAlreadyExists(SportObjectEnum.FIXTURE, Map.of("fixtureId", fixture.getId()), 1)) {
+                this.namedParameterJdbcTemplate.update(queryUpdateFixture, parameters);
+                log.info("Fixture {} settled in database.", event);
+            } else {
+                log.debug("Fixture {} already exists in database.", event);
             }
-            log.debug("Fixture {} already exists in database.", fixture.getEvent());
         }
     }
 
@@ -259,7 +268,7 @@ public class DataAcquisitionDao {
             parameters.addValue("goalsDiff", standing.getGoalsDiff());
             parameters.addValue("form", standing.getForm());
             parameters.addValue("additionalPositionDescription", standing.getAdditionalPositionDescription());
-            if (!objectAlreadyExists(SportObjectEnum.STANDING, standing.getTeam().getName(), null)) {
+            if (!objectAlreadyExists(SportObjectEnum.STANDING, Map.of("team", standing.getTeam().getName()), 0)) {
                 parameters.addValue("season", standing.getSeason());
                 parameters.addValue("leagueId", standing.getLeague().getExternalLeagueId());
                 parameters.addValue("resultsId", prepareAndUpsertResults(parameters, standing.getResults()));
@@ -267,7 +276,7 @@ public class DataAcquisitionDao {
                 parameters.addValue("awayResultsId", prepareAndUpsertResults(parameters, standing.getAwayResults()));
                 this.namedParameterJdbcTemplate.update(queryPersistStandings, parameters);
                 log.info("{}s standing stored in database.", standing.getTeam().getName());
-            } else if (!objectAlreadyExists(SportObjectEnum.STANDING, standing.getTeam().getName(), standing.getUpdated())) {
+            } else if (!objectAlreadyExists(SportObjectEnum.STANDING, Map.of("team", standing.getTeam().getName(), "updated", standing.getUpdated()), 1)) {
                 parameters.addValue("resultsId", prepareAndUpsertResults(parameters, standing.getResults()));
                 parameters.addValue("homeResultsId", prepareAndUpsertResults(parameters, standing.getHomeResults()));
                 parameters.addValue("awayResultsId", prepareAndUpsertResults(parameters, standing.getAwayResults()));
@@ -280,11 +289,11 @@ public class DataAcquisitionDao {
     }
 
     public void persistFixtureStats(Map<Integer, Map<Integer, FixtureStatistics>> fixtureStatistics) {
-        Integer fixtureId = fixtureStatistics.keySet().stream().findFirst().orElse(null);
+        Integer fixtureId = fixtureStatistics.keySet().iterator().next();
         List<Integer> teamIds = fixtureStatistics.get(fixtureId).keySet().stream().toList();
         List<String> queriesPersistFixturesStats = glueQueryForStatistics(fixtureStatistics.get(fixtureId), fixtureId);
         for (int i = 0; i < teamIds.size(); i++) {
-            if (!objectAlreadyExists(SportObjectEnum.FIXTURE_STATS, fixtureId, teamIds.get(i))) {
+            if (!objectAlreadyExists(SportObjectEnum.FIXTURE_STATS, Map.of("fixtureId", fixtureId, "teamId", teamIds.get(i)), 0)) {
                 this.namedParameterJdbcTemplate.update(queriesPersistFixturesStats.get(i), new MapSqlParameterSource());
                 log.info("Fixture stats with fixture id {} and team id {} stored in database.", fixtureId, teamIds.get(i));
             } else {
@@ -299,7 +308,7 @@ public class DataAcquisitionDao {
             return;
         }
 
-        if (objectAlreadyExists(SportObjectEnum.COACH, null, coach.getExternalId())) {
+        if (objectAlreadyExists(SportObjectEnum.COACH, Map.of(":coachId", coach.getExternalId()), 0)) {
             log.debug("Coach {} with external id {} already exists in database", coach.getName(), coach.getExternalId());
             return;
         }
@@ -323,6 +332,12 @@ public class DataAcquisitionDao {
         log.info("Coach {} stored in database.", coach.getName());
     }
 
+    /**
+     * More parameters are required to determine if a particular record already exists in the database. To illustrate this, we can take the
+     * example of coach Carlo Ancelotti,who had two stints at Real Madrid from 2013 to 2015 and from 2021 to 2024. So, in addition to checking
+     * based on the coach's ID and the team's ID, the next step is to check based on the time periods when the coach was in charge of the particular team.
+     */
+
     public void persistCoachCareer(Map<Integer, List<CoachCareer>> coachHistory) {
         Integer coachId = coachHistory.keySet().iterator().next();
         String queryPersistCoachCareer = "INSERT INTO football.coach_career (coach_id, team_id, start, \"end\") " +
@@ -333,7 +348,7 @@ public class DataAcquisitionDao {
         for (List<CoachCareer> historyList : coachHistory.values()) {
             for (CoachCareer history : historyList) {
                 teamId = history.getTeam().getExternalTeamId();
-                if (!coachCareerObjectAlreadyExists(coachId, history)) {
+                if (!objectAlreadyExists(SportObjectEnum.COACH_HISTORY, Map.of("start", history.getStart(), "coachId", coachId, "end", history.getEnd(), "teamId", teamId), 0)) {
                     parameters.addValue("coachId", coachId);
                     parameters.addValue("teamId", teamId);
                     parameters.addValue("start", history.getStart());
@@ -357,7 +372,7 @@ public class DataAcquisitionDao {
 
         parameters.addValue("description", results.getDescription());
         parameters.addValue("teamId", results.getTeam().getExternalTeamId());
-        if (!objectAlreadyExists(SportObjectEnum.RESULTS, results.getDescription(), results.getTeam().getExternalTeamId())) {
+        if (!objectAlreadyExists(SportObjectEnum.RESULTS, Map.of("description", results.getDescription(), "teamId", results.getTeam().getExternalTeamId()), 0)) {
             parameters.addValue("roundsPlayed", results.getRoundsPlayed());
             parameters.addValue("wins", results.getWins());
             parameters.addValue("draws", results.getDraws());
@@ -416,36 +431,15 @@ public class DataAcquisitionDao {
         return queries;
     }
 
-    private boolean objectAlreadyExists(SportObjectEnum object, Object internalId, Object externalId) {
+    private boolean objectAlreadyExists(SportObjectEnum object, Map<String, Object> params, int queryIndex) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("internalId", internalId);
-        parameters.addValue("externalId", externalId);
-        int queryIndex = (externalId != null &&
-                (object.equals(SportObjectEnum.STADIUM) ||
-                        object.equals(SportObjectEnum.STANDING))) ? 1 : 0;
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            parameters.addValue(entry.getKey(), entry.getValue());
+        }
         return Boolean.TRUE.equals(
                 namedParameterJdbcTemplate.queryForObject(
                         queriesForChecking.get(object).get(queryIndex),
                         parameters,
                         Boolean.class));
-    }
-
-    /**
-     * There is a need to implement custom checking for objects of type SportObjectEnum.COACH_HISTORY because more parameters are required
-     * to determine if a particular record already exists in the database. To illustrate this, we can take the example of coach Carlo Ancelotti,
-     * who had two stints at Real Madrid from 2013 to 2015 and from 2021 to 2024. So, in addition to checking based on the coach's ID and
-     * the team's ID, the next step is to check based on the time periods when the coach was in charge of the particular team.
-     */
-
-    private boolean coachCareerObjectAlreadyExists(Integer coachId, CoachCareer coachHistory) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("coachId", coachId);
-        parameters.addValue("start", coachHistory.getStart());
-        parameters.addValue("end", coachHistory.getEnd());
-        parameters.addValue("teamId", coachHistory.getTeam().getExternalTeamId());
-        return Boolean.TRUE.equals(namedParameterJdbcTemplate.queryForObject(
-                queriesForChecking.get(SportObjectEnum.COACH_HISTORY).get(0),
-                parameters,
-                Boolean.class));
     }
 }
