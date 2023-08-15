@@ -1,7 +1,13 @@
 CREATE OR REPLACE FUNCTION football.get_team_standings(json_data jsonb)
- RETURNS jsonb
- LANGUAGE plpgsql
+RETURNS jsonb
+LANGUAGE plpgsql
 AS $function$
+
+/*
+ * Example input:
+ * SELECT football.get_team_standings('{"leagueId": 106, "locationType": "all"}'::jsonb) AS standings;
+ */
+
 DECLARE
     _location_type text;
     _league_id int;
@@ -10,7 +16,7 @@ BEGIN
     _league_id := (json_data->>'leagueId')::int;
 
     RETURN (
-WITH ranked_teams AS (
+        WITH ranked_teams AS (
             SELECT
                 s.team,
                 r.rounds_played,
@@ -37,28 +43,34 @@ WITH ranked_teams AS (
             JOIN football.team t ON t.name = s.team AND t.league_id = s.league_id
             JOIN football.results r ON r.team_id = t.team_id AND LOWER(r.description) = _location_type
             LEFT JOIN (
-    SELECT
-        f.host AS team,
-        STRING_AGG(CASE
-                WHEN f.winner = f.host THEN 'W'
-                WHEN f.winner = '-' THEN 'D'
-                ELSE 'L'
-            END, '' ORDER BY f.round) AS home_results,
-        COALESCE(SUM(CASE WHEN f.winner = f.host THEN 3 WHEN f.winner = '-' THEN 1 ELSE 0 END), 0) AS points,
-        COALESCE(SUM(CASE WHEN f.winner = f.host THEN (fr.goals_for - fr.goals_against)::bigint ELSE 0 END), 0) AS goals_diff
-    FROM football.fixture f
-    JOIN football.results fr ON fr.team_id = (SELECT team_id FROM football.team WHERE name = f.host) AND LOWER(fr.description) = 'home'
-    WHERE f.played = true AND f.league_id = _league_id
-    GROUP BY f.host
-) tf ON s.team = tf.team
+                SELECT
+                    f.host AS team,
+                    STRING_AGG(
+                        CASE
+                            WHEN f.winner = f.host THEN 'W'
+                            WHEN f.winner = '-' THEN 'D'
+                            ELSE 'L'
+                        END,
+                        '' ORDER BY f.round
+                    ) AS home_results,
+                    COALESCE(SUM(CASE WHEN f.winner = f.host THEN 3 WHEN f.winner = '-' THEN 1 ELSE 0 END), 0) AS points,
+                    COALESCE(SUM(CASE WHEN f.winner = f.host THEN (fr.goals_for - fr.goals_against)::bigint ELSE 0 END), 0) AS goals_diff
+                FROM football.fixture f
+                JOIN football.results fr ON fr.team_id = (SELECT team_id FROM football.team WHERE name = f.host) AND LOWER(fr.description) = 'home'
+                WHERE f.played = true AND f.league_id = _league_id
+                GROUP BY f.host
+            ) tf ON s.team = tf.team
             LEFT JOIN (
                 SELECT
                     f.guest AS team,
-                    STRING_AGG(CASE
+                    STRING_AGG(
+                        CASE
                             WHEN f.winner = f.guest THEN 'W'
                             WHEN f.winner = '-' THEN 'D'
                             ELSE 'L'
-                        END, '' ORDER BY f.round) AS away_results,
+                        END,
+                        '' ORDER BY f.round
+                    ) AS away_results,
                     COALESCE(SUM(CASE WHEN f.winner = f.guest THEN 3 WHEN f.winner = '-' THEN 1 ELSE 0 END), 0) AS points,
                     COALESCE(SUM(CASE WHEN f.winner = f.guest THEN (fr.goals_for - fr.goals_against)::bigint ELSE 0 END), 0) AS goals_diff
                 FROM football.fixture f
@@ -80,26 +92,26 @@ WITH ranked_teams AS (
                     'goalsRatio', goals_for || ':' || goals_against,
                     'goalsDiff', goals_diff,
                     'points', points,
-                    'form', CASE
+                    'form',
+                    CASE
                         WHEN _location_type = 'home' THEN COALESCE(regexp_split_to_array(home_results, ''), '{}')
                         WHEN _location_type = 'away' THEN COALESCE(regexp_split_to_array(away_results, ''), '{}')
                         ELSE regexp_split_to_array(form, '')
                     END,
                     'positionDescription',
                     CASE
-	    WHEN rt.rank = 1 then 'UEFA Champions League Qualifiers'
-        WHEN rt.rank in (2,3) then 'UEFA Conference League Qualifiers'
-        WHEN rt.rank in (16,17,18) then 'Relegation'
-        ELSE null
-    END
+                        WHEN rt.rank = 1 THEN 'UEFA Champions League Qualifiers'
+                        WHEN rt.rank IN (2, 3) THEN 'UEFA Conference League Qualifiers'
+                        WHEN rt.rank IN (16, 17, 18) THEN 'Relegation'
+                        ELSE null
+                    END
                 )
             )
         FROM (
             SELECT *,
-                   rank() OVER (ORDER BY points DESC, goals_diff DESC, goals_for DESC, wins DESC, goals_against ASC, team ASC) AS rank
+                rank() OVER (ORDER BY points DESC, goals_diff DESC, goals_for DESC, wins DESC, goals_against ASC, team ASC) AS rank
             FROM ranked_teams rt
         ) AS rt
     );
 END;
-$function$
-;
+$function$;
