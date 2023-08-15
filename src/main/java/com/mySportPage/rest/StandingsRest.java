@@ -13,7 +13,11 @@ public class StandingsRest {
     @Autowired
     private StandingsService standingsService;
 
- //TODO default value
+    /**
+     * Data returned from request below may be incorrect sometimes.
+     * In this case, the fixtures and standings entities need to be updated.
+     */
+
     @GetMapping("leagueId/{leagueId}")
     public SportPageResponse getStandings(@PathVariable Integer leagueId,
                                           @RequestParam String locationType) {
