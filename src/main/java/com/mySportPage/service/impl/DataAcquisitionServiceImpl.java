@@ -111,13 +111,13 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             if (!element.getJSONObject("venue").get("id").toString().equals("null") &&
                     !element.getJSONObject("venue").get("city").toString().equals("null")) {
                 Stadium stadium = new Stadium();
-                stadium.setExternalTeamId(element.getJSONObject("team").getInt("id"));
+                stadium.setExternalTeamId(new Integer[]{element.getJSONObject("team").getInt("id")});
                 element = response.getJSONObject(i).getJSONObject("venue");
                 stadium.setId(element.getInt("id"));
                 stadium.setStadium(!element.get("name").toString().equals("null") ? element.getString("name") : null);
                 stadium.setAddress(!element.get("address").toString().equals("null") ? element.getString("address") : null);
                 stadium.setCity(element.getString("city"));
-                stadium.setCapacity(!element.get("capacity").toString().equals("null") ? element.getLong("capacity") : null);
+                stadium.setCapacity(!element.get("capacity").toString().equals("null") ? element.getInt("capacity") : null);
                 stadiums.add(stadium);
             }
         }

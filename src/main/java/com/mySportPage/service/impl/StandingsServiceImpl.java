@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import com.mySportPage.dao.StandingsDao;
 import com.mySportPage.model.dto.StandingsDTO;
 import com.mySportPage.service.StandingsService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 @Service
-@Slf4j
 public class StandingsServiceImpl implements StandingsService {
 
     @Autowired

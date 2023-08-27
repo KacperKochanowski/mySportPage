@@ -79,7 +79,7 @@ public class DataAcquisitionDao {
             return;
         }
         String queryPersistStadium = "INSERT INTO football.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
-                "VALUES(:id, :stadium, ARRAY [:teamId], :capacity, :address, :city)";
+                "VALUES(:id, :stadium, :teamId, :capacity, :address, :city)";
 
         String queryUpdateStadium = "UPDATE football.stadium SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
 
