@@ -42,7 +42,6 @@ public class StadiumDao {
         return mapToStadiumsList(results);
     }
 
-
     private List<Stadium> mapToStadiumsList(List<Object[]> results) {
         List<Stadium> stadiums = new ArrayList<>();
         for (Object[] row : results) {
