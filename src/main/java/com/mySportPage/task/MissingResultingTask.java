@@ -8,9 +8,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MissingFootballResultingTask {
+public class MissingResultingTask {
 
-    private static final Logger log = LoggerFactory.getLogger(MissingFootballResultingTask.class);
+    private static final Logger log = LoggerFactory.getLogger(MissingResultingTask.class);
 
     @Autowired
     private FixtureDao fixtureDao;
@@ -19,11 +19,9 @@ public class MissingFootballResultingTask {
 
     @Scheduled(fixedDelay = HOUR)
     private void checkForMissingResults() {
-        log.info(">>>> STARTED MissingResultingTask <<<<");
         Integer issues = fixtureDao.checkForMissingResulting();
         if (issues > 0) {
             log.warn("MissingResultingTask: found {} not settled results!", issues);
         }
-        log.info(">>>> FINISHED MissingResultingTask <<<<");
     }
 }
