@@ -225,19 +225,19 @@ public class DataAcquisitionDao {
             parameters.addValue("result", fixture.isFinished() ? String.format("%s (%s)", fulltimeResult, halftimeResult) : null);
             parameters.addValue("finished", fixture.isFinished());
             parameters.addValue("stadiumId", fixture.getStadiumId());
+            parameters.addValue("start", fixture.getStart());
             if (!objectAlreadyExists(SportObjectEnum.FIXTURE, new MapSqlParameterSource("fixtureId", fixture.getId()), 0)) {
                 parameters.addValue("event", event);
                 parameters.addValue("leagueId", fixture.getLeagueId());
                 parameters.addValue("round", fixture.getRound());
                 parameters.addValue("season", fixture.getSeason());
-                parameters.addValue("start", fixture.getStart());
                 parameters.addValue("host", fixture.getHost().getName());
                 parameters.addValue("guest", fixture.getGuest().getName());
                 this.namedParameterJdbcTemplate.update(queryPersistFixture, parameters);
                 log.info("Fixture {} stored in database.", event);
             } else if (fixture.getWinner() != null &&
                     fixture.isFinished() &&
-                    !objectAlreadyExists(SportObjectEnum.FIXTURE, new MapSqlParameterSource("fixtureId", fixture.getId()), 1)) {
+                    objectAlreadyExists(SportObjectEnum.FIXTURE, new MapSqlParameterSource("fixtureId", fixture.getId()), 1)) {
                 this.namedParameterJdbcTemplate.update(queryUpdateFixture, parameters);
                 log.info("Fixture {} settled in database.", event);
             } else {
