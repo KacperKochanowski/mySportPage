@@ -20,9 +20,13 @@ public abstract class BaseTask {
 
     public void process(TaskDetails task) {
         String taskName = task.getTaskName();
-        log.info(">>> STARTED: {} <<<", taskName);
-        processSingleTask();
-        log.info(">>> FINISHED: {} <<<", taskName);
+        if (!isEnabled(task.getTaskName())) {
+            log.debug("{} is currently disabled.", taskName);
+        } else {
+            log.info(">>> STARTED: {} <<<", taskName);
+            processSingleTask();
+            log.info(">>> FINISHED: {} <<<", taskName);
+        }
     }
 
     public boolean isEnabled(String taskName) {

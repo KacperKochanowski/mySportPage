@@ -13,5 +13,4 @@ public class TaskDetails {
 
     private String taskName;
     private String interval;
-
 }
