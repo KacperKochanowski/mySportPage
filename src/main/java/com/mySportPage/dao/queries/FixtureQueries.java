@@ -49,11 +49,13 @@ public enum FixtureQueries {
             "WHERE f.start < NOW() - INTERVAL '3 hours' " +
             "AND f.result IS NULL"),
 
-    MISSING_RESULTS_WITH_LEAGUE("SELECT f.league_id, CAST(COUNT(*) AS integer " +
+    MISSING_RESULTS_WITH_LEAGUE("SELECT f.league_id, " +
+            "CAST('20' || SUBSTRING(f.season FROM 1 FOR 2) AS int) AS season, " +
+            "CAST(COUNT(*) AS INT) " +
             "FROM football.fixture f " +
             "WHERE f.start < NOW() - INTERVAL '3 hours' " +
-            "AND f.result IS null " +
-            "group by league_id");
+            "AND f.result IS NULL " +
+            "GROUP BY league_id, season");
 
     private final String query;
 

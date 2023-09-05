@@ -114,7 +114,7 @@ public class FixtureDao {
                 .getSingleResult();
     }
 
-    public Map<String, Integer> getDataToUpdate() {
+    public Map<FixtureDTO, Integer> getDataToUpdate() {
         List<Object[]> data = (List<Object[]>) entityManager.createNativeQuery(FixtureQueries.MISSING_RESULTS_WITH_LEAGUE.getQuery())
                 .getResultList();
         return convertDataToMap(data);
@@ -136,11 +136,14 @@ public class FixtureDao {
         return fixtures;
     }
 
-    private Map<String, Integer> convertDataToMap(List<Object[]> results) {
+    private Map<FixtureDTO, Integer> convertDataToMap(List<Object[]> results) {
         return results.stream()
                 .collect(Collectors.toMap(
-                        array -> (String) array[0],
-                        array -> (Integer) array[1]
+                        array -> FixtureDTO.builder()
+                                .withLeagueId((Integer) array[0])
+                                .withSeason((Integer) array[1])
+                                .build(),
+                        array -> (Integer) array[2]
                 ));
     }
 }

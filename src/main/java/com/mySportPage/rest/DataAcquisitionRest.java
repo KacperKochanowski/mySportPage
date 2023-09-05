@@ -81,9 +81,9 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping("/createFixtures")
-    public SportPageResponse createLeagues(
-            @RequestParam(required = false) String leagueId,
-            @RequestParam(required = false) Integer season) {
+    public SportPageResponse createFixture(
+            @RequestParam String leagueId,
+            @RequestParam Integer season) {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", leagueId);

@@ -28,4 +28,7 @@ public class FixtureDTO {
     private boolean finished;
 
     private String result;
+
+    private Integer season;
+
 }
