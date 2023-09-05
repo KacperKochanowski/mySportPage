@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class DataAcquisitionRest {
     @PostMapping("/createTeamsAndStadiums")
     public SportPageResponse createTeamsAndStadiums(
             @RequestParam("leagueId") Integer leagueId,
-            @RequestParam("season") Integer season) throws IOException {
+            @RequestParam("season") Integer season) {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", String.valueOf(leagueId));
@@ -44,10 +45,13 @@ public class DataAcquisitionRest {
 
         String externalPath = prepareParams(ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.TEAM);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STADIUM);
-
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.TEAM);
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.STADIUM);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("/createLeagues")
@@ -56,7 +60,7 @@ public class DataAcquisitionRest {
             @RequestParam(required = false) String season,
             @RequestParam(required = false) String code,
             @RequestParam(required = false) String country,
-            @RequestParam(required = false) String name) throws IOException {
+            @RequestParam(required = false) String name) {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("leagueId", leagueId);
@@ -68,15 +72,18 @@ public class DataAcquisitionRest {
 
         String externalPath = prepareParams(ExternalPaths.GET_LEAGUES_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.LEAGUE);
-
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.LEAGUE);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("/createFixtures")
     public SportPageResponse createLeagues(
             @RequestParam(required = false) String leagueId,
-            @RequestParam(required = false) Integer season) throws IOException {
+            @RequestParam(required = false) Integer season) {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("league", leagueId);
@@ -85,30 +92,36 @@ public class DataAcquisitionRest {
 
         String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE);
-
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.FIXTURE);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("/createStandings")
     public SportPageResponse createStandings(
             @RequestParam(required = false) String leagueId,
-            @RequestParam Integer season) throws IOException {
+            @RequestParam Integer season) {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
             externalPath += "&league=" + leagueId;
         }
         Response response = sendGetRequest(externalPath);
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.STANDING);
-
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.STANDING);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("/createFixtureStatistics")
     public SportPageResponse createFixtureStatistics(
             @RequestParam Integer fixture,
-            @RequestParam(required = false) Integer team) throws IOException {
+            @RequestParam(required = false) Integer team) {
 
         Map<String, String> requestParams = new HashMap<>() {{
             put("fixture", String.valueOf(fixture));
@@ -119,32 +132,41 @@ public class DataAcquisitionRest {
 
         String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_STATISTICS_V3.getUrl(), requestParams);
         Response response = sendGetRequest(externalPath);
-
-        dataAcquisitionService.createObjects(response.body().string(), SportObjectEnum.FIXTURE_STATS);
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.FIXTURE_STATS);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("/createCoachWithHistory/{teamId}")
     public SportPageResponse createCoachWithHistory(
-            @PathVariable Integer teamId) throws IOException {
+            @PathVariable Integer teamId) {
 
         String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{
             put("team", String.valueOf(teamId));
         }});
         Response response = sendGetRequest(externalPath);
-        String responseBody = response.body().string();
-        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH);
-        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COACH_HISTORY);
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COACH);
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COACH_HISTORY);
+        return new SportPageResponse(response);
     }
 
     @PostMapping("createCountries")
     public SportPageResponse createCountries() throws IOException {
         String externalPath = ExternalPaths.GET_COUNTIES.getUrl();
         Response response = sendGetRequest(externalPath);
-        String responseBody = response.body().string();
-        dataAcquisitionService.createObjects(responseBody, SportObjectEnum.COUNTRY);
-        return new SportPageResponse(response.code(), response.message());
+        String responseDate = fetchDataFromResponse(response);
+        if (responseDate == null) {
+            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
+        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COUNTRY);
+        return new SportPageResponse(response);
     }
 
     private Response sendGetRequest(String path) {
@@ -181,5 +203,14 @@ public class DataAcquisitionRest {
             }
         }
         return basePath + sb;
+    }
+
+    private String fetchDataFromResponse(Response response) {
+        try {
+            return response.body().string();
+        } catch (IOException e) {
+            log.error("DataAcquisitionRest.fetchDataFromResponse(): couldn't fetch data from response. Cause:{}. Message: {}.", e.getCause(), e.getMessage());
+            return null;
+        }
     }
 }
