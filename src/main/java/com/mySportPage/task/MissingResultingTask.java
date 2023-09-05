@@ -17,7 +17,7 @@ public class MissingResultingTask extends BaseTask {
     @Autowired
     private FixtureDao fixtureDao;
 
-    @Scheduled(fixedDelay = BaseTask.HOUR)
+    @Scheduled(fixedDelay = BaseTask.HOUR, initialDelay = 15 * BaseTask.SECOND)
     public void doWork() {
         process(TaskList.MISSING_RESULTING_TASK);
     }
