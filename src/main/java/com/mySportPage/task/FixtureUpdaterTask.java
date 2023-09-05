@@ -28,12 +28,7 @@ public class FixtureUpdaterTask extends BaseTask {
 
     @Scheduled(fixedDelay = 12 * BaseTask.HOUR)
     public void doWork() {
-        String taskName = TaskList.FIXTURE_UPDATER_TASK.getTaskName();
-        if (isEnabled(taskName)) {
-            process(TaskList.FIXTURE_UPDATER_TASK);
-        } else {
-            log.debug("{} is currently disabled.", taskName);
-        }
+        process(TaskList.FIXTURE_UPDATER_TASK);
     }
 
     @Override
