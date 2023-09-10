@@ -18,6 +18,7 @@ import java.util.Date;
 public class Coach {
 
     private Integer externalId;
+    private Integer leagueId;
     private String name;
     private String firstName;
     private String lastName;
@@ -27,4 +28,5 @@ public class Coach {
     private Integer height;
     private Integer weight;
     private String photo;
+    private Integer teamId;
 }

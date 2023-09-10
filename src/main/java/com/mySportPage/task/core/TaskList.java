@@ -7,7 +7,7 @@ public class TaskList {
 
     public static final TaskDetails COACH_TASK = new TaskDetails(
             "CoachTask",
-            "1 hour");
+            "2 hours");
 
     public static final TaskDetails FIXTURE_UPDATER_TASK = new TaskDetails(
             "FixtureUpdaterTask",

@@ -20,26 +20,9 @@ public class CoachDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Coach> getCoachesByLeague(int leagueId) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_LEAGUE_ID.getQuery())
-                .setParameter("leagueId", leagueId)
-                .getResultList();
-        return mapToCoachList(result);
-    }
-
-    public List<Coach> getCoachesByTeam(int teamId) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_TEAM_ID.getQuery())
-                .setParameter("teamId", teamId)
-                .getResultList();
-        return mapToCoachList(result);
-    }
-
-
-    public List<Coach> getCoachesByCountryCode(String countryCode) {
-        List<Object[]> result = entityManager.createNativeQuery(CORE_QUERY.getQuery() + GET_COACH_BY_COUNTRY_CODE.getQuery())
-                .setParameter("countryCode", countryCode)
-                .getResultList();
-        return mapToCoachList(result);
+    public List<Coach> getAllCoaches() {
+        List<Object[]> results = entityManager.createNativeQuery(GET_ALL_COACHES.getQuery()).getResultList();
+        return mapToCoachList(results);
     }
 
     public List<Coach> getCoaches(Map<String, Object> params) {
@@ -84,16 +67,15 @@ public class CoachDao {
 
         for (Object[] row : result) {
             Coach coach = Coach.builder()
-                    .withExternalId((Integer) row[0])
+                    .withLeagueId((Integer) row[0])
                     .withName((String) row[1])
                     .withFirstName((String) row[2])
                     .withLastName((String) row[3])
                     .withAge((int) row[4])
                     .withBirthDate((Date) row[5])
                     .withNationality((String) row[6])
-                    .withHeight((Integer) row[7])
-                    .withWeight((Integer) row[8])
-                    .withPhoto((String) row[9])
+                    .withPhoto((String) row[7])
+                    .withTeamId((Integer) row[8])
                     .build();
             coaches.add(coach);
         }

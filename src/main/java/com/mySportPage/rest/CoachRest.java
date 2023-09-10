@@ -35,11 +35,11 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping("countryCode/{countryCode}")
+    @GetMapping("country/{country}")
     private SportPageResponse getCoachesByCountry(
-            @PathVariable String countryCode) {
+            @PathVariable String country) {
         return SportPageResponse.builder()
-                .withData(coachService.getCoachesByCountry(countryCode))
+                .withData(coachService.getCoachesByCountry(country))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

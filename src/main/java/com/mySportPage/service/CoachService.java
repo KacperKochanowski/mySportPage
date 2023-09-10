@@ -14,7 +14,7 @@ public interface CoachService {
      */
     List<Coach> getCoachesByTeam (Integer teamId);
 
-    List<Coach> getCoachesByCountry (String countryCode);
+    List<Coach> getCoachesByCountry (String country);
 
     List<Coach> getCoaches(Map<String, Object> params);
 }
