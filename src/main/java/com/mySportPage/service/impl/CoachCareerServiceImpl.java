@@ -12,15 +12,20 @@ import java.util.List;
 public class CoachCareerServiceImpl implements CoachCareerService {
 
     @Autowired
-    private CoachCareerDao coachCareerDao;
+    private CoachCareerDao dao;
+
+    @Autowired
+    public CoachCareerServiceImpl(CoachCareerDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<CoachCareer> getCoachCareerById(Integer coachId) {
-        return coachCareerDao.getCoachCareerById(coachId);
+        return dao.getCoachCareerById(coachId);
     }
 
     @Override
     public List<CoachCareer> getCoachCareerByName(String coachName) {
-        return coachCareerDao.getCoachCareerByName(coachName);
+        return dao.getCoachCareerByName(coachName);
     }
 }

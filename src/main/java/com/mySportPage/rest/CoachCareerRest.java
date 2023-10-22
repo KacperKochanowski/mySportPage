@@ -10,24 +10,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("coach-career")
 public class CoachCareerRest {
 
+    private final CoachCareerService service;
+
     @Autowired
-    private CoachCareerService coachCareerService;
+    public CoachCareerRest(CoachCareerService service) {
+        this.service = service;
+    }
 
     @GetMapping("id/{coachId}")
-    private SportPageResponse getCoachCareerById(
+    public SportPageResponse getCoachCareer(
             @PathVariable Integer coachId) {
         return SportPageResponse.builder()
-                .withData(coachCareerService.getCoachCareerById(coachId))
+                .withData(service.getCoachCareerById(coachId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
     @GetMapping("name/{coachName}")
-    private SportPageResponse getCoachCareerByCoachName(
+    public SportPageResponse getCoachCareer(
             @PathVariable String coachName) {
         return SportPageResponse.builder()
-                .withData(coachCareerService.getCoachCareerByName(coachName))
+                .withData(service.getCoachCareerByName(coachName))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
