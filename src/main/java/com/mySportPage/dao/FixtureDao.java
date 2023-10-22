@@ -65,23 +65,14 @@ public class FixtureDao {
 
     @Cacheable(FIXTURES_BY_TEAM)
     public List<FixtureDTO> getFixtures(Integer teamId, String place) {
-        Query query;
-        switch (place) {
-            case null:
-                query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery());
-                break;
-            case "home":
-                query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery());
-                break;
-            case "away":
-                query = entityManager
-                        .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery());
-                break;
-            default:
-                return new ArrayList<>();
-        }
+        Query query = switch (place) {
+            case "home" -> entityManager
+                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery());
+            case "away" -> entityManager
+                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery());
+            default -> entityManager
+                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery());
+        };
 
         List<Object[]> results = query
                 .setParameter("teamId", teamId)
