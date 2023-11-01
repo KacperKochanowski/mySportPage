@@ -5,9 +5,8 @@ import com.mySportPage.dao.CoachDao;
 import com.mySportPage.model.Coach;
 import com.mySportPage.task.core.BaseTask;
 import com.mySportPage.task.core.TaskList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Profile("production")
 public class CoachTask extends BaseTask {
-
-    private static final Logger log = LoggerFactory.getLogger(CoachTask.class);
 
     @Autowired
     private CoachDao coachDao;
