@@ -16,7 +16,7 @@ public class CoachRest {
     private CoachService coachService;
 
     @GetMapping("leagueId/{leagueId}")
-    private SportPageResponse getCoachesByLeague(
+    public SportPageResponse getCoachesByLeague(
             @PathVariable Integer leagueId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByLeague(leagueId))
@@ -26,7 +26,7 @@ public class CoachRest {
     }
 
     @GetMapping("teamId/{teamId}")
-    private SportPageResponse getCoachesByTeam(
+    public SportPageResponse getCoachesByTeam(
             @PathVariable Integer teamId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByTeam(teamId))
@@ -36,7 +36,7 @@ public class CoachRest {
     }
 
     @GetMapping("country/{country}")
-    private SportPageResponse getCoachesByCountry(
+    public SportPageResponse getCoachesByCountry(
             @PathVariable String country) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByCountry(country))
@@ -46,7 +46,7 @@ public class CoachRest {
     }
 
     @GetMapping()
-    private SportPageResponse getCoach(
+    public SportPageResponse getCoach(
             @RequestParam(required = false) Integer leagueId,
             @RequestParam(required = false) Integer teamId,
             @RequestParam(required = false) String countryCode) {
