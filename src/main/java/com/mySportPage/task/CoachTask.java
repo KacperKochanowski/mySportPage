@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-@Profile("production")
+@Profile({"production", "test"})
 public class CoachTask extends BaseTask {
 
     @Autowired
