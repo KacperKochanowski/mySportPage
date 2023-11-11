@@ -1,13 +1,11 @@
 package com.mySportPage.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -29,4 +27,17 @@ public class Coach {
     private Integer weight;
     private String photo;
     private Integer teamId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coach coach = (Coach) o;
+        return leagueId.equals(coach.leagueId) && name.equals(coach.name) && firstName.equals(coach.firstName) && lastName.equals(coach.lastName) && birthDate.equals(coach.birthDate) && nationality.equals(coach.nationality) && photo.equals(coach.photo) && teamId.equals(coach.teamId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(leagueId, name, firstName, lastName, birthDate, nationality, photo, teamId);
+    }
 }
