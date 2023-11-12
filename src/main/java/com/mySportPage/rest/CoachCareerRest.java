@@ -1,5 +1,6 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.rest.path.CoachCareerRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachCareerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("coach-career")
+@RequestMapping(CoachCareerRestPath.ROOT_PATH)
 public class CoachCareerRest {
 
     private final CoachCareerService service;
@@ -17,7 +18,7 @@ public class CoachCareerRest {
         this.service = service;
     }
 
-    @GetMapping("id/{coachId}")
+    @GetMapping(CoachCareerRestPath.GET_CAREER_BY_COACH_ID)
     public SportPageResponse getCoachCareer(
             @PathVariable Integer coachId) {
         return SportPageResponse.builder()
@@ -27,7 +28,7 @@ public class CoachCareerRest {
                 .build();
     }
 
-    @GetMapping("name/{coachName}")
+    @GetMapping(CoachCareerRestPath.GET_CAREER_BY_COACH_NAME)
     public SportPageResponse getCoachCareer(
             @PathVariable String coachName) {
         return SportPageResponse.builder()

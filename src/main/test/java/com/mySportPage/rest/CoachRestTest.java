@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.BaseTest;
 import com.mySportPage.model.Coach;
+import com.mySportPage.rest.path.CoachRestPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,9 +19,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +35,11 @@ class CoachRestTest extends BaseTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Override
+    protected String getRootPath() {
+        return CoachRestPath.ROOT_PATH;
+    }
+
     private final Coach testObject = Coach
             .builder()
             .withTeamId(348)
@@ -48,13 +52,15 @@ class CoachRestTest extends BaseTest {
             .withPhoto("https://media-1.api-sports.io/football/coachs/1382.png")
             .build();
 
-    //TODO adresy restów przerzucić do interfejsu
 
     @Test
     void should_get_any_coach_by_league() throws Exception {
         //given
         //when
-        MvcResult response = performGETRequest("/coach/leagueId/106");
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(CoachRestPath.PathParams.LEAGUE_ID, "106");
+        String path = createPath(CoachRestPath.GET_COACH_BY_LEAGUE, pathParams, null);
+        MvcResult response = performGETRequest(path);
         //then
         List<Coach> coaches = mapToModel(response);
 
@@ -74,30 +80,41 @@ class CoachRestTest extends BaseTest {
     void should_get_any_coach_by_team() throws Exception {
         //given
         //when
-        MvcResult response = performGETRequest("/coach/teamId/348");
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(CoachRestPath.PathParams.TEAM_ID, "348");
+        String path = createPath(CoachRestPath.GET_COACH_BY_TEAM, pathParams, null);
+        MvcResult response = performGETRequest(path);
         //then
-        checkReceiverValue(response);
+        checkReceivedValue(response);
     }
 
     @Test
     void should_get_any_coach_by_country() throws Exception {
         //given
         //when
-        MvcResult response = performGETRequest("/coach/country/Sweden");
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(CoachRestPath.PathParams.COUNTRY, "Sweden");
+        String path = createPath(CoachRestPath.GET_COACH_BY_COUNTRY, pathParams, null);
+        MvcResult response = performGETRequest(path);
         //then
-        checkReceiverValue(response);
+        checkReceivedValue(response);
     }
 
     @Test
     void should_get_any_coach_by_multiple_params() throws Exception {
         //given
         //when
-        MvcResult response = performGETRequest("/coach?leagueId=106&teamId=348&country=Sweden");
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put(CoachRestPath.QueryParams.LEAGUE_ID, "106");
+        queryParams.put(CoachRestPath.QueryParams.TEAM_ID, "348");
+        queryParams.put(CoachRestPath.QueryParams.COUNTRY, "Sweden");
+        String path = createPath(CoachRestPath.GET_COACH_BY_MULTIPLE_PARAMS, null, queryParams);
+        MvcResult response = performGETRequest(path);
         //then
-        checkReceiverValue(response);
+        checkReceivedValue(response);
     }
 
-    private void checkReceiverValue(MvcResult response) throws UnsupportedEncodingException, JsonProcessingException {
+    private void checkReceivedValue(MvcResult response) throws UnsupportedEncodingException, JsonProcessingException {
         List<Coach> coaches = mapToModel(response);
         assertThat(coaches).isNotNull();
         Optional<Coach> foundCoach = coaches.stream().filter(v -> v.getName().equals(testObject.getName())).findFirst();

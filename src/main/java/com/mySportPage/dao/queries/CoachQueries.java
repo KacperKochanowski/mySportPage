@@ -19,7 +19,7 @@ public enum CoachQueries {
 
     GET_COACH_BY_TEAM_ID(" t.team_id  = :teamId"),
 
-    GET_COACH_BY_COUNTRY_CODE(" c2.code = :countryCode"),
+    GET_COACH_BY_COUNTRY(" c2.name = :country"),
 
     GET_ALL_COACHES("SELECT " + CORE_COLUMNS.getQuery() +
             "FROM football.coach c " +

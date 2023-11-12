@@ -1,5 +1,6 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.rest.path.CoachRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@RequestMapping("coach")
+@RequestMapping(CoachRestPath.ROOT_PATH)
 public class CoachRest {
 
     @Autowired
     private CoachService coachService;
 
-    @GetMapping("leagueId/{leagueId}")
-    public SportPageResponse getCoachesByLeague(
+    @GetMapping(CoachRestPath.GET_COACH_BY_LEAGUE)
+    public SportPageResponse getCoachByLeague(
             @PathVariable Integer leagueId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByLeague(leagueId))
@@ -25,8 +26,8 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping("teamId/{teamId}")
-    public SportPageResponse getCoachesByTeam(
+    @GetMapping(CoachRestPath.GET_COACH_BY_TEAM)
+    public SportPageResponse getCoachByTeam(
             @PathVariable Integer teamId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByTeam(teamId))
@@ -35,8 +36,8 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping("country/{country}")
-    public SportPageResponse getCoachesByCountry(
+    @GetMapping(CoachRestPath.GET_COACH_BY_COUNTRY)
+    public SportPageResponse getCoachByCountry(
             @PathVariable String country) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByCountry(country))
@@ -45,12 +46,12 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping()
+    @GetMapping(CoachRestPath.GET_COACH_BY_MULTIPLE_PARAMS)
     public SportPageResponse getCoach(
             @RequestParam(required = false) Integer leagueId,
             @RequestParam(required = false) Integer teamId,
-            @RequestParam(required = false) String countryCode) {
-        if (leagueId == null && teamId == null && countryCode == null) {
+            @RequestParam(required = false) String country) {
+        if (leagueId == null && teamId == null && country == null) {
             return SportPageResponse.builder()
                     .withData("No search parameters")
                     .withCode(HttpStatus.BAD_REQUEST.value())
@@ -58,13 +59,13 @@ public class CoachRest {
                     .build();
         }
         return SportPageResponse.builder()
-                .withData(coachService.getCoaches(prepareParams(leagueId, teamId, countryCode)))
+                .withData(coachService.getCoaches(prepareParams(leagueId, teamId, country)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
-    private Map<String, Object> prepareParams(Integer leagueId, Integer teamId, String countryCode) {
+    private Map<String, Object> prepareParams(Integer leagueId, Integer teamId, String country) {
         Map<String, Object> paramMap = new HashMap<>();
         if (leagueId != null) {
             paramMap.put("leagueId", leagueId);
@@ -72,8 +73,8 @@ public class CoachRest {
         if (teamId != null) {
             paramMap.put("teamId", teamId);
         }
-        if (countryCode != null) {
-            paramMap.put("countryCode", countryCode);
+        if (country != null) {
+            paramMap.put("country", country);
         }
         return paramMap;
     }

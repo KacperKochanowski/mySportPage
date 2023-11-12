@@ -38,9 +38,9 @@ public class CoachDao {
                     isFirstParam(coachQuery, isFirstParam);
                     coachQuery.append(GET_COACH_BY_TEAM_ID.getQuery());
                 }
-                case "languageCode" -> {
+                case "country" -> {
                     isFirstParam(coachQuery, isFirstParam);
-                    coachQuery.append(GET_COACH_BY_COUNTRY_CODE.getQuery());
+                    coachQuery.append(GET_COACH_BY_COUNTRY.getQuery());
                 }
             }
             isFirstParam = false;

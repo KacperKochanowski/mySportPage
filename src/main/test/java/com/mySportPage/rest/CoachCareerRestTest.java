@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mySportPage.BaseTest;
 import com.mySportPage.model.CoachCareer;
+import com.mySportPage.rest.path.CoachCareerRestPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithMockUser
 @ActiveProfiles("test")
-class CoachCareerRestTest {
+class CoachCareerRestTest extends BaseTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,13 +42,21 @@ class CoachCareerRestTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Override
+    protected String getRootPath() {
+        return CoachCareerRestPath.ROOT_PATH;
+    }
+
 
     @Test
     void should_get_coach_career_by_id() throws Exception {
         //given
         //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(CoachCareerRestPath.Params.COACH_ID, "1382");
+        String path = createPath(CoachCareerRestPath.GET_CAREER_BY_COACH_ID, pathParams, null);
         //then
-        mockMvc.perform(get("/coach-career/id/1382"))
+        mockMvc.perform(get(path))
                 .andDo(print())
                 .andExpect(status().is(200))
                 .andExpect(jsonPath("$.data", Matchers.hasSize(Matchers.greaterThan(0))))
@@ -57,10 +69,10 @@ class CoachCareerRestTest {
     void should_get_coach_career_by_name() throws Exception {
         //given
         //when
-        MvcResult response = mockMvc.perform(get("/coach-career/name/Gustafsson"))
-                .andDo(print())
-                .andExpect(status().is(200))
-                .andReturn();
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(CoachCareerRestPath.Params.COACH_ID, "1382");
+        String path = createPath(CoachCareerRestPath.GET_CAREER_BY_COACH_ID, pathParams, null);
+        MvcResult response = performGETRequest(path);
         //then
         List<CoachCareer> coachCareerList = mapToModel(response);
 
