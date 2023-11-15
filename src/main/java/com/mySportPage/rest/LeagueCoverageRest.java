@@ -1,6 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.SportEnum;
+import com.mySportPage.rest.path.LeagueCoverageRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.LeagueCoverageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("coverage")
+@RequestMapping(LeagueCoverageRestPath.ROOT_PATH)
 public class LeagueCoverageRest {
 
     @Autowired
     private LeagueCoverageService leagueCoverageService;
 
-    @GetMapping
+    @GetMapping(LeagueCoverageRestPath.GET_LEAGUE_COVERAGE_BY_SPORT)
     public SportPageResponse getCoverage(
             @RequestParam("sportId") Integer sportId) {
         return SportPageResponse.builder()
@@ -24,7 +25,7 @@ public class LeagueCoverageRest {
                 .build();
     }
 
-    @GetMapping("leagueId/{leagueId}")
+    @GetMapping(LeagueCoverageRestPath.GET_LEAGUE_COVERAGE_BY_LEAGUE_AND_SPORT)
     public SportPageResponse getCoverage(
             @RequestParam("sportId") Integer sportId,
             @PathVariable("leagueId") Integer leagueId) {
