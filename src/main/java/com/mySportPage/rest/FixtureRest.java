@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static com.mySportPage.rest.path.internal.FixtureRestPath.*;
 
 @RestController
@@ -35,7 +36,7 @@ public class FixtureRest {
 
     @GetMapping(GET_FIXTURES_BY_LEAGUE)
     public SportPageResponse getFixtures(
-            @PathVariable("leagueId") Integer leagueId,
+            @PathVariable(LEAGUE_ID) Integer leagueId,
             @RequestParam(required = false) Integer round) {
         return SportPageResponse.builder()
                 .withData(fixtureService.getFixtures(leagueId, round))
@@ -46,7 +47,7 @@ public class FixtureRest {
 
     @GetMapping(GET_FIXTURES_BY_TEAM)
     public SportPageResponse getFixtures(
-            @PathVariable("teamId") Integer teamId,
+            @PathVariable(TEAM_ID) Integer teamId,
             @RequestParam(required = false) String place) {
         return SportPageResponse.builder()
                 .withData(fixtureService.getFixtures(teamId, place))
@@ -57,8 +58,8 @@ public class FixtureRest {
 
     @GetMapping(GET_FIXTURES_BY_TEAM_AND_IF_PLAYED)
     public SportPageResponse getFixtures(
-            @PathVariable("teamId") Integer teamId,
-            @PathVariable("played") boolean played) {
+            @PathVariable(TEAM_ID) Integer teamId,
+            @PathVariable(PLAYED) boolean played) {
         return SportPageResponse.builder()
                 .withData(fixtureService.getFixtures(teamId, played))
                 .withCode(HttpStatus.OK.value())

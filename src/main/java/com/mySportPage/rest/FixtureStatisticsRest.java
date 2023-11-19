@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.FIXTURE_ID;
 import static com.mySportPage.rest.path.internal.FixtureStatisticsRestPath.GET_BY_FIXTURE_ID;
 import static com.mySportPage.rest.path.internal.FixtureStatisticsRestPath.ROOT_PATH;
 
@@ -20,7 +21,7 @@ public class FixtureStatisticsRest {
 
     @GetMapping(GET_BY_FIXTURE_ID)
     private SportPageResponse fixtureStatistics(
-            @PathVariable Integer fixtureId,
+            @PathVariable(FIXTURE_ID) Integer fixtureId,
             @RequestParam(required = false) Integer teamId) {
         Map<Integer, Map<String, Object>> fixtureStats = fixtureStatisticsService.getFixtureStatistics(fixtureId);
         return SportPageResponse.builder()

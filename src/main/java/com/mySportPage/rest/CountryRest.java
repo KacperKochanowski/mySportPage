@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.COUNTRY;
+import static com.mySportPage.rest.path.internal.CommonRestParams.COUNTRY_CODE;
 import static com.mySportPage.rest.path.internal.CountryRestPath.*;
 
 @RestController
@@ -33,7 +35,7 @@ public class CountryRest {
 
     @GetMapping(GET_COUNTRY_BY_NAME)
     private SportPageResponse getCountriesByName(
-            @PathVariable String country) {
+            @PathVariable(COUNTRY) String country) {
         return validateParam(country) ?
                 SportPageResponse.builder()
                         .withData(countryService.getCountriesByName(country))
@@ -49,7 +51,7 @@ public class CountryRest {
 
     @GetMapping(GET_COUNTRY_BY_CODE)
     private SportPageResponse getCountriesByCode(
-            @PathVariable String countryCode) {
+            @PathVariable(COUNTRY_CODE) String countryCode) {
         return validateParam(countryCode) ?
                 SportPageResponse.builder()
                         .withData(countryService.getCountriesByCode(countryCode))

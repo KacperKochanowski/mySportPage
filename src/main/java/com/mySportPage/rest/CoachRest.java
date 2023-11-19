@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 import static com.mySportPage.rest.path.internal.CoachRestPath.*;
+import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
@@ -19,7 +20,7 @@ public class CoachRest {
 
     @GetMapping(GET_COACH_BY_LEAGUE)
     public SportPageResponse getCoachByLeague(
-            @PathVariable Integer leagueId) {
+            @PathVariable(LEAGUE_ID) Integer leagueId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByLeague(leagueId))
                 .withCode(HttpStatus.OK.value())
@@ -29,7 +30,7 @@ public class CoachRest {
 
     @GetMapping(GET_COACH_BY_TEAM)
     public SportPageResponse getCoachByTeam(
-            @PathVariable Integer teamId) {
+            @PathVariable(TEAM_ID) Integer teamId) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByTeam(teamId))
                 .withCode(HttpStatus.OK.value())
@@ -39,7 +40,7 @@ public class CoachRest {
 
     @GetMapping(GET_COACH_BY_COUNTRY)
     public SportPageResponse getCoachByCountry(
-            @PathVariable String country) {
+            @PathVariable(COUNTRY) String country) {
         return SportPageResponse.builder()
                 .withData(coachService.getCoachesByCountry(country))
                 .withCode(HttpStatus.OK.value())

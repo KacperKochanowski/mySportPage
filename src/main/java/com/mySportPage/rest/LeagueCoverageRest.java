@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.LEAGUE_ID;
+import static com.mySportPage.rest.path.internal.CommonRestParams.SPORT_ID;
 import static com.mySportPage.rest.path.internal.LeagueCoverageRestPath.*;
 
 @RestController
@@ -18,7 +20,7 @@ public class LeagueCoverageRest {
 
     @GetMapping(GET_LEAGUE_COVERAGE_BY_SPORT)
     public SportPageResponse getCoverage(
-            @PathVariable("sportId") Integer sportId) {
+            @PathVariable(SPORT_ID) Integer sportId) {
         return SportPageResponse.builder()
                 .withData(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)))
                 .withCode(HttpStatus.OK.value())
@@ -28,8 +30,8 @@ public class LeagueCoverageRest {
 
     @GetMapping(GET_LEAGUE_COVERAGE_BY_LEAGUE_AND_SPORT)
     public SportPageResponse getCoverage(
-            @RequestParam("sportId") Integer sportId,
-            @PathVariable("leagueId") Integer leagueId) {
+            @RequestParam(SPORT_ID) Integer sportId,
+            @PathVariable(LEAGUE_ID) Integer leagueId) {
         return SportPageResponse.builder()
                 .withData(leagueCoverageService.getCoverage().get(SportEnum.getById(sportId)).stream()
                         .filter(v -> v.getExternalLeagueId().equals(leagueId)))

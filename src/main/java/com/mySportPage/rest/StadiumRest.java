@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static com.mySportPage.rest.path.internal.StadiumRestPath.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class StadiumRest {
 
     @GetMapping(GET_BY_CITY)
     public SportPageResponse getByCity(
-            @PathVariable("city") String city) {
+            @PathVariable(CITY) String city) {
         return SportPageResponse.builder()
                 .withData(city != null ? stadiumService.getByCity(city) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
@@ -32,7 +33,7 @@ public class StadiumRest {
 
     @GetMapping(GET_BY_ADDRESS)
     public SportPageResponse getByAddress(
-            @PathVariable("address") String address) {
+            @PathVariable(ADDRESS) String address) {
         return SportPageResponse.builder()
                 .withData(address != null ? stadiumService.getByAddress(address) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
@@ -42,7 +43,7 @@ public class StadiumRest {
 
     @GetMapping(GET_BY_TEAM_ID)
     public SportPageResponse getByTeamId(
-            @PathVariable("teamId") Integer teamId) {
+            @PathVariable(TEAM_ID) Integer teamId) {
         return SportPageResponse.builder()
                 .withData(teamId != null ? stadiumService.getByTeamId(teamId) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
@@ -52,7 +53,7 @@ public class StadiumRest {
 
     @GetMapping(GET_BY_TEAM_NAME)
     public SportPageResponse getByTeamName(
-            @PathVariable("teamName") String teamName) {
+            @PathVariable(TEAM_NAME) String teamName) {
         return SportPageResponse.builder()
                 .withData(teamName != null ? stadiumService.getByTeamName(teamName) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
@@ -62,7 +63,7 @@ public class StadiumRest {
 
     @GetMapping(GET_BY_NAME)
     public SportPageResponse getByName(
-            @PathVariable("name") String name) {
+            @PathVariable(NAME) String name) {
         return SportPageResponse.builder()
                 .withData(name != null ? stadiumService.getByName(name) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())

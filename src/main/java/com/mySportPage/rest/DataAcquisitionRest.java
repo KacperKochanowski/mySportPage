@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static com.mySportPage.rest.path.internal.DataAcquisitionRestPath.*;
 
 @RestController
@@ -37,12 +38,12 @@ public class DataAcquisitionRest {
 
     @PostMapping(CREATE_TEAMS_AND_STADIUMS)
     public SportPageResponse createTeamsAndStadiums(
-            @RequestParam("leagueId") Integer leagueId,
-            @RequestParam("season") Integer season) {
+            @RequestParam(LEAGUE_ID) Integer leagueId,
+            @RequestParam(SEASON) Integer season) {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("league", String.valueOf(leagueId));
-            put("season", String.valueOf(season));
+            put(LEAGUE, String.valueOf(leagueId));
+            put(SEASON, String.valueOf(season));
         }};
 
         String externalPath = prepareParams(ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl(), requestParams);
@@ -65,11 +66,11 @@ public class DataAcquisitionRest {
             @RequestParam(required = false) String name) {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("leagueId", leagueId);
-            put("season", season);
-            put("code", code);
-            put("country", country);
-            put("name", name);
+            put(LEAGUE_ID, leagueId);
+            put(SEASON, season);
+            put(CODE, code);
+            put(COUNTRY, country);
+            put(NAME, name);
         }};
 
         String externalPath = prepareParams(ExternalPaths.GET_LEAGUES_V3.getUrl(), requestParams);
@@ -84,12 +85,12 @@ public class DataAcquisitionRest {
 
     @PostMapping(CREATE_FIXTURES)
     public SportPageResponse createFixtures(
-            @RequestParam String leagueId,
-            @RequestParam Integer season) {
+            @RequestParam(LEAGUE_ID) String leagueId,
+            @RequestParam(SEASON) Integer season) {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("league", leagueId);
-            put("season", String.valueOf(season));
+            put(LEAGUE, leagueId);
+            put(SEASON, String.valueOf(season));
         }};
 
         String externalPath = prepareParams(ExternalPaths.GET_FIXTURES_V3.getUrl(), requestParams);
@@ -105,7 +106,7 @@ public class DataAcquisitionRest {
     @PostMapping(CREATE_STANDINGS)
     public SportPageResponse createStandings(
             @RequestParam(required = false) String leagueId,
-            @RequestParam Integer season) {
+            @RequestParam(SEASON) Integer season) {
         String externalPath = ExternalPaths.GET_STANDINGS_V3.getUrl().replace("{season}", String.valueOf(season));
 
         if (leagueId != null) {
@@ -122,13 +123,13 @@ public class DataAcquisitionRest {
 
     @PostMapping(CREATE_FIXTURE_STATISTICS)
     public SportPageResponse createFixtureStatistics(
-            @RequestParam Integer fixture,
+            @RequestParam(FIXTURE) Integer fixture,
             @RequestParam(required = false) Integer team) {
 
         Map<String, String> requestParams = new HashMap<>() {{
-            put("fixture", String.valueOf(fixture));
+            put(FIXTURE, String.valueOf(fixture));
             if (team != null) {
-                put("team", String.valueOf(team));
+                put(TEAM, String.valueOf(team));
             }
         }};
 
@@ -144,10 +145,10 @@ public class DataAcquisitionRest {
 
     @PostMapping(CREATE_COACH_WITH_HISTORY)
     public SportPageResponse createCoachWithHistory(
-            @PathVariable Integer teamId) {
+            @PathVariable(TEAM_ID) Integer teamId) {
 
         String externalPath = prepareParams(ExternalPaths.GET_COACH_WITH_HISTORY_V3.getUrl(), new HashMap<>() {{
-            put("team", String.valueOf(teamId));
+            put(TEAM, String.valueOf(teamId));
         }});
         Response response = sendGetRequest(externalPath);
         String responseDate = fetchDataFromResponse(response);
@@ -160,7 +161,7 @@ public class DataAcquisitionRest {
     }
 
     @PostMapping(CREATE_COUNTRIES)
-    public SportPageResponse createCountries() throws IOException {
+    public SportPageResponse createCountries() {
         String externalPath = ExternalPaths.GET_COUNTIES.getUrl();
         Response response = sendGetRequest(externalPath);
         String responseDate = fetchDataFromResponse(response);

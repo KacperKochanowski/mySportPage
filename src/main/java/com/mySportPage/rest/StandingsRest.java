@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.LEAGUE_ID;
+import static com.mySportPage.rest.path.internal.CommonRestParams.LOCATION_TYPE;
 import static com.mySportPage.rest.path.internal.StandingsRestPath.GET_BY_LEAGUE_ID;
 import static com.mySportPage.rest.path.internal.StandingsRestPath.ROOT_PATH;
 
@@ -22,8 +24,8 @@ public class StandingsRest {
      */
 
     @GetMapping(GET_BY_LEAGUE_ID)
-    public SportPageResponse getStandings(@PathVariable Integer leagueId,
-                                          @RequestParam String locationType) {
+    public SportPageResponse getStandings(@PathVariable(LEAGUE_ID) Integer leagueId,
+                                          @RequestParam(LOCATION_TYPE) String locationType) {
         try {
             validateParams(leagueId, locationType);
             if (locationType == null) {
@@ -49,6 +51,7 @@ public class StandingsRest {
         if (locationType == null) {
             return;
         }
+        //TODO: move locations to enum
         switch (locationType.toLowerCase()) {
             case "all":
             case "home":
