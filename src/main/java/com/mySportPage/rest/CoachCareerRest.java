@@ -1,14 +1,17 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.rest.path.CoachCareerRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachCareerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.CoachCareerRestPath.*;
+import static com.mySportPage.rest.path.internal.CommonRestParams.COACH_ID;
+import static com.mySportPage.rest.path.internal.CommonRestParams.COACH_NAME;
+
 @RestController
-@RequestMapping(CoachCareerRestPath.ROOT_PATH)
+@RequestMapping(ROOT_PATH)
 public class CoachCareerRest {
 
     private final CoachCareerService service;
@@ -18,9 +21,9 @@ public class CoachCareerRest {
         this.service = service;
     }
 
-    @GetMapping(CoachCareerRestPath.GET_CAREER_BY_COACH_ID)
+    @GetMapping(GET_CAREER_BY_COACH_ID)
     public SportPageResponse getCoachCareer(
-            @PathVariable Integer coachId) {
+            @PathVariable(COACH_ID) Integer coachId) {
         return SportPageResponse.builder()
                 .withData(service.getCoachCareerById(coachId))
                 .withCode(HttpStatus.OK.value())
@@ -28,9 +31,9 @@ public class CoachCareerRest {
                 .build();
     }
 
-    @GetMapping(CoachCareerRestPath.GET_CAREER_BY_COACH_NAME)
+    @GetMapping(GET_CAREER_BY_COACH_NAME)
     public SportPageResponse getCoachCareer(
-            @PathVariable String coachName) {
+            @PathVariable(COACH_NAME) String coachName) {
         return SportPageResponse.builder()
                 .withData(service.getCoachCareerByName(coachName))
                 .withCode(HttpStatus.OK.value())

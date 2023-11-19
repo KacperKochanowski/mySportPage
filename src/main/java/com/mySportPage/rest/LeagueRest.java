@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+import static com.mySportPage.rest.path.internal.CommonRestParams.COUNTRY;
+import static com.mySportPage.rest.path.internal.LeagueRestPath.*;
+
 @RestController
-@RequestMapping("leagues")
+@RequestMapping(ROOT_PATH)
 public class LeagueRest {
 
     @Autowired
     private LeagueService leagueService;
 
-    @GetMapping("all")
+    @GetMapping(GET_ALL)
     public SportPageResponse getLeagues() {
         return SportPageResponse.builder()
                 .withData(leagueService.getLeagues())
@@ -24,9 +27,9 @@ public class LeagueRest {
                 .build();
     }
 
-    @GetMapping("country/{country}")
+    @GetMapping(GET_BY_COUNTRY)
     public SportPageResponse getLeagues(
-            @PathVariable("country") String country) {
+            @PathVariable(COUNTRY) String country) {
         return SportPageResponse.builder()
                 .withData(country != null ?
                         leagueService.getLeagues(country) :

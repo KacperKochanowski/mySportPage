@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.StandingsRestPath.GET_BY_LEAGUE_ID;
+import static com.mySportPage.rest.path.internal.StandingsRestPath.ROOT_PATH;
+
 @RestController
-@RequestMapping("standings")
+@RequestMapping(ROOT_PATH)
 public class StandingsRest {
 
     @Autowired
@@ -18,7 +21,7 @@ public class StandingsRest {
      * In this case, the fixtures and standings entities need to be updated.
      */
 
-    @GetMapping("leagueId/{leagueId}")
+    @GetMapping(GET_BY_LEAGUE_ID)
     public SportPageResponse getStandings(@PathVariable Integer leagueId,
                                           @RequestParam String locationType) {
         try {

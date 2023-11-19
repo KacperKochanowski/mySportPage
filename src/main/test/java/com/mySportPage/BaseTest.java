@@ -1,9 +1,14 @@
 package com.mySportPage;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,7 +43,8 @@ public abstract class BaseTest {
 
     private StringBuilder fillPathParams(Map<String, String> pathParams, StringBuilder path) {
         for (Map.Entry<String, String> entry : pathParams.entrySet()) {
-            path = new StringBuilder(path.toString().replace(entry.getKey(), entry.getValue()));
+            path = new StringBuilder(path.toString()
+                    .replace(String.format("{%s}", entry.getKey()), entry.getValue()));
         }
         return path;
     }
@@ -50,5 +56,15 @@ public abstract class BaseTest {
         }
         path = new StringBuilder(path.substring(0, path.lastIndexOf("&")));
         return path;
+    }
+
+    protected <T> T mapInternalResponse(MvcResult result, TypeReference<T> type) throws JsonProcessingException, UnsupportedEncodingException {
+        String responseBody = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(responseBody);
+        JsonNode dataNode = rootNode.path("data");
+
+        return objectMapper.readValue(dataNode.toString(), type);
     }
 }

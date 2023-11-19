@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.rest.path.FixtureStatisticsRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.FixtureStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.mySportPage.rest.path.internal.FixtureStatisticsRestPath.GET_BY_FIXTURE_ID;
+import static com.mySportPage.rest.path.internal.FixtureStatisticsRestPath.ROOT_PATH;
+
 @RestController
-@RequestMapping(FixtureStatisticsRestPath.ROOT_PATH)
+@RequestMapping(ROOT_PATH)
 public class FixtureStatisticsRest {
 
     @Autowired
     private FixtureStatisticsService fixtureStatisticsService;
 
-    @GetMapping(FixtureStatisticsRestPath.GET_BY_FIXTURE_ID)
+    @GetMapping(GET_BY_FIXTURE_ID)
     private SportPageResponse fixtureStatistics(
             @PathVariable Integer fixtureId,
             @RequestParam(required = false) Integer teamId) {

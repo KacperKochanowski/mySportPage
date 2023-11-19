@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 
+import static com.mySportPage.rest.path.internal.StadiumRestPath.*;
+
 @RestController
-@RequestMapping("stadium")
+@RequestMapping(ROOT_PATH)
 public class StadiumRest {
 
     @Autowired
     private StadiumService stadiumService;
 
-    @GetMapping("city/{city}")
+    @GetMapping(GET_BY_CITY)
     public SportPageResponse getByCity(
             @PathVariable("city") String city) {
         return SportPageResponse.builder()
@@ -28,7 +30,7 @@ public class StadiumRest {
                 .build();
     }
 
-    @GetMapping("address/{address}")
+    @GetMapping(GET_BY_ADDRESS)
     public SportPageResponse getByAddress(
             @PathVariable("address") String address) {
         return SportPageResponse.builder()
@@ -38,7 +40,7 @@ public class StadiumRest {
                 .build();
     }
 
-    @GetMapping("team-id/{teamId}")
+    @GetMapping(GET_BY_TEAM_ID)
     public SportPageResponse getByTeamId(
             @PathVariable("teamId") Integer teamId) {
         return SportPageResponse.builder()
@@ -48,7 +50,7 @@ public class StadiumRest {
                 .build();
     }
 
-    @GetMapping("team-name/{teamName}")
+    @GetMapping(GET_BY_TEAM_NAME)
     public SportPageResponse getByTeamName(
             @PathVariable("teamName") String teamName) {
         return SportPageResponse.builder()
@@ -58,7 +60,7 @@ public class StadiumRest {
                 .build();
     }
 
-    @GetMapping("name/{name}")
+    @GetMapping(GET_BY_NAME)
     public SportPageResponse getByName(
             @PathVariable("name") String name) {
         return SportPageResponse.builder()

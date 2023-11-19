@@ -1,20 +1,21 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.rest.path.FixtureRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.FixtureRestPath.*;
+
 @RestController
-@RequestMapping(FixtureRestPath.ROOT_PATH)
+@RequestMapping(ROOT_PATH)
 public class FixtureRest {
 
     @Autowired
     private FixtureService fixtureService;
 
-    @GetMapping(FixtureRestPath.GET_CURRENT_FIXTURES)
+    @GetMapping(GET_CURRENT_FIXTURES)
     public SportPageResponse getFixtures() {
         return SportPageResponse.builder()
                 .withData(fixtureService.getFixtures())
@@ -23,7 +24,7 @@ public class FixtureRest {
                 .build();
     }
 
-    @GetMapping(FixtureRestPath.GET_FIXTURES_FOR_TWO_WEEKS)
+    @GetMapping(GET_FIXTURES_FOR_TWO_WEEKS)
     public SportPageResponse getFixturesByDateLeagueRound() {
         return SportPageResponse.builder()
                 .withData(fixtureService.getFixturesByDateLeagueRound())
@@ -32,7 +33,7 @@ public class FixtureRest {
                 .build();
     }
 
-    @GetMapping(FixtureRestPath.GET_FIXTURES_BY_LEAGUE)
+    @GetMapping(GET_FIXTURES_BY_LEAGUE)
     public SportPageResponse getFixtures(
             @PathVariable("leagueId") Integer leagueId,
             @RequestParam(required = false) Integer round) {
@@ -43,7 +44,7 @@ public class FixtureRest {
                 .build();
     }
 
-    @GetMapping(FixtureRestPath.GET_FIXTURES_BY_TEAM)
+    @GetMapping(GET_FIXTURES_BY_TEAM)
     public SportPageResponse getFixtures(
             @PathVariable("teamId") Integer teamId,
             @RequestParam(required = false) String place) {
@@ -54,7 +55,7 @@ public class FixtureRest {
                 .build();
     }
 
-    @GetMapping(FixtureRestPath.GET_FIXTURES_BY_TEAM_AND_IF_PLAYED)
+    @GetMapping(GET_FIXTURES_BY_TEAM_AND_IF_PLAYED)
     public SportPageResponse getFixtures(
             @PathVariable("teamId") Integer teamId,
             @PathVariable("played") boolean played) {

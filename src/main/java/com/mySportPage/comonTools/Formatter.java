@@ -1,6 +1,8 @@
 package com.mySportPage.comonTools;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 public class Formatter {
@@ -11,5 +13,11 @@ public class Formatter {
 
     public static String parseDate(Date date, SimpleDateFormat dateFormat) {
         return dateFormat.format(date);
+    }
+
+    public static Date mapToData(String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        long milliseconds = localDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+        return new Date(milliseconds);
     }
 }

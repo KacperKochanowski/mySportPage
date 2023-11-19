@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder (setterPrefix = "with")
+@SuperBuilder(setterPrefix = "with")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SportPageResponse {
 

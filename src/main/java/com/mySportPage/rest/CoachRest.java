@@ -1,6 +1,5 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.rest.path.CoachRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static com.mySportPage.rest.path.internal.CoachRestPath.*;
+
 @RestController
-@RequestMapping(CoachRestPath.ROOT_PATH)
+@RequestMapping(ROOT_PATH)
 public class CoachRest {
 
     @Autowired
     private CoachService coachService;
 
-    @GetMapping(CoachRestPath.GET_COACH_BY_LEAGUE)
+    @GetMapping(GET_COACH_BY_LEAGUE)
     public SportPageResponse getCoachByLeague(
             @PathVariable Integer leagueId) {
         return SportPageResponse.builder()
@@ -26,7 +27,7 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping(CoachRestPath.GET_COACH_BY_TEAM)
+    @GetMapping(GET_COACH_BY_TEAM)
     public SportPageResponse getCoachByTeam(
             @PathVariable Integer teamId) {
         return SportPageResponse.builder()
@@ -36,7 +37,7 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping(CoachRestPath.GET_COACH_BY_COUNTRY)
+    @GetMapping(GET_COACH_BY_COUNTRY)
     public SportPageResponse getCoachByCountry(
             @PathVariable String country) {
         return SportPageResponse.builder()
@@ -46,7 +47,7 @@ public class CoachRest {
                 .build();
     }
 
-    @GetMapping(CoachRestPath.GET_COACH_BY_MULTIPLE_PARAMS)
+    @GetMapping(GET_COACH_BY_MULTIPLE_PARAMS)
     public SportPageResponse getCoach(
             @RequestParam(required = false) Integer leagueId,
             @RequestParam(required = false) Integer teamId,

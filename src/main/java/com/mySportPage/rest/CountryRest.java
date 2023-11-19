@@ -1,7 +1,6 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.model.Country;
-import com.mySportPage.rest.path.CountryRestPath;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.mySportPage.rest.path.internal.CountryRestPath.*;
+
 @RestController
-@RequestMapping(CountryRestPath.ROOT_PATH)
+@RequestMapping(ROOT_PATH)
 public class CountryRest {
 
     @Autowired
     private CountryService countryService;
 
 
-    @GetMapping(CountryRestPath.GET_ALL_COUNTRIES)
+    @GetMapping(GET_ALL_COUNTRIES)
     private SportPageResponse getCountries() {
         return SportPageResponse.builder()
                 .withData(countryService.getCountries())
@@ -30,7 +31,7 @@ public class CountryRest {
                 .build();
     }
 
-    @GetMapping(CountryRestPath.GET_COUNTRY_BY_NAME)
+    @GetMapping(GET_COUNTRY_BY_NAME)
     private SportPageResponse getCountriesByName(
             @PathVariable String country) {
         return validateParam(country) ?
@@ -46,7 +47,7 @@ public class CountryRest {
 
     }
 
-    @GetMapping(CountryRestPath.GET_COUNTRY_BY_CODE)
+    @GetMapping(GET_COUNTRY_BY_CODE)
     private SportPageResponse getCountriesByCode(
             @PathVariable String countryCode) {
         return validateParam(countryCode) ?

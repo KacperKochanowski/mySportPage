@@ -6,14 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.mySportPage.rest.path.internal.TeamRestPath.*;
+
 @RestController
-@RequestMapping("teams")
+@RequestMapping(ROOT_PATH)
 public class TeamRest {
 
     @Autowired
     private TeamService teamService;
 
-    @GetMapping("team-id/{teamId}")
+    @GetMapping(GET_BY_TEAM_ID)
     public TeamResponse getTeam(
             @PathVariable("teamId") Integer teamId) {
         return TeamResponse.builder()
@@ -23,7 +25,7 @@ public class TeamRest {
                 .build();
     }
 
-    @GetMapping("league-id/{leagueId}")
+    @GetMapping(GET_BY_LEAGUE_ID)
     public TeamResponse getTeamByLeague(
             @PathVariable("leagueId") Integer leagueId) {
         return TeamResponse.builder()
@@ -33,7 +35,7 @@ public class TeamRest {
                 .build();
     }
 
-    @GetMapping("country-name/{countryName}")
+    @GetMapping(GET_BY_COUNTRY_NAME)
     public TeamResponse getTeamByCountryName(
             @PathVariable("countryName") String countryName) {
         return TeamResponse.builder()

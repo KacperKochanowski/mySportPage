@@ -1,6 +1,6 @@
 package com.mySportPage.rest;
 
-import com.mySportPage.ExternalPaths;
+import com.mySportPage.rest.path.external.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.DataAcquisitionService;
@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mySportPage.rest.path.internal.DataAcquisitionRestPath.*;
+
 @RestController
-@RequestMapping("internal/data-acquisition")
+@RequestMapping(ROOT_PATH)
 public class DataAcquisitionRest {
 
     @Value("${request.header.X_RAPID_API_KEY}")
@@ -33,7 +35,7 @@ public class DataAcquisitionRest {
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
 
-    @PostMapping("/createTeamsAndStadiums")
+    @PostMapping(CREATE_TEAMS_AND_STADIUMS)
     public SportPageResponse createTeamsAndStadiums(
             @RequestParam("leagueId") Integer leagueId,
             @RequestParam("season") Integer season) {
@@ -54,7 +56,7 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("/createLeagues")
+    @PostMapping(CREATE_LEAGUES)
     public SportPageResponse createLeagues(
             @RequestParam(required = false) String leagueId,
             @RequestParam(required = false) String season,
@@ -80,8 +82,8 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("/createFixtures")
-    public SportPageResponse createFixture(
+    @PostMapping(CREATE_FIXTURES)
+    public SportPageResponse createFixtures(
             @RequestParam String leagueId,
             @RequestParam Integer season) {
 
@@ -100,7 +102,7 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("/createStandings")
+    @PostMapping(CREATE_STANDINGS)
     public SportPageResponse createStandings(
             @RequestParam(required = false) String leagueId,
             @RequestParam Integer season) {
@@ -118,7 +120,7 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("/createFixtureStatistics")
+    @PostMapping(CREATE_FIXTURE_STATISTICS)
     public SportPageResponse createFixtureStatistics(
             @RequestParam Integer fixture,
             @RequestParam(required = false) Integer team) {
@@ -140,7 +142,7 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("/createCoachWithHistory/{teamId}")
+    @PostMapping(CREATE_COACH_WITH_HISTORY)
     public SportPageResponse createCoachWithHistory(
             @PathVariable Integer teamId) {
 
@@ -157,7 +159,7 @@ public class DataAcquisitionRest {
         return new SportPageResponse(response);
     }
 
-    @PostMapping("createCountries")
+    @PostMapping(CREATE_COUNTRIES)
     public SportPageResponse createCountries() throws IOException {
         String externalPath = ExternalPaths.GET_COUNTIES.getUrl();
         Response response = sendGetRequest(externalPath);

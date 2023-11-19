@@ -1,4 +1,4 @@
-package com.mySportPage;
+package com.mySportPage.rest.path.external;
 
 import lombok.Getter;
 

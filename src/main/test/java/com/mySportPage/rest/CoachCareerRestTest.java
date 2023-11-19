@@ -1,12 +1,10 @@
 package com.mySportPage.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.BaseTest;
 import com.mySportPage.model.CoachCareer;
-import com.mySportPage.rest.path.CoachCareerRestPath;
+import com.mySportPage.rest.path.internal.CoachCareerRestPath;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +15,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.mySportPage.rest.path.internal.CoachCareerRestPath.GET_CAREER_BY_COACH_ID;
+import static com.mySportPage.rest.path.internal.CoachCareerRestPath.GET_CAREER_BY_COACH_NAME;
+import static com.mySportPage.rest.path.internal.CommonRestParams.COACH_ID;
+import static com.mySportPage.rest.path.internal.CommonRestParams.COACH_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,8 +54,8 @@ class CoachCareerRestTest extends BaseTest {
         //given
         //when
         Map<String, String> pathParams = new HashMap<>();
-        pathParams.put(CoachCareerRestPath.Params.COACH_ID, "1382");
-        String path = createPath(CoachCareerRestPath.GET_CAREER_BY_COACH_ID, pathParams, null);
+        pathParams.put(COACH_ID, "1382");
+        String path = createPath(GET_CAREER_BY_COACH_ID, pathParams, null);
         //then
         mockMvc.perform(get(path))
                 .andDo(print())
@@ -70,25 +71,13 @@ class CoachCareerRestTest extends BaseTest {
         //given
         //when
         Map<String, String> pathParams = new HashMap<>();
-        pathParams.put(CoachCareerRestPath.Params.COACH_ID, "1382");
-        String path = createPath(CoachCareerRestPath.GET_CAREER_BY_COACH_ID, pathParams, null);
+        pathParams.put(COACH_NAME, "J. Gustafsson");
+        String path = createPath(GET_CAREER_BY_COACH_NAME, pathParams, null);
         MvcResult response = performGETRequest(path);
         //then
-        List<CoachCareer> coachCareerList = mapToModel(response);
+        List<CoachCareer> coachCareerList = mapInternalResponse(response, new TypeReference<>() {});
 
         assertThat(coachCareerList).isNotNull();
         assertThat(coachCareerList.stream().map(v -> v.getTeam().getName()).collect(Collectors.toList())).contains("Pogon Szczecin");
-    }
-
-
-    private List<CoachCareer> mapToModel(MvcResult result) throws JsonProcessingException, UnsupportedEncodingException {
-        String responseBody = result.getResponse().getContentAsString();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode rootNode = objectMapper.readTree(responseBody);
-        JsonNode dataNode = rootNode.path("data");
-
-        return objectMapper.readValue(dataNode.toString(), new TypeReference<>() {
-        });
     }
 }
