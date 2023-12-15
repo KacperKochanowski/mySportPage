@@ -70,6 +70,8 @@ public class CountryRest {
         }
         List<Country> countries = countryService.getCountries();
         return countries.stream()
+                .filter(v -> v.getCode() != null)
+                .filter(v -> v.getName() != null)
                 .anyMatch(v -> v.getName().equalsIgnoreCase(param.trim()) || v.getCode().equalsIgnoreCase(param.trim()));
     }
 }

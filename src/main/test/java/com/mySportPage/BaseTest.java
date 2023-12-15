@@ -63,6 +63,10 @@ public abstract class BaseTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode rootNode = objectMapper.readTree(responseBody);
+        JsonNode responseCode = rootNode.path("code");
+        if (Integer.parseInt(responseCode.toString()) >= 400) {
+            return null;
+        }
         JsonNode dataNode = rootNode.path("data");
 
         return objectMapper.readValue(dataNode.toString(), type);
