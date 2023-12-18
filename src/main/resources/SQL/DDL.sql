@@ -71,6 +71,7 @@ CREATE TABLE football.fixture (
 	halftime_score text NULL,
 	fulltime_score text NULL,
 	played bool NULL,
+    is_postponed bool NULL DEFAULT false,
 	CONSTRAINT fixture_fixture_id_key UNIQUE (fixture_id)
 );
 

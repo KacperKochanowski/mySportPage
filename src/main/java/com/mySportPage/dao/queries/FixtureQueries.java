@@ -14,8 +14,18 @@ public enum FixtureQueries {
     GET_FIXTURES("SELECT " + CORE_COLUMNS.getQuery() +
             "FROM football.fixture f " +
             "JOIN football.league l ON f.league_id = l.league_id " +
-            "GROUP BY f.event, f.start, f.result, f.round, f.league_id, f.played, l.name " +
-            "HAVING f.round = MIN(CAST((SELECT round FROM football.fixture WHERE played = false LIMIT 1) AS integer)) "),
+            "WHERE f.round = (SELECT DISTINCT round " +
+            "FROM football.fixture f1 " +
+            "WHERE played = false " +
+            "AND NOT EXISTS ( " +
+            "    SELECT 1 " +
+            "    FROM football.fixture f2 " +
+            "    WHERE f1.round = f2.round " +
+            "    AND is_postponed = true " +
+            ") " +
+            "ORDER BY round ASC " +
+            "LIMIT 1) " +
+            "GROUP BY f.event, f.start, f.result, f.round, f.league_id, f.played, l.name "),
 
     GET_FIXTURES_FOR_LAST_AND_NEXT_WEEK("SELECT " + CORE_COLUMNS.getQuery() +
             "FROM football.fixture f " +
@@ -47,7 +57,8 @@ public enum FixtureQueries {
     ANY_MISSING_RESULT("SELECT CAST(COUNT(*) AS integer) " +
             "FROM football.fixture f " +
             "WHERE f.start < NOW() - INTERVAL '3 hours' " +
-            "AND f.result IS NULL"),
+            "AND f.result IS NULL " +
+            "AND f.is_postponed <> TRUE"),
 
     MISSING_RESULTS_WITH_LEAGUE("SELECT f.league_id, " +
             "CAST('20' || SUBSTRING(f.season FROM 1 FOR 2) AS int) AS season, " +
@@ -55,6 +66,7 @@ public enum FixtureQueries {
             "FROM football.fixture f " +
             "WHERE f.start < NOW() - INTERVAL '3 hours' " +
             "AND f.result IS NULL " +
+            "AND f.is_postponed <> TRUE " +
             "GROUP BY league_id, season");
 
     private final String query;
