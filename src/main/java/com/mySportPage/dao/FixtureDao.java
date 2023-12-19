@@ -11,6 +11,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -109,6 +110,11 @@ public class FixtureDao {
         List<Object[]> data = (List<Object[]>) entityManager.createNativeQuery(FixtureQueries.MISSING_RESULTS_WITH_LEAGUE.getQuery())
                 .getResultList();
         return convertDataToMap(data);
+    }
+
+    @Transactional
+    public Integer updatePostponedFixtures() {
+        return entityManager.createNativeQuery(FixtureQueries.SET_POSTPONED_FIXTURES.getQuery()).executeUpdate();
     }
 
     private List<FixtureDTO> mapToFixturesList(List<Object[]> results) {

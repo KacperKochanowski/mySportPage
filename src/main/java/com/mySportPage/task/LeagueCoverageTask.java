@@ -21,7 +21,7 @@ public class LeagueCoverageTask extends BaseTask {
     @Autowired
     private LeagueCoverageDao leagueCoverageDao;
 
-    @Scheduled(fixedDelay = BaseTask.HOUR)
+    @Scheduled(fixedDelay = BaseTask.HOUR, initialDelay = 2 * BaseTask.SECOND)
     public void doWork() {
         process(TaskList.LEAGUE_COVERAGE_TASK);
     }

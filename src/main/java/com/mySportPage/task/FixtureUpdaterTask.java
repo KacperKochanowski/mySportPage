@@ -27,7 +27,7 @@ public class FixtureUpdaterTask extends BaseTask {
     @Value("${setting.MIN_VALUE_OF_MISSING_RESULTS_TO_ALLOW_UPDATE:10}")
     private int minValueToAllowUpdate;
 
-    @Scheduled(fixedDelay = 12 * BaseTask.HOUR)
+    @Scheduled(fixedDelay = 12 * BaseTask.HOUR, initialDelay = 4 * BaseTask.SECOND)
     public void doWork() {
         process(TaskList.FIXTURE_UPDATER_TASK);
     }
@@ -43,6 +43,7 @@ public class FixtureUpdaterTask extends BaseTask {
         for (var entry : issues.entrySet()) {
             if (entry.getValue() < minValueToAllowUpdate) {
                 log.debug("FixtureUpdaterTask: not enough events found to perform update league ID = {} - minimum is {}", entry.getKey().getLeagueId(), minValueToAllowUpdate);
+                continue;
             }
             dataAcquisitionRest.createFixtures(String.valueOf(entry.getKey().getLeagueId()), entry.getKey().getSeason());
         }

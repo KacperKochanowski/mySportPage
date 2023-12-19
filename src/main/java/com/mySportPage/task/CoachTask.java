@@ -21,7 +21,7 @@ public class CoachTask extends BaseTask {
     @Autowired
     private CoachDao coachDao;
 
-    @Scheduled(fixedDelay = 2 * BaseTask.HOUR)
+    @Scheduled(fixedDelay = 2 * BaseTask.HOUR, initialDelay = 8 * BaseTask.SECOND)
     public void doWork() {
         process(TaskList.COACH_TASK);
     }

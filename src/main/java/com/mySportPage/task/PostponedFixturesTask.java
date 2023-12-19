@@ -10,21 +10,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile("production")
-public class MissingResultingTask extends BaseTask {
+public class PostponedFixturesTask extends BaseTask {
 
     @Autowired
     private FixtureDao fixtureDao;
 
-    @Scheduled(fixedDelay = BaseTask.HOUR, initialDelay = 6 * BaseTask.SECOND)
+    @Scheduled(fixedDelay = 12 * BaseTask.HOUR, initialDelay = 10 * BaseTask.SECOND)
     public void doWork() {
-        process(TaskList.MISSING_RESULTING_TASK);
+        process(TaskList.POSTPONED_FIXTURE_TASK);
     }
 
     @Override
     public void processSingleTask() {
-        Integer issues = fixtureDao.checkForMissingResulting();
-        if (issues > 0) {
-            log.warn("MissingResultingTask: found {} not settled results!", issues);
+        Integer results = fixtureDao.updatePostponedFixtures();
+        if(results > 0) {
+            log.info("PostponedFixturesTask: updated {} results", results);
         }
     }
 }

@@ -67,7 +67,18 @@ public enum FixtureQueries {
             "WHERE f.start < NOW() - INTERVAL '3 hours' " +
             "AND f.result IS NULL " +
             "AND f.is_postponed <> TRUE " +
-            "GROUP BY league_id, season");
+            "GROUP BY league_id, season"),
+
+    SET_POSTPONED_FIXTURES("WITH postponed_fixtures AS ( " +
+            "SELECT f.fixture_id AS f_id " +
+            "FROM football.fixture f " +
+            "WHERE f.\"start\" < NOW() - INTERVAL '3 day' " +
+            "AND f.played = false " +
+            "AND f.is_postponed != true) " +
+            "UPDATE football.fixture " +
+            "SET is_postponed = true " +
+            "FROM postponed_fixtures " +
+            "WHERE fixture_id = postponed_fixtures.f_id");
 
     private final String query;
 
