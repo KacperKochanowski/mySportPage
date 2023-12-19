@@ -204,7 +204,7 @@ public class DataAcquisitionDao {
                 "VALUES(:id, :event, :leagueId, :round, :season, :start, :host, :guest, :winner, :stadiumId, :referee, :result, :halftimeScore, :fulltimeScore, :finished);";
 
         String queryUpdateFixture = "UPDATE football.fixture " +
-                "SET winner = :winner, referee = :referee, result = :result, halftime_score = :halftimeScore, fulltime_score = :fulltimeScore, played = :finished " +
+                "SET winner = :winner, referee = :referee, result = :result, halftime_score = :halftimeScore, fulltime_score = :fulltimeScore, played = :finished, stadium_id = :stadiumId, start = :start " +
                 "WHERE fixture_id = :id";
 
         for (Fixture fixture : fixtures) {
