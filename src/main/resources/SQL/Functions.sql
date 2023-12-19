@@ -115,3 +115,20 @@ BEGIN
     );
 END;
 $function$;
+
+-------------------------
+
+CREATE OR REPLACE FUNCTION update_is_postponed()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.played = true AND OLD.is_postponed = true THEN
+        NEW.is_postponed = false;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_is_postponed_trigger
+BEFORE UPDATE ON football.fixture
+FOR EACH ROW
+EXECUTE FUNCTION update_is_postponed();
