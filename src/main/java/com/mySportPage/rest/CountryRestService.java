@@ -18,7 +18,7 @@ import static com.mySportPage.rest.path.internal.CountryRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class CountryRest {
+public class CountryRestService {
 
     @Autowired
     private CountryService countryService;
@@ -64,6 +64,7 @@ public class CountryRest {
                         .build();
     }
 
+    //TODO: move to controller
     private boolean validateParam(String param) {
         if (param == null || param.isEmpty()) {
             return false;

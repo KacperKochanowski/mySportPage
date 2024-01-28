@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.StadiumController;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.StadiumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,16 +16,19 @@ import static com.mySportPage.rest.path.internal.StadiumRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class StadiumRest {
+public class StadiumRestService {
 
     @Autowired
-    private StadiumService stadiumService;
+    private StadiumController controller;
+
+
+    //TODO logika wielu sprawdzeń do controllera
 
     @GetMapping(GET_BY_CITY)
     public SportPageResponse getByCity(
             @PathVariable(CITY) String city) {
         return SportPageResponse.builder()
-                .withData(city != null ? stadiumService.getByCity(city) : new ArrayList<>())
+                .withData(city != null ? controller.getByCity(city) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -35,7 +38,7 @@ public class StadiumRest {
     public SportPageResponse getByAddress(
             @PathVariable(ADDRESS) String address) {
         return SportPageResponse.builder()
-                .withData(address != null ? stadiumService.getByAddress(address) : new ArrayList<>())
+                .withData(address != null ? controller.getByAddress(address) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -45,7 +48,7 @@ public class StadiumRest {
     public SportPageResponse getByTeamId(
             @PathVariable(TEAM_ID) Integer teamId) {
         return SportPageResponse.builder()
-                .withData(teamId != null ? stadiumService.getByTeamId(teamId) : new ArrayList<>())
+                .withData(teamId != null ? controller.getByTeamId(teamId) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -55,7 +58,7 @@ public class StadiumRest {
     public SportPageResponse getByTeamName(
             @PathVariable(TEAM_NAME) String teamName) {
         return SportPageResponse.builder()
-                .withData(teamName != null ? stadiumService.getByTeamName(teamName) : new ArrayList<>())
+                .withData(teamName != null ? controller.getByTeamName(teamName) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -65,7 +68,7 @@ public class StadiumRest {
     public SportPageResponse getByName(
             @PathVariable(NAME) String name) {
         return SportPageResponse.builder()
-                .withData(name != null ? stadiumService.getByName(name) : new ArrayList<>())
+                .withData(name != null ? controller.getByName(name) : new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

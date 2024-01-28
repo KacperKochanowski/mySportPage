@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.CoachController;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,16 +13,16 @@ import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class CoachRest {
+public class CoachRestService {
 
     @Autowired
-    private CoachService coachService;
+    private CoachController controller;
 
     @GetMapping(GET_COACH_BY_LEAGUE)
     public SportPageResponse getCoachByLeague(
             @PathVariable(LEAGUE_ID) Integer leagueId) {
         return SportPageResponse.builder()
-                .withData(coachService.getCoachesByLeague(leagueId))
+                .withData(controller.getCoachesByLeague(leagueId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -32,7 +32,7 @@ public class CoachRest {
     public SportPageResponse getCoachByTeam(
             @PathVariable(TEAM_ID) Integer teamId) {
         return SportPageResponse.builder()
-                .withData(coachService.getCoachesByTeam(teamId))
+                .withData(controller.getCoachesByTeam(teamId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -42,7 +42,7 @@ public class CoachRest {
     public SportPageResponse getCoachByCountry(
             @PathVariable(COUNTRY) String country) {
         return SportPageResponse.builder()
-                .withData(coachService.getCoachesByCountry(country))
+                .withData(controller.getCoachesByCountry(country))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -61,12 +61,13 @@ public class CoachRest {
                     .build();
         }
         return SportPageResponse.builder()
-                .withData(coachService.getCoaches(prepareParams(leagueId, teamId, country)))
+                .withData(controller.getCoaches(prepareParams(leagueId, teamId, country)))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
+    //TODO: przerobić to niżej na obiekt klasy customowej jak w market-api
     private Map<String, Object> prepareParams(Integer leagueId, Integer teamId, String country) {
         Map<String, Object> paramMap = new HashMap<>();
         if (leagueId != null) {

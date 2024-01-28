@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.CoachCareerController;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.CoachCareerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,20 +12,20 @@ import static com.mySportPage.rest.path.internal.CommonRestParams.COACH_NAME;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class CoachCareerRest {
+public class CoachCareerRestService {
 
-    private final CoachCareerService service;
+    private final CoachCareerController controller;
 
     @Autowired
-    public CoachCareerRest(CoachCareerService service) {
-        this.service = service;
+    private CoachCareerRestService(CoachCareerController controller) {
+        this.controller = controller;
     }
 
     @GetMapping(GET_CAREER_BY_COACH_ID)
     public SportPageResponse getCoachCareer(
             @PathVariable(COACH_ID) Integer coachId) {
         return SportPageResponse.builder()
-                .withData(service.getCoachCareerById(coachId))
+                .withData(controller.getCoachCareerById(coachId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -35,7 +35,7 @@ public class CoachCareerRest {
     public SportPageResponse getCoachCareer(
             @PathVariable(COACH_NAME) String coachName) {
         return SportPageResponse.builder()
-                .withData(service.getCoachCareerByName(coachName))
+                .withData(controller.getCoachCareerByName(coachName))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

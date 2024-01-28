@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.StandingsController;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.StandingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +13,12 @@ import static com.mySportPage.rest.path.internal.StandingsRestPath.ROOT_PATH;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class StandingsRest {
+public class StandingsRestService {
+
+    //TODO: refactor klasy względem controllera
 
     @Autowired
-    private StandingsService standingsService;
+    private StandingsController controller;
 
     /**
      * Data returned from request below may be incorrect sometimes.
@@ -32,7 +34,7 @@ public class StandingsRest {
                 locationType = "all";
             }
             return SportPageResponse.builder()
-                    .withData(standingsService.getStandings(leagueId, locationType.toLowerCase()))
+                    .withData(controller.getStandings(leagueId, locationType.toLowerCase()))
                     .withCode(HttpStatus.OK.value())
                     .withMessage(HttpStatus.OK.getReasonPhrase())
                     .build();

@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.TeamController;
 import com.mySportPage.rest.response.TeamResponse;
-import com.mySportPage.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,16 +11,16 @@ import static com.mySportPage.rest.path.internal.TeamRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class TeamRest {
+public class TeamRestService {
 
     @Autowired
-    private TeamService teamService;
+    private TeamController controller;
 
     @GetMapping(GET_BY_TEAM_ID)
     public TeamResponse getTeam(
             @PathVariable(TEAM_ID) Integer teamId) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeam(teamId))
+                .withTeams(controller.getTeam(teamId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -30,7 +30,7 @@ public class TeamRest {
     public TeamResponse getTeamByLeague(
             @PathVariable(LEAGUE_ID) Integer leagueId) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeamByLeague(leagueId))
+                .withTeams(controller.getTeamByLeague(leagueId))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
@@ -40,7 +40,7 @@ public class TeamRest {
     public TeamResponse getTeamByCountryName(
             @PathVariable(COUNTRY) String country) {
         return TeamResponse.builder()
-                .withTeams(teamService.getTeamByCountryName(country))
+                .withTeams(controller.getTeamByCountryName(country))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

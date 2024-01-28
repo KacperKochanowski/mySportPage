@@ -2,7 +2,7 @@ package com.mySportPage.task;
 
 import com.mySportPage.dao.FixtureDao;
 import com.mySportPage.model.dto.FixtureDTO;
-import com.mySportPage.rest.DataAcquisitionRest;
+import com.mySportPage.rest.DataAcquisitionRestService;
 import com.mySportPage.task.core.BaseTask;
 import com.mySportPage.task.core.TaskList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class FixtureUpdaterTask extends BaseTask {
     private FixtureDao fixtureDao;
 
     @Autowired
-    private DataAcquisitionRest dataAcquisitionRest;
+    private DataAcquisitionRestService dataAcquisitionRest;
 
     @Value("${setting.MIN_VALUE_OF_MISSING_RESULTS_TO_ALLOW_UPDATE:10}")
     private int minValueToAllowUpdate;

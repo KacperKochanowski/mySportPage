@@ -1,9 +1,9 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.DataAcquisitionController;
 import com.mySportPage.rest.path.external.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.DataAcquisitionService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -23,7 +23,9 @@ import static com.mySportPage.rest.path.internal.DataAcquisitionRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class DataAcquisitionRest {
+public class DataAcquisitionRestService {
+
+    //TODO: przeniesienie dużej logiki do controllera
 
     @Value("${request.header.X_RAPID_API_KEY}")
     private String X_RAPID_API_KEY;
@@ -32,9 +34,9 @@ public class DataAcquisitionRest {
     private String X_RAPID_API_HOST;
 
     @Autowired
-    private DataAcquisitionService dataAcquisitionService;
+    private DataAcquisitionController controller;
 
-    private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRest.class);
+    private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRestService.class);
 
     @PostMapping(CREATE_TEAMS_AND_STADIUMS)
     public SportPageResponse createTeamsAndStadiums(
@@ -52,11 +54,12 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.TEAM);
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.STADIUM);
+        controller.createObjects(responseDate, SportObjectEnum.TEAM);
+        controller.createObjects(responseDate, SportObjectEnum.STADIUM);
         return new SportPageResponse(response);
     }
 
+    //TODO: przerobić tutaj parametry na jeden obiekt ala RequestModel
     @PostMapping(CREATE_LEAGUES)
     public SportPageResponse createLeagues(
             @RequestParam(required = false) String leagueId,
@@ -79,7 +82,7 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.LEAGUE);
+        controller.createObjects(responseDate, SportObjectEnum.LEAGUE);
         return new SportPageResponse(response);
     }
 
@@ -99,7 +102,7 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.FIXTURE);
+        controller.createObjects(responseDate, SportObjectEnum.FIXTURE);
         return new SportPageResponse(response);
     }
 
@@ -117,7 +120,7 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.STANDING);
+        controller.createObjects(responseDate, SportObjectEnum.STANDING);
         return new SportPageResponse(response);
     }
 
@@ -139,7 +142,7 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.FIXTURE_STATS);
+        controller.createObjects(responseDate, SportObjectEnum.FIXTURE_STATS);
         return new SportPageResponse(response);
     }
 
@@ -155,8 +158,8 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COACH);
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COACH_HISTORY);
+        controller.createObjects(responseDate, SportObjectEnum.COACH);
+        controller.createObjects(responseDate, SportObjectEnum.COACH_HISTORY);
         return new SportPageResponse(response);
     }
 
@@ -168,7 +171,7 @@ public class DataAcquisitionRest {
         if (responseDate == null) {
             return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         }
-        dataAcquisitionService.createObjects(responseDate, SportObjectEnum.COUNTRY);
+        controller.createObjects(responseDate, SportObjectEnum.COUNTRY);
         return new SportPageResponse(response);
     }
 

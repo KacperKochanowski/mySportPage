@@ -24,7 +24,7 @@ public class PostponedFixturesTask extends BaseTask {
     public void processSingleTask() {
         Integer results = fixtureDao.updatePostponedFixtures();
         if(results > 0) {
-            log.info("PostponedFixturesTask: updated {} results", results);
+            log.info("PostponedFixturesTask: updated {} {}", results, results > 10 ? "fixtures" : "fixture");
         }
     }
 }

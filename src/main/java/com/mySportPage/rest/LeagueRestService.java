@@ -1,7 +1,7 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.LeagueController;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,26 +13,27 @@ import static com.mySportPage.rest.path.internal.LeagueRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class LeagueRest {
+public class LeagueRestService {
 
     @Autowired
-    private LeagueService leagueService;
+    private LeagueController controller;
 
     @GetMapping(GET_ALL)
     public SportPageResponse getLeagues() {
         return SportPageResponse.builder()
-                .withData(leagueService.getLeagues())
+                .withData(controller.getLeagues())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
+    //TODO: logika do controllera
     @GetMapping(GET_BY_COUNTRY)
     public SportPageResponse getLeagues(
             @PathVariable(COUNTRY) String country) {
         return SportPageResponse.builder()
                 .withData(country != null ?
-                        leagueService.getLeagues(country) :
+                        controller.getLeagues(country) :
                         new ArrayList<>())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
@@ -42,7 +43,7 @@ public class LeagueRest {
     @GetMapping(ANY_PLAYS)
     public SportPageResponse anyLeaguePlaying() {
         return SportPageResponse.builder()
-                .withData(leagueService.anyPlays())
+                .withData(controller.anyPlays())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
