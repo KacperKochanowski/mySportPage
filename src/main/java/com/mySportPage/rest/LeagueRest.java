@@ -38,4 +38,13 @@ public class LeagueRest {
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
+
+    @GetMapping(ANY_PLAYS)
+    public SportPageResponse anyLeaguePlaying() {
+        return SportPageResponse.builder()
+                .withData(leagueService.anyPlays())
+                .withCode(HttpStatus.OK.value())
+                .withMessage(HttpStatus.OK.getReasonPhrase())
+                .build();
+    }
 }

@@ -41,7 +41,7 @@ public abstract class BaseTest {
         return path.toString();
     }
 
-    private StringBuilder fillPathParams(Map<String, String> pathParams, StringBuilder path) {
+    protected StringBuilder fillPathParams(Map<String, String> pathParams, StringBuilder path) {
         for (Map.Entry<String, String> entry : pathParams.entrySet()) {
             path = new StringBuilder(path.toString()
                     .replace(String.format("{%s}", entry.getKey()), entry.getValue()));
@@ -49,7 +49,7 @@ public abstract class BaseTest {
         return path;
     }
 
-    private StringBuilder fillQueryParams(Map<String, String> queryParams, StringBuilder path) {
+    protected StringBuilder fillQueryParams(Map<String, String> queryParams, StringBuilder path) {
         path.append("?");
         for (Map.Entry<String, String> entry : queryParams.entrySet()) {
             path.append(String.format("%s=%s&", entry.getKey(), entry.getValue()));

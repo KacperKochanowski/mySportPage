@@ -23,4 +23,9 @@ public class LeagueServiceImpl implements LeagueService {
     public List<LeagueDTO> getLeagues(String country) {
         return leagueDao.getLeagues(country);
     }
+
+    @Override
+    public boolean anyPlays() {
+        return leagueDao.anyPlays();
+    }
 }

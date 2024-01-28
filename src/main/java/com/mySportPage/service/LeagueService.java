@@ -9,4 +9,6 @@ public interface LeagueService {
     List<LeagueDTO> getLeagues();
 
     List<LeagueDTO> getLeagues(String country);
+
+    boolean anyPlays();
 }

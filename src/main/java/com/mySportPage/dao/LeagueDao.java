@@ -32,6 +32,10 @@ public class LeagueDao {
         return mapToLeaguesList(results);
     }
 
+    public boolean anyPlays() {
+        return (boolean) entityManager.createNativeQuery(LeagueQueries.ANY_LEAGUE_PLAYS.getQuery()).getSingleResult();
+    }
+
     private List<LeagueDTO> mapToLeaguesList(List<Object[]> results) {
         List<LeagueDTO> fixtures = new ArrayList<>();
         for (Object[] value : results) {
