@@ -15,7 +15,7 @@ public class LeagueCoverageController {
     private final LeagueCoverageService service;
 
     @Autowired
-    private LeagueCoverageController(LeagueCoverageService service) {
+    public LeagueCoverageController(LeagueCoverageService service) {
         this.service = service;
     }
 

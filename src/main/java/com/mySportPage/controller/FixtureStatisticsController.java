@@ -12,7 +12,7 @@ public class FixtureStatisticsController {
     private final FixtureStatisticsService service;
 
     @Autowired
-    private FixtureStatisticsController(FixtureStatisticsService service) {
+    public FixtureStatisticsController(FixtureStatisticsService service) {
         this.service = service;
     }
 

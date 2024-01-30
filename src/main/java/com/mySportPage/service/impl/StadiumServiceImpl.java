@@ -13,36 +13,40 @@ import java.util.List;
 @Service
 public class StadiumServiceImpl implements StadiumService {
 
+    private final StadiumDao dao;
+
     @Autowired
-    private StadiumDao stadiumDao;
+    public StadiumServiceImpl(StadiumDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<StadiumDTO> getByCity(String city) {
-        List<Stadium> stadiums = stadiumDao.getByCity(city);
+        List<Stadium> stadiums = dao.getByCity(city);
         return mapToDTO(stadiums);
     }
 
     @Override
     public List<StadiumDTO> getByAddress(String address) {
-        List<Stadium> stadiums = stadiumDao.getByAddress(address);
+        List<Stadium> stadiums = dao.getByAddress(address);
         return mapToDTO(stadiums);
     }
 
     @Override
     public List<StadiumDTO> getByTeamId(Integer id) {
-        List<Stadium> stadiums = stadiumDao.getByTeamId(id);
+        List<Stadium> stadiums = dao.getByTeamId(id);
         return mapToDTO(stadiums);
     }
 
     @Override
     public List<StadiumDTO> getByTeamName(String teamName) {
-        List<Stadium> stadiums = stadiumDao.getByTeamName(teamName);
+        List<Stadium> stadiums = dao.getByTeamName(teamName);
         return mapToDTO(stadiums);
     }
 
     @Override
     public List<StadiumDTO> getByName(String name) {
-        List<Stadium> stadiums = stadiumDao.getByName(name);
+        List<Stadium> stadiums = dao.getByName(name);
         return mapToDTO(stadiums);
     }
 

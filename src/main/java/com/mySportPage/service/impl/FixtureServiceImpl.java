@@ -13,26 +13,30 @@ import java.util.Map;
 @Service
 public class FixtureServiceImpl implements FixtureService {
 
+    private final FixtureDao dao;
+
     @Autowired
-    private FixtureDao fixtureDao;
+    public FixtureServiceImpl(FixtureDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<FixtureDTO> getFixtures() {
-        return fixtureDao.getFixtures();
+        return dao.getFixtures();
     }
 
     @Override
     public Map<String, List<FixtureDTO>> getFixtures(Integer leagueId, Integer round) {
-        return fixtureDao.getFixtures(leagueId, round);
+        return dao.getFixtures(leagueId, round);
     }
 
     @Override
     public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
-        return fixtureDao.getFixtures(requestModel);
+        return dao.getFixtures(requestModel);
     }
 
     @Override
     public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {
-        return fixtureDao.getFixturesByDateLeagueRound();
+        return dao.getFixturesByDateLeagueRound();
     }
 }

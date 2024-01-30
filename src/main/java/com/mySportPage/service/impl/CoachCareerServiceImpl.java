@@ -11,8 +11,7 @@ import java.util.List;
 @Service
 public class CoachCareerServiceImpl implements CoachCareerService {
 
-    @Autowired
-    private CoachCareerDao dao;
+    private final CoachCareerDao dao;
 
     @Autowired
     public CoachCareerServiceImpl(CoachCareerDao dao) {

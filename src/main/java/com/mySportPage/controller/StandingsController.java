@@ -13,7 +13,7 @@ public class StandingsController {
     private final StandingsService service;
 
     @Autowired
-    private StandingsController(StandingsService service) {
+    public StandingsController(StandingsService service) {
         this.service = service;
     }
 

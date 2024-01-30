@@ -10,11 +10,15 @@ import java.util.Map;
 @Service
 public class FixtureStatisticsImpl implements FixtureStatisticsService {
 
+    private final FixtureStatisticsDao dao;
+
     @Autowired
-    private FixtureStatisticsDao fixtureStatisticsDao;
+    public FixtureStatisticsImpl(FixtureStatisticsDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public Map<Integer, Map<String, Object>> getFixtureStatistics(Integer fixtureId) {
-        return fixtureStatisticsDao.getFixtureStatistics(fixtureId);
+        return dao.getFixtureStatistics(fixtureId);
     }
 }

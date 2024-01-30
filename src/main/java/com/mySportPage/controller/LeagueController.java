@@ -13,7 +13,7 @@ public class LeagueController {
     private final LeagueService service;
 
     @Autowired
-    private LeagueController(LeagueService service) {
+    public LeagueController(LeagueService service) {
         this.service = service;
     }
 

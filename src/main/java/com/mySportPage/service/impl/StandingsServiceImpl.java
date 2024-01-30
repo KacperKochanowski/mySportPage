@@ -14,18 +14,23 @@ import java.util.List;
 @Service
 public class StandingsServiceImpl implements StandingsService {
 
+    private final StandingsDao dao;
+
     @Autowired
-    private StandingsDao standingsDao;
+    public StandingsServiceImpl(StandingsDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<StandingsDTO> getStandings(Integer leagueId, String locationType) {
-        Object standings = standingsDao.getStandings(leagueId, locationType);
+        Object standings = dao.getStandings(leagueId, locationType);
         return mapToStandingsDTO(standings);
     }
 
     private List<StandingsDTO> mapToStandingsDTO(Object results) {
         Gson gson = new Gson();
-        Type standingsType = new TypeToken<List<StandingsDTO>>() {}.getType();
+        Type standingsType = new TypeToken<List<StandingsDTO>>() {
+        }.getType();
         return gson.fromJson(gson.toJson(results), standingsType);
     }
 }

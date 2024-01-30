@@ -11,21 +11,25 @@ import java.util.List;
 @Service
 public class LeagueServiceImpl implements LeagueService {
 
+    private final LeagueDao dao;
+
     @Autowired
-    private LeagueDao leagueDao;
+    public LeagueServiceImpl(LeagueDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<LeagueDTO> getLeagues() {
-        return leagueDao.getLeagues();
+        return dao.getLeagues();
     }
 
     @Override
     public List<LeagueDTO> getLeagues(String country) {
-        return leagueDao.getLeagues(country);
+        return dao.getLeagues(country);
     }
 
     @Override
     public boolean anyPlays() {
-        return leagueDao.anyPlays();
+        return dao.anyPlays();
     }
 }

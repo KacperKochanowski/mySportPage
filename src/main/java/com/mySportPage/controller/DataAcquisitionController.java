@@ -11,7 +11,7 @@ public class DataAcquisitionController {
     private final DataAcquisitionService service;
 
     @Autowired
-    private DataAcquisitionController(DataAcquisitionService service) {
+    public DataAcquisitionController(DataAcquisitionService service) {
         this.service = service;
     }
 

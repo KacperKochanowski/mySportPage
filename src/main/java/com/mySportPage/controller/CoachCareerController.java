@@ -13,7 +13,7 @@ public class CoachCareerController {
     private final CoachCareerService service;
 
     @Autowired
-    private CoachCareerController(CoachCareerService service) {
+    public CoachCareerController(CoachCareerService service) {
         this.service = service;
     }
 

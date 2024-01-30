@@ -14,7 +14,7 @@ public class CoachController {
     private final CoachService service;
 
     @Autowired
-    private CoachController(CoachService service) {
+    public CoachController(CoachService service) {
         this.service = service;
     }
 

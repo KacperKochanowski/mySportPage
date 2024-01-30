@@ -5,38 +5,39 @@ import com.mySportPage.mapper.mapStruct.TeamMapper;
 import com.mySportPage.model.Team;
 import com.mySportPage.model.dto.TeamDTO;
 import com.mySportPage.service.TeamService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Slf4j
 public class TeamServiceImpl implements TeamService {
 
+    private final TeamDao dao;
+
     @Autowired
-    private TeamDao teamDao;
+    public TeamServiceImpl(TeamDao dao) {
+        this.dao = dao;
+    }
 
     @Autowired
     public TeamMapper teamMapper;
 
     @Override
     public List<TeamDTO> getTeam(Integer teamId) {
-        List<Team> teams = teamDao.getTeam(teamId);
-        log.info("" + teamMapper.mapToDTO(teams.get(0)));
+        List<Team> teams = dao.getTeam(teamId);
         return teamMapper.mapToDTO(teams);
     }
 
     @Override
     public List<TeamDTO> getTeamByLeague(Integer leagueId) {
-        List<Team> teams = teamDao.getTeamByLeague(leagueId);
+        List<Team> teams = dao.getTeamByLeague(leagueId);
         return teamMapper.mapToDTO(teams);
     }
 
     @Override
     public List<TeamDTO> getTeamByCountryName(String countryName) {
-        List<Team> teams = teamDao.getTeamByCountryName(countryName);
+        List<Team> teams = dao.getTeamByCountryName(countryName);
         return teamMapper.mapToDTO(teams);
     }
 }

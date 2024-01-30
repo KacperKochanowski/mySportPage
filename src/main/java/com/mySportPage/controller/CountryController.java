@@ -13,7 +13,7 @@ public class CountryController {
     private final CountryService service;
 
     @Autowired
-    private CountryController(CountryService service) {
+    public CountryController(CountryService service) {
         this.service = service;
     }
 

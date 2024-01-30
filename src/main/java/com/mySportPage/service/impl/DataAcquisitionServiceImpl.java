@@ -30,8 +30,12 @@ import java.util.stream.Stream;
 @Service
 public class DataAcquisitionServiceImpl implements DataAcquisitionService {
 
+    private final DataAcquisitionDao dao;
+
     @Autowired
-    private DataAcquisitionDao dataAcquisitionDao;
+    public DataAcquisitionServiceImpl(DataAcquisitionDao dao) {
+        this.dao = dao;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionServiceImpl.class);
 
@@ -47,20 +51,20 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         if (data != null) {
             switch (sportObjectEnum) {
                 case TEAM -> {
-                    dataAcquisitionDao.persistTeams(mapJSONObjectToTeamsList(data));
-                    dataAcquisitionDao.persistStadiums(mapJSONObjectToStadiumsList(data));
+                    dao.persistTeams(mapJSONObjectToTeamsList(data));
+                    dao.persistStadiums(mapJSONObjectToStadiumsList(data));
                 }
                 case LEAGUE -> {
-                    dataAcquisitionDao.persistLeague(mapJSONObjectToLeaguesList(data));
-                    dataAcquisitionDao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
-                    dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesListAdditionalPart(data));
+                    dao.persistLeague(mapJSONObjectToLeaguesList(data));
+                    dao.persistLeagueCoverage(mapJSONObjectToLeagueCoveragesList(data));
+                    dao.persistCountry(mapJSONObjectToCountriesListAdditionalPart(data));
                 }
-                case FIXTURE -> dataAcquisitionDao.persistFixture(mapJSONObjectToFixturesList(data));
-                case STANDING -> dataAcquisitionDao.persistStanding(mapJSONObjectToStandingsList(data));
-                case FIXTURE_STATS -> dataAcquisitionDao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
-                case COACH -> dataAcquisitionDao.persistCoach(mapJSONObjectToCoachObject(data));
-                case COACH_HISTORY -> dataAcquisitionDao.persistCoachCareer(mapJSONObjectToCoachHistoryList(data));
-                case COUNTRY -> dataAcquisitionDao.persistCountry(mapJSONObjectToCountriesList(data));
+                case FIXTURE -> dao.persistFixture(mapJSONObjectToFixturesList(data));
+                case STANDING -> dao.persistStanding(mapJSONObjectToStandingsList(data));
+                case FIXTURE_STATS -> dao.persistFixtureStats(mapJSONObjectToFixtureStatisticsList(data));
+                case COACH -> dao.persistCoach(mapJSONObjectToCoachObject(data));
+                case COACH_HISTORY -> dao.persistCoachCareer(mapJSONObjectToCoachHistoryList(data));
+                case COUNTRY -> dao.persistCountry(mapJSONObjectToCountriesList(data));
             }
         }
     }
@@ -343,7 +347,8 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         Integer coachId = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getInt("id");
         String coachCareer = new JSONObject(responseBody).getJSONArray("response").getJSONObject(0).getJSONArray("career").toString();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-        Type coachHistoryListType = new TypeToken<List<CoachCareer>>() {}.getType();
+        Type coachHistoryListType = new TypeToken<List<CoachCareer>>() {
+        }.getType();
 
         return Map.of(coachId, gson.fromJson(coachCareer, coachHistoryListType));
     }
@@ -359,7 +364,8 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
         JsonNode responseNode = Objects.requireNonNull(rootNode).get("response");
 
         if (responseNode != null && responseNode.isArray()) {
-            return objectMapper.convertValue(responseNode, new TypeReference<>() {});
+            return objectMapper.convertValue(responseNode, new TypeReference<>() {
+            });
         }
         return new ArrayList<>();
     }

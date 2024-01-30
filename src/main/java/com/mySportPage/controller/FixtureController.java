@@ -16,7 +16,7 @@ public class FixtureController {
     private final FixtureService service;
 
     @Autowired
-    private FixtureController(FixtureService service) {
+    public FixtureController(FixtureService service) {
         this.service = service;
     }
 

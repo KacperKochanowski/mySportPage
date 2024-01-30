@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 @Service
 public class CountryServiceImpl implements CountryService {
 
+    private final CountryDao dao;
+
     @Autowired
-    private CountryDao countryDao;
+    public CountryServiceImpl(CountryDao dao) {
+        this.dao = dao;
+    }
 
     private List<Country> cachedCountries;
 
@@ -22,7 +26,7 @@ public class CountryServiceImpl implements CountryService {
     @PostConstruct
     public List<Country> getCountries() {
         if (cachedCountries == null) {
-            cachedCountries = countryDao.getCountries();
+            cachedCountries = dao.getCountries();
         }
         return cachedCountries;
     }

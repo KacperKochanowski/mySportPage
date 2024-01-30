@@ -13,7 +13,7 @@ public class StadiumController {
     private final StadiumService service;
 
     @Autowired
-    private StadiumController(StadiumService service) {
+    public StadiumController(StadiumService service) {
         this.service = service;
     }
 

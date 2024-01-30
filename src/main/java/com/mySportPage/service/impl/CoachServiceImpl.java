@@ -14,8 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class CoachServiceImpl implements CoachService {
 
+    private final CoachDao dao;
+
     @Autowired
-    private CoachDao coachDao;
+    public CoachServiceImpl(CoachDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public List<Coach> getCoachesByLeague(Integer leagueId) {
@@ -40,6 +44,6 @@ public class CoachServiceImpl implements CoachService {
 
     @Override
     public List<Coach> getCoaches(CoachRequestModel requestModel) {
-        return coachDao.getCoaches(requestModel);
+        return dao.getCoaches(requestModel);
     }
 }

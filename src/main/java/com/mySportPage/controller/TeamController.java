@@ -13,7 +13,7 @@ public class TeamController {
     private final TeamService service;
 
     @Autowired
-    private TeamController(TeamService service) {
+    public TeamController(TeamService service) {
         this.service = service;
     }
 
