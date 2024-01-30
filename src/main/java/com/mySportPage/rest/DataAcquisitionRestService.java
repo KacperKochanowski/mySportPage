@@ -63,7 +63,6 @@ public class DataAcquisitionRestService {
         return new SportPageResponse(response);
     }
 
-    //TODO: przerobić tutaj parametry na jeden obiekt ala RequestModel
     @PostMapping(CREATE_LEAGUES)
     public SportPageResponse createLeagues(
             @RequestParam(required = false) String leagueId,
@@ -207,10 +206,11 @@ public class DataAcquisitionRestService {
                 continue;
             }
             if (sb.isEmpty()) {
-                sb.append("?").append(entry.getKey()).append("=").append(entry.getValue());
+                sb.append("?");
             } else {
-                sb.append("&").append(entry.getKey()).append("=").append(entry.getValue());
+                sb.append("&");
             }
+            sb.append(entry.getKey()).append("=").append(entry.getValue());
         }
         return basePath + sb;
     }
