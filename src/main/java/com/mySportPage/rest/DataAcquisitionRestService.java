@@ -33,8 +33,12 @@ public class DataAcquisitionRestService {
     @Value("${request.header.X_RAPID_API_HOST}")
     private String X_RAPID_API_HOST;
 
+    private final DataAcquisitionController controller;
+
     @Autowired
-    private DataAcquisitionController controller;
+    public DataAcquisitionRestService(DataAcquisitionController controller) {
+        this.controller = controller;
+    }
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRestService.class);
 

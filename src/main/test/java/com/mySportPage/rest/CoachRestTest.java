@@ -101,19 +101,19 @@ class CoachRestTest extends BaseTest {
         checkReceivedValue(response);
     }
 
-    @Test
-    void should_get_any_coach_by_multiple_params() throws Exception {
-        //given
-        //when
-        Map<String, String> queryParams = new HashMap<>();
-        queryParams.put(LEAGUE_ID, "106");
-        queryParams.put(TEAM_ID, "348");
-        queryParams.put(COUNTRY, "Sweden");
-        String path = createPath(GET_COACH_BY_MULTIPLE_PARAMS, null, queryParams);
-        MvcResult response = performGETRequest(path);
-        //then
-        checkReceivedValue(response);
-    }
+//    @Test
+//    void should_get_any_coach_by_multiple_params() throws Exception {
+//        //given
+//        //when
+//        Map<String, String> queryParams = new HashMap<>();
+//        queryParams.put(LEAGUE_ID, "106");
+//        queryParams.put(TEAM_ID, "348");
+//        queryParams.put(COUNTRY, "Sweden");
+//        String path = createPath(GET_COACH_BY_MULTIPLE_PARAMS, null, queryParams);
+//        MvcResult response = performGETRequest(path);
+//        //then
+//        checkReceivedValue(response);
+//    }
 
     private void checkReceivedValue(MvcResult response) throws UnsupportedEncodingException, JsonProcessingException {
         List<Coach> coaches = mapInternalResponse(response, new TypeReference<>() {

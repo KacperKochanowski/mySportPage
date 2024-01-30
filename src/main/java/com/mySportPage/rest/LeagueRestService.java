@@ -15,8 +15,12 @@ import static com.mySportPage.rest.path.internal.LeagueRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class LeagueRestService {
 
+    private final LeagueController controller;
+
     @Autowired
-    private LeagueController controller;
+    public LeagueRestService(LeagueController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_ALL)
     public SportPageResponse getLeagues() {

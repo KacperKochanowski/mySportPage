@@ -3,12 +3,12 @@ package com.mySportPage.service.impl;
 import com.mySportPage.cache.CoachContainer;
 import com.mySportPage.dao.CoachDao;
 import com.mySportPage.model.Coach;
+import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +39,7 @@ public class CoachServiceImpl implements CoachService {
     }
 
     @Override
-    public List<Coach> getCoaches(Map<String, Object> params) {
-        return coachDao.getCoaches(params);
+    public List<Coach> getCoaches(CoachRequestModel requestModel) {
+        return coachDao.getCoaches(requestModel);
     }
 }

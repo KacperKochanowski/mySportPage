@@ -1,6 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.FixtureController;
+import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,8 +14,12 @@ import static com.mySportPage.rest.path.internal.FixtureRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class FixtureRestService {
 
+    private final FixtureController controller;
+
     @Autowired
-    private FixtureController controller;
+    public FixtureRestService(FixtureController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_CURRENT_FIXTURES)
     public SportPageResponse getFixtures() {
@@ -35,7 +40,7 @@ public class FixtureRestService {
     }
 
     @GetMapping(GET_FIXTURES_BY_LEAGUE)
-    public SportPageResponse getFixtures(
+    public SportPageResponse getFixturesByLeague(
             @PathVariable(LEAGUE_ID) Integer leagueId,
             @RequestParam(required = false) Integer round) {
         return SportPageResponse.builder()
@@ -45,23 +50,10 @@ public class FixtureRestService {
                 .build();
     }
 
-    @GetMapping(GET_FIXTURES_BY_TEAM)
-    public SportPageResponse getFixtures(
-            @PathVariable(TEAM_ID) Integer teamId,
-            @RequestParam(required = false) String place) {
+    @PostMapping()
+    public SportPageResponse getFixturesByManyParams(@RequestBody FixtureRequestModel requestModel) {
         return SportPageResponse.builder()
-                .withData(controller.getFixtures(teamId, place))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
-    }
-
-    @GetMapping(GET_FIXTURES_BY_TEAM_AND_IF_PLAYED)
-    public SportPageResponse getFixtures(
-            @PathVariable(TEAM_ID) Integer teamId,
-            @PathVariable(PLAYED) boolean played) {
-        return SportPageResponse.builder()
-                .withData(controller.getFixtures(teamId, played))
+                .withData(controller.getFixtures(requestModel))
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();

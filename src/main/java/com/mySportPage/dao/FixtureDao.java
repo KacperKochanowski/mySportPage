@@ -2,7 +2,9 @@ package com.mySportPage.dao;
 
 import com.mySportPage.comonTools.Formatter;
 import com.mySportPage.dao.queries.FixtureQueries;
+import com.mySportPage.model.FixturePlaceEnum;
 import com.mySportPage.model.dto.FixtureDTO;
+import com.mySportPage.model.request.FixtureRequestModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -25,7 +27,7 @@ public class FixtureDao {
     private static final String ALL_FIXTURES = "allFixtures";
     private static final String FIXTURES_FOR_TWO_WEEKS = "twoWeeksFixtures";
     private static final String FIXTURES_BY_TEAM = "fixturesByTeam";
-    private static final String FIXTURES_BY_TEAM_AND_WEATHER_PLAYED = "fixturesByTeamAndWeatherPlayed";
+    private static final String FIXTURES_BY_TEAM_AND_PLACE_OR_PLAYED = "fixturesByTeamAndWeatherPlayedOrPlace";
     private static final String FIXTURES_BY_LEAGUE_AND_ADDITIONALLY_ROUND = "fixturesByLeagueAndAdditionallyRound";
 
     @Autowired
@@ -39,7 +41,8 @@ public class FixtureDao {
         Objects.requireNonNull(cacheManager.getCache(ALL_FIXTURES)).clear();
         Objects.requireNonNull(cacheManager.getCache(FIXTURES_FOR_TWO_WEEKS)).clear();
         Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM)).clear();
-        Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM_AND_WEATHER_PLAYED)).clear();
+        Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_TEAM_AND_PLACE_OR_PLAYED)).clear();
+        Objects.requireNonNull(cacheManager.getCache(FIXTURES_BY_LEAGUE_AND_ADDITIONALLY_ROUND)).clear();
     }
 
     @Cacheable(ALL_FIXTURES)
@@ -64,30 +67,27 @@ public class FixtureDao {
         return fixtures.stream().collect(Collectors.groupingBy(v -> String.format("round: %s", v.getRound())));
     }
 
-    @Cacheable(FIXTURES_BY_TEAM)
-    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
-        Query query = switch (place) {
-            case "home" -> entityManager
-                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery());
-            case "away" -> entityManager
-                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery());
-            default -> entityManager
-                    .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery());
-        };
-
-        List<Object[]> results = query
-                .setParameter("teamId", teamId)
-                .getResultList();
-        return mapToFixturesList(results);
-    }
-
-    @Cacheable(FIXTURES_BY_TEAM_AND_WEATHER_PLAYED)
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
-        List<Object[]> results = entityManager
-                .createNativeQuery(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery())
-                .setParameter("played", played)
-                .setParameter("teamId", teamId)
-                .getResultList();
+    @Cacheable(FIXTURES_BY_TEAM_AND_PLACE_OR_PLAYED)
+    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
+        FixturePlaceEnum place = requestModel.getPlace();
+        Boolean isPlayed = requestModel.getPlayed();
+        StringBuilder query = new StringBuilder(FixtureQueries.GET_FIXTURES_BY_TEAM_ID.getQuery());
+        if (place != null) {
+            if (place.equals(FixturePlaceEnum.HOME)) {
+                query.append(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_HOME.getQuery());
+            } else {
+                query.append(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AWAY.getQuery());
+            }
+        }
+        if (isPlayed != null) {
+            query.append(FixtureQueries.GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED.getQuery());
+        }
+        Query queryObj = entityManager.createNativeQuery(query.toString());
+        queryObj.setParameter("teamId", requestModel.getTeamId());
+        if (isPlayed != null) {
+            queryObj.setParameter("played", isPlayed);
+        }
+        List<Object[]> results = queryObj.getResultList();
         return mapToFixturesList(results);
     }
 

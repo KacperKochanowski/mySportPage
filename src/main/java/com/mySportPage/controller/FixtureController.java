@@ -1,10 +1,12 @@
 package com.mySportPage.controller;
 
 import com.mySportPage.model.dto.FixtureDTO;
+import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +28,12 @@ public class FixtureController {
         return service.getFixtures(leagueId, round);
     }
 
-    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
-        return service.getFixtures(teamId, place);
-    }
-
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
-        return service.getFixtures(teamId, played);
+    //TODO:wyjątek, ze teamId jest obowiąkowy
+    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
+        if(requestModel == null || requestModel.getTeamId() == null) {
+            return new ArrayList<>();
+        }
+        return service.getFixtures(requestModel);
     }
 
     public Map<String, Map<String, Map<String, List<FixtureDTO>>>> getFixturesByDateLeagueRound() {

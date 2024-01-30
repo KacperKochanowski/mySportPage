@@ -15,8 +15,12 @@ import static com.mySportPage.rest.path.internal.LeagueCoverageRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class LeagueCoverageRestService {
 
+    private final LeagueCoverageController controller;
+
     @Autowired
-    private LeagueCoverageController controller;
+    public LeagueCoverageRestService(LeagueCoverageController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_LEAGUE_COVERAGE_BY_SPORT)
     public SportPageResponse getCoverage(
@@ -27,7 +31,8 @@ public class LeagueCoverageRestService {
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
-//TODO: przenieść logikę do controllera
+
+    //TODO: przenieść logikę do controllera
     @GetMapping(GET_LEAGUE_COVERAGE_BY_LEAGUE_AND_SPORT)
     public SportPageResponse getCoverage(
             @RequestParam(SPORT_ID) Integer sportId,

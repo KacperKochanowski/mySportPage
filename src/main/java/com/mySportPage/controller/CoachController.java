@@ -1,12 +1,12 @@
 package com.mySportPage.controller;
 
 import com.mySportPage.model.Coach;
+import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.service.CoachService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class CoachController {
@@ -30,7 +30,7 @@ public class CoachController {
         return service.getCoachesByCountry(country);
     }
 
-    public List<Coach> getCoaches(Map<String, Object> params) {
-        return service.getCoaches(params);
+    public List<Coach> getCoaches(CoachRequestModel requestModel) {
+        return service.getCoaches(requestModel);
     }
 }

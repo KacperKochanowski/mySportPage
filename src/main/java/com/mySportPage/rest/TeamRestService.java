@@ -13,8 +13,12 @@ import static com.mySportPage.rest.path.internal.TeamRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class TeamRestService {
 
+    private final TeamController controller;
+
     @Autowired
-    private TeamController controller;
+    public TeamRestService(TeamController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_BY_TEAM_ID)
     public TeamResponse getTeam(

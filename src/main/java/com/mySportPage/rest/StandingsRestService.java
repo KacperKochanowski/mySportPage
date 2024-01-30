@@ -16,9 +16,12 @@ import static com.mySportPage.rest.path.internal.StandingsRestPath.ROOT_PATH;
 public class StandingsRestService {
 
     //TODO: refactor klasy względem controllera
+    private final StandingsController controller;
 
     @Autowired
-    private StandingsController controller;
+    public StandingsRestService(StandingsController controller) {
+        this.controller = controller;
+    }
 
     /**
      * Data returned from request below may be incorrect sometimes.

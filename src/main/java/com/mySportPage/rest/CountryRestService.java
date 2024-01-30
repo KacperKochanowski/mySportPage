@@ -1,8 +1,8 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.controller.CountryController;
 import com.mySportPage.model.Country;
 import com.mySportPage.rest.response.SportPageResponse;
-import com.mySportPage.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,25 +20,29 @@ import static com.mySportPage.rest.path.internal.CountryRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class CountryRestService {
 
-    @Autowired
-    private CountryService countryService;
+    private final CountryController controller;
 
+    @Autowired
+    public CountryRestService(CountryController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_ALL_COUNTRIES)
     private SportPageResponse getCountries() {
         return SportPageResponse.builder()
-                .withData(countryService.getCountries())
+                .withData(controller.getCountries())
                 .withCode(HttpStatus.OK.value())
                 .withMessage(HttpStatus.OK.getReasonPhrase())
                 .build();
     }
 
+    //TODO: do controllera
     @GetMapping(GET_COUNTRY_BY_NAME)
     private SportPageResponse getCountriesByName(
             @PathVariable(COUNTRY) String country) {
         return validateParam(country) ?
                 SportPageResponse.builder()
-                        .withData(countryService.getCountriesByName(country))
+                        .withData(controller.getCountriesByName(country))
                         .withCode(HttpStatus.OK.value())
                         .withMessage(HttpStatus.OK.getReasonPhrase())
                         .build() :
@@ -54,7 +58,7 @@ public class CountryRestService {
             @PathVariable(COUNTRY_CODE) String countryCode) {
         return validateParam(countryCode) ?
                 SportPageResponse.builder()
-                        .withData(countryService.getCountriesByCode(countryCode))
+                        .withData(controller.getCountriesByCode(countryCode))
                         .withCode(HttpStatus.OK.value())
                         .withMessage(HttpStatus.OK.getReasonPhrase())
                         .build() :
@@ -69,7 +73,7 @@ public class CountryRestService {
         if (param == null || param.isEmpty()) {
             return false;
         }
-        List<Country> countries = countryService.getCountries();
+        List<Country> countries = controller.getCountries();
         return countries.stream()
                 .filter(v -> v.getCode() != null)
                 .filter(v -> v.getName() != null)

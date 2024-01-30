@@ -17,7 +17,7 @@ public class CoachCareerRestService {
     private final CoachCareerController controller;
 
     @Autowired
-    private CoachCareerRestService(CoachCareerController controller) {
+    public CoachCareerRestService(CoachCareerController controller) {
         this.controller = controller;
     }
 

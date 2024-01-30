@@ -18,9 +18,12 @@ import static com.mySportPage.rest.path.internal.StadiumRestPath.*;
 @RequestMapping(ROOT_PATH)
 public class StadiumRestService {
 
-    @Autowired
-    private StadiumController controller;
+    private final StadiumController controller;
 
+    @Autowired
+    public StadiumRestService(StadiumController controller) {
+        this.controller = controller;
+    }
 
     //TODO logika wielu sprawdzeń do controllera
 

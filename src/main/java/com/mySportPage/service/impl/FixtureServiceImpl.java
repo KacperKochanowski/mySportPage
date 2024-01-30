@@ -2,6 +2,7 @@ package com.mySportPage.service.impl;
 
 import com.mySportPage.dao.FixtureDao;
 import com.mySportPage.model.dto.FixtureDTO;
+import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,8 @@ public class FixtureServiceImpl implements FixtureService {
     }
 
     @Override
-    public List<FixtureDTO> getFixtures(Integer teamId, String place) {
-        return fixtureDao.getFixtures(teamId, place);
-    }
-
-    @Override
-    public List<FixtureDTO> getFixtures(Integer teamId, boolean played) {
-        return fixtureDao.getFixtures(teamId, played);
+    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
+        return fixtureDao.getFixtures(requestModel);
     }
 
     @Override

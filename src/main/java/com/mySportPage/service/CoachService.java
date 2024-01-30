@@ -1,9 +1,9 @@
 package com.mySportPage.service;
 
 import com.mySportPage.model.Coach;
+import com.mySportPage.model.request.CoachRequestModel;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CoachService {
 
@@ -16,5 +16,5 @@ public interface CoachService {
 
     List<Coach> getCoachesByCountry (String country);
 
-    List<Coach> getCoaches(Map<String, Object> params);
+    List<Coach> getCoaches(CoachRequestModel requestModel);
 }

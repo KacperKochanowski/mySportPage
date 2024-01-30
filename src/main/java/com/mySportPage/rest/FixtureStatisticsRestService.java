@@ -16,8 +16,12 @@ import static com.mySportPage.rest.path.internal.FixtureStatisticsRestPath.ROOT_
 @RequestMapping(ROOT_PATH)
 public class FixtureStatisticsRestService {
 
+    private final FixtureStatisticsController controller;
+
     @Autowired
-    private FixtureStatisticsController controller;
+    public FixtureStatisticsRestService(FixtureStatisticsController controller) {
+        this.controller = controller;
+    }
 
     @GetMapping(GET_BY_FIXTURE_ID)
     private SportPageResponse fixtureStatistics(

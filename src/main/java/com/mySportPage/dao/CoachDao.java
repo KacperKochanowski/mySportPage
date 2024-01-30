@@ -1,6 +1,7 @@
 package com.mySportPage.dao;
 
 import com.mySportPage.model.Coach;
+import com.mySportPage.model.request.CoachRequestModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static com.mySportPage.dao.queries.CoachQueries.*;
 
@@ -25,40 +25,38 @@ public class CoachDao {
         return mapToCoachList(results);
     }
 
-    public List<Coach> getCoaches(Map<String, Object> params) {
+    public List<Coach> getCoaches(CoachRequestModel requestModel) {
         StringBuilder coachQuery = new StringBuilder().append(CORE_QUERY.getQuery());
-        boolean isFirstParam = true;
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            switch (entry.getKey()) {
-                case "leagueId" -> {
-                    isFirstParam(coachQuery, isFirstParam);
-                    coachQuery.append(GET_COACH_BY_LEAGUE_ID.getQuery());
-                }
-                case "teamId" -> {
-                    isFirstParam(coachQuery, isFirstParam);
-                    coachQuery.append(GET_COACH_BY_TEAM_ID.getQuery());
-                }
-                case "country" -> {
-                    isFirstParam(coachQuery, isFirstParam);
-                    coachQuery.append(GET_COACH_BY_COUNTRY.getQuery());
-                }
-            }
-            isFirstParam = false;
+        if (requestModel.getLeagueId() != null) {
+            coachQuery
+                    .append(AND.getQuery())
+                    .append(GET_COACH_BY_LEAGUE_ID.getQuery());
+        }
+        if (requestModel.getTeamId() != null) {
+            coachQuery
+                    .append(AND.getQuery())
+                    .append(GET_COACH_BY_TEAM_ID.getQuery());
+        }
+        if (requestModel.getCountry() != null) {
+            coachQuery
+                    .append(AND.getQuery())
+                    .append(GET_COACH_BY_COUNTRY.getQuery());
         }
         Query query = entityManager.createNativeQuery(coachQuery.toString());
 
-        for (Map.Entry<String, Object> entry : params.entrySet()) {
-            query.setParameter(entry.getKey(), entry.getValue());
+        if (requestModel.getLeagueId() != null) {
+            query.setParameter("leagueId", requestModel.getLeagueId());
+        }
+        if (requestModel.getTeamId() != null) {
+            query.setParameter("teamId", requestModel.getTeamId());
+        }
+        if (requestModel.getCountry() != null) {
+            query.setParameter("country", requestModel.getCountry());
+
         }
 
         List<Object[]> result = query.getResultList();
         return mapToCoachList(result);
-    }
-
-    private void isFirstParam(StringBuilder query, boolean firstParam) {
-        if (!firstParam) {
-            query.append(AND.getQuery());
-        }
     }
 
 

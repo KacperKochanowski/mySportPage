@@ -46,13 +46,15 @@ public enum FixtureQueries {
             "SELECT " + CORE_COLUMNS.getQuery() +
             "FROM football.fixture f " +
             "JOIN football.league l ON f.league_id = l.league_id " +
-            "JOIN team_name ON f.host = team_name.name OR f.guest = team_name.name "),
+            "JOIN team_name ON f.host = team_name.name OR f.guest = team_name.name " +
+            "WHERE TRUE "
+    ),
 
-    GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.played = :played "),
+    GET_FIXTURES_BY_TEAM_ID_AND_WHETHER_PLAYED("AND f.played = :played "),
 
-    GET_FIXTURES_BY_TEAM_ID_HOME(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.host = team_name.name "),
+    GET_FIXTURES_BY_TEAM_ID_HOME("AND f.host = team_name.name "),
 
-    GET_FIXTURES_BY_TEAM_ID_AWAY(GET_FIXTURES_BY_TEAM_ID.getQuery() + "WHERE f.guest = team_name.name "),
+    GET_FIXTURES_BY_TEAM_ID_AWAY("AND f.guest = team_name.name "),
 
     ANY_MISSING_RESULT("SELECT CAST(COUNT(*) AS integer) " +
             "FROM football.fixture f " +
