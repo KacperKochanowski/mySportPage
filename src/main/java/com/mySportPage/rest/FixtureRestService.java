@@ -1,6 +1,7 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.FixtureController;
+import com.mySportPage.exception.MissingMandatoryValueException;
 import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class FixtureRestService {
     }
 
     @PostMapping()
-    public SportPageResponse getFixturesByManyParams(@RequestBody FixtureRequestModel requestModel) {
+    public SportPageResponse getFixturesByManyParams(@RequestBody FixtureRequestModel requestModel) throws MissingMandatoryValueException {
         return SportPageResponse.builder()
                 .withData(controller.getFixtures(requestModel))
                 .withCode(HttpStatus.OK.value())

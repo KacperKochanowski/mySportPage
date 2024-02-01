@@ -1,5 +1,6 @@
 package com.mySportPage.controller;
 
+import com.mySportPage.exception.MissingMandatoryValueException;
 import com.mySportPage.model.dto.FixtureDTO;
 import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.service.FixtureService;
@@ -29,9 +30,9 @@ public class FixtureController {
     }
 
     //TODO:wyjątek, ze teamId jest obowiąkowy
-    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
+    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) throws MissingMandatoryValueException {
         if(requestModel == null || requestModel.getTeamId() == null) {
-            return new ArrayList<>();
+            throw new MissingMandatoryValueException("Missing team id value!");
         }
         return service.getFixtures(requestModel);
     }
