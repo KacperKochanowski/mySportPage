@@ -1,18 +1,20 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.CoachController;
+import com.mySportPage.model.Coach;
 import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.mySportPage.rest.path.internal.CoachRestPath.*;
 import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class CoachRestService {
+public class CoachRestService extends AbstractRestService {
 
     private final CoachController controller;
 
@@ -22,49 +24,26 @@ public class CoachRestService {
     }
 
     @GetMapping(GET_COACH_BY_LEAGUE)
-    public SportPageResponse getCoachByLeague(
+    public SportPageResponse<List<Coach>> getCoachByLeague(
             @PathVariable(LEAGUE_ID) Integer leagueId) {
-        return SportPageResponse.builder()
-                .withData(controller.getCoachesByLeague(leagueId))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getCoachesByLeague(leagueId));
     }
 
     @GetMapping(GET_COACH_BY_TEAM)
-    public SportPageResponse getCoachByTeam(
+    public SportPageResponse<List<Coach>> getCoachByTeam(
             @PathVariable(TEAM_ID) Integer teamId) {
-        return SportPageResponse.builder()
-                .withData(controller.getCoachesByTeam(teamId))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getCoachesByTeam(teamId));
     }
 
     @GetMapping(GET_COACH_BY_COUNTRY)
-    public SportPageResponse getCoachByCountry(
+    public SportPageResponse<List<Coach>> getCoachByCountry(
             @PathVariable(COUNTRY) String country) {
-        return SportPageResponse.builder()
-                .withData(controller.getCoachesByCountry(country))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getCoachesByCountry(country));
     }
 
     @PostMapping()
-    public SportPageResponse getCoachByMultipleParams(
+    public SportPageResponse<List<Coach>> getCoachByMultipleParams(
             @RequestBody CoachRequestModel requestModel) {
-        if (requestModel == null) {
-            return SportPageResponse.builder()
-                    .withData("No search parameters")
-                    .withCode(HttpStatus.BAD_REQUEST.value())
-                    .withMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                    .build();
-        }
-        return SportPageResponse.builder()
-                .withData(controller.getCoaches(requestModel))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getCoaches(requestModel));
     }
 }

@@ -1,17 +1,19 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.TeamController;
-import com.mySportPage.rest.response.TeamResponse;
+import com.mySportPage.model.dto.TeamDTO;
+import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static com.mySportPage.rest.path.internal.TeamRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class TeamRestService {
+public class TeamRestService extends AbstractRestService {
 
     private final TeamController controller;
 
@@ -21,32 +23,20 @@ public class TeamRestService {
     }
 
     @GetMapping(GET_BY_TEAM_ID)
-    public TeamResponse getTeam(
+    public SportPageResponse<List<TeamDTO>> getTeam(
             @PathVariable(TEAM_ID) Integer teamId) {
-        return TeamResponse.builder()
-                .withTeams(controller.getTeam(teamId))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getTeam(teamId));
     }
 
     @GetMapping(GET_BY_LEAGUE_ID)
-    public TeamResponse getTeamByLeague(
+    public SportPageResponse<List<TeamDTO>> getTeamByLeague(
             @PathVariable(LEAGUE_ID) Integer leagueId) {
-        return TeamResponse.builder()
-                .withTeams(controller.getTeamByLeague(leagueId))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getTeamByLeague(leagueId));
     }
 
     @GetMapping(GET_BY_COUNTRY_NAME)
-    public TeamResponse getTeamByCountryName(
+    public SportPageResponse<List<TeamDTO>> getTeamByCountryName(
             @PathVariable(COUNTRY) String country) {
-        return TeamResponse.builder()
-                .withTeams(controller.getTeamByCountryName(country))
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getTeamByCountryName(country));
     }
 }

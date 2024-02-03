@@ -1,5 +1,6 @@
 package com.mySportPage.controller;
 
+import com.mySportPage.exception.EmptyRequestBodyException;
 import com.mySportPage.model.Coach;
 import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.service.CoachService;
@@ -31,6 +32,9 @@ public class CoachController {
     }
 
     public List<Coach> getCoaches(CoachRequestModel requestModel) {
+        if (requestModel == null) {
+            throw new EmptyRequestBodyException();
+        }
         return service.getCoaches(requestModel);
     }
 }

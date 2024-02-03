@@ -5,6 +5,7 @@ import com.mySportPage.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -18,14 +19,14 @@ public class TeamController {
     }
 
     public List<TeamDTO> getTeam(Integer teamId) {
-        return service.getTeam(teamId);
+        return teamId != null ? service.getTeam(teamId) : new ArrayList<>();
     }
 
     public List<TeamDTO> getTeamByLeague(Integer leagueId) {
-        return service.getTeamByLeague(leagueId);
+        return leagueId != null ? service.getTeamByLeague(leagueId) : new ArrayList<>();
     }
 
     public List<TeamDTO> getTeamByCountryName(String countryName) {
-        return service.getTeamByCountryName(countryName);
+        return countryName != null ? service.getTeamByCountryName(countryName) : new ArrayList<>();
     }
 }

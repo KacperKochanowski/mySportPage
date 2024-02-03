@@ -5,6 +5,7 @@ import com.mySportPage.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -22,7 +23,7 @@ public class LeagueController {
     }
 
     public List<LeagueDTO> getLeagues(String country) {
-        return service.getLeagues(country);
+        return country != null ? service.getLeagues(country) : new ArrayList<>();
     }
 
     public boolean anyPlays() {

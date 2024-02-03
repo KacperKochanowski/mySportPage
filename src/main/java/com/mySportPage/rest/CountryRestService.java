@@ -4,7 +4,6 @@ import com.mySportPage.controller.CountryController;
 import com.mySportPage.model.Country;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import static com.mySportPage.rest.path.internal.CountryRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class CountryRestService {
+public class CountryRestService extends AbstractRestService {
 
     private final CountryController controller;
 
@@ -28,55 +27,19 @@ public class CountryRestService {
     }
 
     @GetMapping(GET_ALL_COUNTRIES)
-    private SportPageResponse getCountries() {
-        return SportPageResponse.builder()
-                .withData(controller.getCountries())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+    private SportPageResponse<List<Country>> getCountries() {
+        return processResponse(controller::getCountries);
     }
 
-    //TODO: do controllera
     @GetMapping(GET_COUNTRY_BY_NAME)
-    private SportPageResponse getCountriesByName(
+    private SportPageResponse<List<Country>> getCountriesByName(
             @PathVariable(COUNTRY) String country) {
-        return validateParam(country) ?
-                SportPageResponse.builder()
-                        .withData(controller.getCountriesByName(country))
-                        .withCode(HttpStatus.OK.value())
-                        .withMessage(HttpStatus.OK.getReasonPhrase())
-                        .build() :
-                SportPageResponse.builder()
-                        .withCode(HttpStatus.BAD_REQUEST.value())
-                        .withMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                        .build();
-
+        return processResponse(() -> controller.getCountriesByName(country));
     }
 
     @GetMapping(GET_COUNTRY_BY_CODE)
-    private SportPageResponse getCountriesByCode(
+    private SportPageResponse<List<Country>> getCountriesByCode(
             @PathVariable(COUNTRY_CODE) String countryCode) {
-        return validateParam(countryCode) ?
-                SportPageResponse.builder()
-                        .withData(controller.getCountriesByCode(countryCode))
-                        .withCode(HttpStatus.OK.value())
-                        .withMessage(HttpStatus.OK.getReasonPhrase())
-                        .build() :
-                SportPageResponse.builder()
-                        .withCode(HttpStatus.BAD_REQUEST.value())
-                        .withMessage(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                        .build();
-    }
-
-    //TODO: move to controller
-    private boolean validateParam(String param) {
-        if (param == null || param.isEmpty()) {
-            return false;
-        }
-        List<Country> countries = controller.getCountries();
-        return countries.stream()
-                .filter(v -> v.getCode() != null)
-                .filter(v -> v.getName() != null)
-                .anyMatch(v -> v.getName().equalsIgnoreCase(param.trim()) || v.getCode().equalsIgnoreCase(param.trim()));
+        return processResponse(() -> controller.getCountriesByCode(countryCode));
     }
 }

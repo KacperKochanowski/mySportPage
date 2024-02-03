@@ -1,19 +1,19 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.LeagueController;
+import com.mySportPage.model.dto.LeagueDTO;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.mySportPage.rest.path.internal.CommonRestParams.COUNTRY;
 import static com.mySportPage.rest.path.internal.LeagueRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class LeagueRestService {
+public class LeagueRestService extends AbstractRestService {
 
     private final LeagueController controller;
 
@@ -23,33 +23,18 @@ public class LeagueRestService {
     }
 
     @GetMapping(GET_ALL)
-    public SportPageResponse getLeagues() {
-        return SportPageResponse.builder()
-                .withData(controller.getLeagues())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+    public SportPageResponse<List<LeagueDTO>> getLeagues() {
+        return processResponse(controller::getLeagues);
     }
 
-    //TODO: logika do controllera
     @GetMapping(GET_BY_COUNTRY)
-    public SportPageResponse getLeagues(
+    public SportPageResponse<List<LeagueDTO>> getLeagues(
             @PathVariable(COUNTRY) String country) {
-        return SportPageResponse.builder()
-                .withData(country != null ?
-                        controller.getLeagues(country) :
-                        new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getLeagues(country));
     }
 
     @GetMapping(ANY_PLAYS)
-    public SportPageResponse anyLeaguePlaying() {
-        return SportPageResponse.builder()
-                .withData(controller.anyPlays())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+    public SportPageResponse<Boolean> anyLeaguePlaying() {
+        return processResponse(controller::anyPlays);
     }
 }

@@ -1,22 +1,22 @@
 package com.mySportPage.rest;
 
 import com.mySportPage.controller.StadiumController;
+import com.mySportPage.model.dto.StadiumDTO;
 import com.mySportPage.rest.response.SportPageResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static com.mySportPage.rest.path.internal.StadiumRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class StadiumRestService {
+public class StadiumRestService extends AbstractRestService {
 
     private final StadiumController controller;
 
@@ -25,55 +25,33 @@ public class StadiumRestService {
         this.controller = controller;
     }
 
-    //TODO logika wielu sprawdzeń do controllera
-
     @GetMapping(GET_BY_CITY)
-    public SportPageResponse getByCity(
+    public SportPageResponse<List<StadiumDTO>> getByCity(
             @PathVariable(CITY) String city) {
-        return SportPageResponse.builder()
-                .withData(city != null ? controller.getByCity(city) : new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getByCity(city));
     }
 
     @GetMapping(GET_BY_ADDRESS)
-    public SportPageResponse getByAddress(
+    public SportPageResponse<List<StadiumDTO>> getByAddress(
             @PathVariable(ADDRESS) String address) {
-        return SportPageResponse.builder()
-                .withData(address != null ? controller.getByAddress(address) : new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getByAddress(address));
     }
 
     @GetMapping(GET_BY_TEAM_ID)
-    public SportPageResponse getByTeamId(
+    public SportPageResponse<List<StadiumDTO>> getByTeamId(
             @PathVariable(TEAM_ID) Integer teamId) {
-        return SportPageResponse.builder()
-                .withData(teamId != null ? controller.getByTeamId(teamId) : new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getByTeamId(teamId));
     }
 
     @GetMapping(GET_BY_TEAM_NAME)
-    public SportPageResponse getByTeamName(
+    public SportPageResponse<List<StadiumDTO>> getByTeamName(
             @PathVariable(TEAM_NAME) String teamName) {
-        return SportPageResponse.builder()
-                .withData(teamName != null ? controller.getByTeamName(teamName) : new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getByTeamName(teamName));
     }
 
     @GetMapping(GET_BY_NAME)
-    public SportPageResponse getByName(
+    public SportPageResponse<List<StadiumDTO>> getByName(
             @PathVariable(NAME) String name) {
-        return SportPageResponse.builder()
-                .withData(name != null ? controller.getByName(name) : new ArrayList<>())
-                .withCode(HttpStatus.OK.value())
-                .withMessage(HttpStatus.OK.getReasonPhrase())
-                .build();
+        return processResponse(() -> controller.getByName(name));
     }
 }

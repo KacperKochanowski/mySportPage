@@ -3,6 +3,7 @@ package com.mySportPage.rest;
 import com.mySportPage.controller.DataAcquisitionController;
 import com.mySportPage.rest.path.external.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
+import com.mySportPage.rest.response.SportPageBaseResponse;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -23,9 +24,9 @@ import static com.mySportPage.rest.path.internal.DataAcquisitionRestPath.*;
 
 @RestController
 @RequestMapping(ROOT_PATH)
-public class DataAcquisitionRestService {
+public class DataAcquisitionRestService extends AbstractRestService{
 
-    //TODO: przeniesienie dużej logiki do controllera
+    //TODO: gruby refactor tej klasy
 
     @Value("${request.header.X_RAPID_API_KEY}")
     private String X_RAPID_API_KEY;
@@ -43,7 +44,7 @@ public class DataAcquisitionRestService {
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRestService.class);
 
     @PostMapping(CREATE_TEAMS_AND_STADIUMS)
-    public SportPageResponse createTeamsAndStadiums(
+    public SportPageBaseResponse createTeamsAndStadiums(
             @RequestParam(LEAGUE_ID) Integer leagueId,
             @RequestParam(SEASON) Integer season) {
 

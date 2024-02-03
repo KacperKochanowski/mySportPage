@@ -1,13 +1,12 @@
 package com.mySportPage.controller;
 
-import com.mySportPage.exception.MissingMandatoryValueException;
+import com.mySportPage.exception.MissingMandatoryParamException;
 import com.mySportPage.model.dto.FixtureDTO;
 import com.mySportPage.model.request.FixtureRequestModel;
 import com.mySportPage.service.FixtureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +28,9 @@ public class FixtureController {
         return service.getFixtures(leagueId, round);
     }
 
-    //TODO:wyjątek, ze teamId jest obowiąkowy
-    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) throws MissingMandatoryValueException {
-        if(requestModel == null || requestModel.getTeamId() == null) {
-            throw new MissingMandatoryValueException("Missing team id value!");
+    public List<FixtureDTO> getFixtures(FixtureRequestModel requestModel) {
+        if (requestModel == null || requestModel.getTeamId() == null) {
+            throw new MissingMandatoryParamException("Missing team id value!");
         }
         return service.getFixtures(requestModel);
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum FixturePlaceEnum {
+    ANY("all"),
     HOME("home"),
     AWAY("away");
 
