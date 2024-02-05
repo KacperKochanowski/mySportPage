@@ -15,7 +15,7 @@ public class Formatter {
         return dateFormat.format(date);
     }
 
-    public static Date mapToData(String date) {
+    public static Date mapToDate(String date) {
         LocalDate localDate = LocalDate.parse(date);
         long milliseconds = localDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
         return new Date(milliseconds);

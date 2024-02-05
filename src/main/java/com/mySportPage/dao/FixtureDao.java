@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.mySportPage.comonTools.TimeUnits.HOUR;
 import static java.util.stream.Collectors.toList;
 
 @Repository
@@ -36,7 +37,7 @@ public class FixtureDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Scheduled(fixedRate = 3_600_000)
+    @Scheduled(fixedRate = HOUR)
     public void evictCaches() {
         Objects.requireNonNull(cacheManager.getCache(ALL_FIXTURES)).clear();
         Objects.requireNonNull(cacheManager.getCache(FIXTURES_FOR_TWO_WEEKS)).clear();

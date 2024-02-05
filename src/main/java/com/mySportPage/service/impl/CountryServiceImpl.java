@@ -5,13 +5,21 @@ import com.mySportPage.model.Country;
 import com.mySportPage.service.CountryService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.mySportPage.comonTools.TimeUnits.HOUR;
 
 @Service
 public class CountryServiceImpl implements CountryService {
+
+    private final String ALL_COUNTRIES = "allCountries";
 
     private final CountryDao dao;
 
@@ -20,27 +28,31 @@ public class CountryServiceImpl implements CountryService {
         this.dao = dao;
     }
 
-    private List<Country> cachedCountries;
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Scheduled(fixedRate = HOUR)
+    public void evictCaches() {
+        Objects.requireNonNull(cacheManager.getCache(ALL_COUNTRIES)).clear();
+    }
 
     @Override
     @PostConstruct
+    @Cacheable(ALL_COUNTRIES)
     public List<Country> getCountries() {
-        if (cachedCountries == null) {
-            cachedCountries = dao.getCountries();
-        }
-        return cachedCountries;
+        return dao.getCountries();
     }
 
     @Override
     public List<Country> getCountriesByName(String country) {
-        return cachedCountries.stream()
+        return getCountries().stream()
                 .filter(v -> v.getName().equalsIgnoreCase(country))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Country> getCountriesByCode(String countryCode) {
-        return cachedCountries.stream()
+        return getCountries().stream()
                 .filter(v -> v.getCode() != null)
                 .filter(v -> v.getCode().equalsIgnoreCase(countryCode))
                 .collect(Collectors.toList());

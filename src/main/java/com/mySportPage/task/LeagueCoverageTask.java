@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+import static com.mySportPage.comonTools.TimeUnits.HOUR;
+import static com.mySportPage.comonTools.TimeUnits.SECOND;
+
 @Component
 @Profile("production")
 public class LeagueCoverageTask extends BaseTask {
@@ -21,7 +24,7 @@ public class LeagueCoverageTask extends BaseTask {
     @Autowired
     private LeagueCoverageDao leagueCoverageDao;
 
-    @Scheduled(fixedDelay = BaseTask.HOUR, initialDelay = 2 * BaseTask.SECOND)
+    @Scheduled(fixedDelay = HOUR, initialDelay = 2 * SECOND)
     public void doWork() {
         process(TaskList.LEAGUE_COVERAGE_TASK);
     }

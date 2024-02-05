@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import static com.mySportPage.comonTools.TimeUnits.HOUR;
+import static com.mySportPage.comonTools.TimeUnits.SECOND;
+
 @Component
 @Profile("production")
 public class MissingResultingTask extends BaseTask {
@@ -15,7 +18,7 @@ public class MissingResultingTask extends BaseTask {
     @Autowired
     private FixtureDao fixtureDao;
 
-    @Scheduled(fixedDelay = BaseTask.HOUR, initialDelay = 6 * BaseTask.SECOND)
+    @Scheduled(fixedDelay = HOUR, initialDelay = 6 * SECOND)
     public void doWork() {
         process(TaskList.MISSING_RESULTING_TASK);
     }

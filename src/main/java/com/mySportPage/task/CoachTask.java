@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.mySportPage.comonTools.TimeUnits.HOUR;
+import static com.mySportPage.comonTools.TimeUnits.SECOND;
+
 @Component
 @Profile({"production", "test"})
 public class CoachTask extends BaseTask {
@@ -21,7 +24,7 @@ public class CoachTask extends BaseTask {
     @Autowired
     private CoachDao coachDao;
 
-    @Scheduled(fixedDelay = 2 * BaseTask.HOUR, initialDelay = 8 * BaseTask.SECOND)
+    @Scheduled(fixedDelay = 2 * HOUR, initialDelay = 8 * SECOND)
     public void doWork() {
         process(TaskList.COACH_TASK);
     }

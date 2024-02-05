@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 
-import static com.mySportPage.comonTools.Formatter.mapToData;
+import static com.mySportPage.comonTools.Formatter.mapToDate;
 import static com.mySportPage.rest.path.internal.CoachRestPath.*;
 import static com.mySportPage.rest.path.internal.CommonRestParams.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,7 +44,7 @@ class CoachRestTest extends BaseTest {
             .builder()
             .withTeamId(348)
             .withLeagueId(106)
-            .withBirthDate(mapToData("1978-10-15"))
+            .withBirthDate(mapToDate("1978-10-15"))
             .withName("J. Gustafsson")
             .withFirstName("Jens Otto Andreas")
             .withLastName("Gustafsson")
@@ -71,7 +71,7 @@ class CoachRestTest extends BaseTest {
                 .hasValueSatisfying(coach -> assertThat(coach.getNationality()).isEqualTo("Sweden"))
                 .hasValueSatisfying(coach -> assertThat(coach.getTeamId()).isEqualTo(348))
                 .hasValueSatisfying(coach -> assertThat(coach.getLeagueId()).isEqualTo(106))
-                .hasValueSatisfying(coach -> assertThat(coach.getBirthDate()).isEqualTo(mapToData("1978-10-15")))
+                .hasValueSatisfying(coach -> assertThat(coach.getBirthDate()).isEqualTo(mapToDate("1978-10-15")))
                 .hasValueSatisfying(coach -> assertThat(coach.getFirstName()).isEqualTo("Jens Otto Andreas"))
                 .hasValueSatisfying(coach -> assertThat(coach.getLastName()).isEqualTo("Gustafsson"))
                 .hasValueSatisfying(coach -> assertThat(coach.getPhoto()).isEqualTo("https://media-1.api-sports.io/football/coachs/1382.png"));

@@ -8,9 +8,6 @@ public abstract class BaseTask {
 
     protected static final Logger log = LoggerFactory.getLogger(BaseTask.class);
 
-    protected static final long SECOND = 1_000;
-    protected static final long HOUR = 3_600_000;
-
     @Value("${setting.IS_FIXTURE_UPDATER_TASK_ENABLED:false}")
     private boolean isFixtureUpdaterEnabled;
 
