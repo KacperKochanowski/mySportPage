@@ -36,14 +36,6 @@ public class CountryController {
     }
 
     private boolean isParamValid(String param) {
-        if (param == null || param.isEmpty()) {
-            return false;
-        }
-        //TODO: jakiś cache na to, aby nie walić co chwilę do bazy po dane?
-        List<Country> countries = service.getCountries();
-        return countries.stream()
-                .filter(v -> v.getCode() != null)
-                .filter(v -> v.getName() != null)
-                .anyMatch(v -> v.getName().equalsIgnoreCase(param.trim()) || v.getCode().equalsIgnoreCase(param.trim()));
+        return param != null && !param.isEmpty();
     }
 }
