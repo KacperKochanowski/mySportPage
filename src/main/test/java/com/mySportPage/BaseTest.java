@@ -21,7 +21,6 @@ public abstract class BaseTest {
 
     @Autowired
     private MockMvc mockMvc;
-    //TODO: tutaj mogę dodać swój typ wyjątku, który leciałby w bloku catch
 
     protected MvcResult performGETRequest(String path) throws Exception {
         return mockMvc.perform(get(path))
