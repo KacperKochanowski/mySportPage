@@ -15,7 +15,7 @@ public enum TeamQueries {
     GET_TEAM_BY_LEAGUE_ID(CORE_QUERY.getQuery() +
             " league_id = :leagueId "),
 
-    //todo: check it
+
     GET_TEAM_BY_COUNTRY_NAME_ID(CORE_QUERY.getQuery() +
             " country ILIKE :countryName");
 
