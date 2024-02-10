@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.mySportPage.rest.path.internal.CommonRestParams.LEAGUE;
 import static com.mySportPage.rest.path.internal.CommonRestParams.SEASON;
@@ -47,8 +48,7 @@ public class FeedProviderClient {
         Type type = new TypeToken<FeedProviderResponseModel<List<Team>>>() {
         }.getType();
         FeedProviderResponseModel<List<Team>> feedResponse = handleResponse(url, type);
-        //TODO: do controllera
-//        feedResponse.setResponse(fillAdditionalDataForTeamAndStadium(leagueId, feedResponse.getResponse()));
+        feedResponse.setResponse(fillAdditionalDataForTeamAndStadium(leagueId, feedResponse.getResponse()));
         return new SportPageResponse<>(feedResponse.getResponse());
     }
 
@@ -103,14 +103,13 @@ public class FeedProviderClient {
         }
     }
 
-    //TODO to do controllera
-//
-//    private List<Team> fillAdditionalDataForTeamAndStadium(Integer leagueId, List<Team> teams) {
-//        return teams.stream()
-//                .peek(team -> {
-//                    team.setLeagueId(leagueId);
-//                    team.getStadium().setExternalTeamId(new Integer[team.getExternalTeamId()]);
-//                })
-//                .collect(Collectors.toList());
-//    }
+
+    private List<Team> fillAdditionalDataForTeamAndStadium(Integer leagueId, List<Team> teams) {
+        return teams.stream()
+                .peek(team -> {
+                    team.setLeagueId(leagueId);
+                    team.getStadium().setExternalTeamId(new Integer[team.getExternalTeamId()]);
+                })
+                .collect(Collectors.toList());
+    }
 }

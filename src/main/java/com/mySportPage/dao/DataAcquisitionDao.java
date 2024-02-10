@@ -45,7 +45,7 @@ public class DataAcquisitionDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public void persistTeams(List<Team> teams) {
+    public void persistTeamsAndStadiums(List<Team> teams) {
         if (teams.isEmpty()) {
             log.debug("persistTeams(): forwarded empty list.");
             return;
@@ -67,15 +67,16 @@ public class DataAcquisitionDao {
 
                 this.namedParameterJdbcTemplate.update(queryPersistTeam, parameters);
                 log.info("Team: {} stored in database.", team.getName());
+                persistStadium(team.getStadium());
                 continue;
             }
             log.debug("Team {} already exists in database.", team.getName());
         }
     }
 
-    public void persistStadiums(List<Stadium> stadiums) {
-        if (stadiums.isEmpty()) {
-            log.debug("persistStadiums(): forwarded empty list.");
+    private void persistStadium(Stadium stadium) {
+        if (stadium != null) {
+            log.debug("persistStadium(): forwarded empty object!");
             return;
         }
         String queryPersistStadium = "INSERT INTO football.stadium (stadium_id, stadium, team_id, capacity, address, city) " +
@@ -84,23 +85,22 @@ public class DataAcquisitionDao {
         String queryUpdateStadium = "UPDATE football.stadium SET team_id = array_append(team_id, :teamId) WHERE stadium_id = :id";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        for (Stadium stadium : stadiums) {
-            parameters.addValue("id", stadium.getId());
-            parameters.addValue("teamId", stadium.getExternalTeamId());
-            if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource("stadiumId", stadium.getId()), 0)) {
-                parameters.addValue("stadium", stadium.getName());
-                parameters.addValue("capacity", stadium.getCapacity());
-                parameters.addValue("address", stadium.getAddress());
-                parameters.addValue("city", stadium.getCity());
+        //TODO: check this potential NPE below
+        parameters.addValue("id", stadium.getId());
+        parameters.addValue("teamId", stadium.getExternalTeamId());
+        if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource("stadiumId", stadium.getId()), 0)) {
+            parameters.addValue("stadium", stadium.getName());
+            parameters.addValue("capacity", stadium.getCapacity());
+            parameters.addValue("address", stadium.getAddress());
+            parameters.addValue("city", stadium.getCity());
 
-                this.namedParameterJdbcTemplate.update(queryPersistStadium, parameters);
-                log.info("Stadium: {} stored in database.", stadium.getName());
-            } else if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource(Map.of("stadiumId", stadium.getId(), "teamId", stadium.getExternalTeamId())), 1)) {
-                this.namedParameterJdbcTemplate.update(queryUpdateStadium, parameters);
-                log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getName(), stadium.getExternalTeamId());
-            } else {
-                log.debug("Stadium {} already exists in database.", stadium.getName());
-            }
+            this.namedParameterJdbcTemplate.update(queryPersistStadium, parameters);
+            log.info("Stadium: {} stored in database.", stadium.getName());
+        } else if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource(Map.of("stadiumId", stadium.getId(), "teamId", stadium.getExternalTeamId())), 1)) {
+            this.namedParameterJdbcTemplate.update(queryUpdateStadium, parameters);
+            log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getName(), stadium.getExternalTeamId());
+        } else {
+            log.debug("Stadium {} already exists in database.", stadium.getName());
         }
     }
 

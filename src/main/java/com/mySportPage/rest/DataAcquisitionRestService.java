@@ -1,5 +1,6 @@
 package com.mySportPage.rest;
 
+import com.mySportPage.client.FeedProviderClient;
 import com.mySportPage.controller.DataAcquisitionController;
 import com.mySportPage.rest.path.external.ExternalPaths;
 import com.mySportPage.model.SportObjectEnum;
@@ -41,27 +42,17 @@ public class DataAcquisitionRestService extends AbstractRestService{
         this.controller = controller;
     }
 
+    @Autowired
+    private FeedProviderClient feedProviderClient;
+
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionRestService.class);
 
     @PostMapping(CREATE_TEAMS_AND_STADIUMS)
     public SportPageBaseResponse createTeamsAndStadiums(
             @RequestParam(LEAGUE_ID) Integer leagueId,
             @RequestParam(SEASON) Integer season) {
-
-        Map<String, String> requestParams = new HashMap<>() {{
-            put(LEAGUE, String.valueOf(leagueId));
-            put(SEASON, String.valueOf(season));
-        }};
-
-        String externalPath = prepareParams(ExternalPaths.GET_TEAMS_AND_STADIUMS_V3.getUrl(), requestParams);
-        Response response = sendGetRequest(externalPath);
-        String responseDate = fetchDataFromResponse(response);
-        if (responseDate == null) {
-            return new SportPageResponse(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-        }
-        controller.createObjects(responseDate, SportObjectEnum.TEAM);
-        controller.createObjects(responseDate, SportObjectEnum.STADIUM);
-        return new SportPageResponse(response);
+        controller.createObjects(feedProviderClient.getTeamsAndStadiums(leagueId, season), SportObjectEnum.TEAM_AND_STADIUM);
+        return new SportPageBaseResponse();
     }
 
     @PostMapping(CREATE_LEAGUES)

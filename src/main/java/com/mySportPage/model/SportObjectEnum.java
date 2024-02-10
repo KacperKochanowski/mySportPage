@@ -4,6 +4,7 @@ public enum SportObjectEnum {
 
     TEAM,
     STADIUM,
+    TEAM_AND_STADIUM,
     LEAGUE,
     LEAGUE_COVERAGE,
     COUNTRY,

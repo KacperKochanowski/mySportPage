@@ -19,22 +19,4 @@ public class SportPageResponse<T> extends SportPageBaseResponse {
     public SportPageResponse(Exception ex) {
         super(ex);
     }
-
-
-//    public SportPageResponse(int code, String message) {
-//        this.code = code;
-//        this.message = message;
-//    }
-//
-//    public SportPageResponse(HttpStatus httpStatus) {
-//        this.code = httpStatus.value();
-//        this.message = httpStatus.getReasonPhrase();
-//    }
-//
-//    public SportPageResponse(Response response) {
-//        this.code = response.code();
-//        this.message = response.message();
-//    }
-
-
 }

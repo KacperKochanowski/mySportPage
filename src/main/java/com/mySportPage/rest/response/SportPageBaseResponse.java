@@ -10,6 +10,10 @@ public class SportPageBaseResponse {
     private final boolean success;
     private String errorMessage;
 
+    public SportPageBaseResponse() {
+        this.success = true;
+    }
+
     public SportPageBaseResponse(boolean success) {
         this.success = success;
     }
