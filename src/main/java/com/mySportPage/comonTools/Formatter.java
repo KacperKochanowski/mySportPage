@@ -7,9 +7,10 @@ import java.util.Date;
 
 public class Formatter {
 
-    public static final SimpleDateFormat dateTimeNano = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-    public static final SimpleDateFormat dateTimeMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DATE_TIME_NANO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+    public static final SimpleDateFormat DATE_TIME_MIN = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static final SimpleDateFormat DATE_TIME_MIN_SEC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat DATE = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String parseDate(Date date, SimpleDateFormat dateFormat) {
         return dateFormat.format(date);
