@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.mySportPage.comonTools.Formatter.*;
+
 @Service
 public class DataAcquisitionServiceImpl implements DataAcquisitionService {
 
@@ -38,9 +40,6 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
     }
 
     private static final Logger log = LoggerFactory.getLogger(DataAcquisitionServiceImpl.class);
-
-    private final DateFormat formatWithTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final DateFormat formatWithoutTime = new SimpleDateFormat("yyyy-MM-dd");
 
     private final Map<String, String> incorrectNames = new HashMap<>() {{
         put("Tychy 71", "GKS Tychy");
@@ -208,7 +207,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             fixture.setReferee(new Referee(
                     element.get("referee") != null && !(element.get("referee").toString()).equals("null") ?
                             element.getString("referee") : null));
-            fixture.setStart(parseDate(element.getString("date")));
+            fixture.setStart(mapToDate(element.getString("date")));
             fixture.setStadiumId(element.getJSONObject("venue").get("id") != null && !(element.getJSONObject("venue").get("id").toString()).equals("null") ?
                     element.getJSONObject("venue").getInt("id") : null);
             fixture.setFinished((element.getJSONObject("status").getString("short")).equals("FT"));
@@ -288,7 +287,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             standing.setResults(creteResults(element.getJSONObject("all"), "All", standing.getTeam()));
             standing.setHomeResults(creteResults(element.getJSONObject("home"), "Home", standing.getTeam()));
             standing.setAwayResults(creteResults(element.getJSONObject("away"), "Away", standing.getTeam()));
-            standing.setUpdated(parseDate(element.getString("update")));
+            standing.setUpdated(mapToDate(element.getString("update")));
             standings.add(standing);
         }
         return standings;
@@ -335,7 +334,7 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
                     .withFirstName(coachDataObject.getAsJsonPrimitive("firstname").getAsString())
                     .withLastName(coachDataObject.getAsJsonPrimitive("lastname").getAsString())
                     .withAge(coachDataObject.getAsJsonPrimitive("age").getAsInt())
-                    .withBirthDate(parseDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
+                    .withBirthDate(mapToDate(coachDataObject.getAsJsonObject("birth").getAsJsonPrimitive("date").getAsString()))
                     .withNationality(coachDataObject.getAsJsonPrimitive("nationality").getAsString())
                     .withPhoto(coachDataObject.getAsJsonPrimitive("photo").getAsString())
                     .build();
@@ -368,20 +367,6 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
             });
         }
         return new ArrayList<>();
-    }
-
-    private Date parseDate(String date) {
-        try {
-            if (date.contains("+")) {
-                date = date.substring(0, date.lastIndexOf("+"));
-            }
-            if (date.contains("T")) {
-                return formatWithTime.parse(date.replace("T", " "));
-            }
-            return formatWithoutTime.parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
     }
 
     private Results creteResults(JSONObject data, String typeOfResults, Team team) {

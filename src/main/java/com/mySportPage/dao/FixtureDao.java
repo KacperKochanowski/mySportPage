@@ -125,7 +125,7 @@ public class FixtureDao {
                     .withLeagueId((Integer) value[0])
                     .withLeagueName((String) value[1])
                     .withEvent((String) value[2])
-                    .withStart(Formatter.parseDate((Date) value[3], Formatter.dateTimeMin))
+                    .withStart(Formatter.parseDate((Date) value[3], Formatter.DATE_TIME_MIN))
                     .withFinished((boolean) value[4])
                     .withResult((String) value[5])
                     .withRound((Integer) value[6])
