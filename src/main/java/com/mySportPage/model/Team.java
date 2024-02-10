@@ -3,7 +3,9 @@ package com.mySportPage.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.mySportPage.client.TeamDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder(setterPrefix = "with")
+@JsonAdapter(TeamDeserializer.class)
 public class Team {
 
     /**
@@ -47,6 +50,9 @@ public class Team {
 
     @JsonIgnore
     private Integer leagueId;
+
+    @SerializedName("venue")
+    private Stadium stadium;
 
 
     /**

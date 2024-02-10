@@ -48,7 +48,7 @@ public class StadiumDao {
             stadiums.add(Stadium
                     .builder()
                     .withId((Integer) row[0])
-                    .withStadium((String) row[1])
+                    .withName((String) row[1])
                     .withCapacity((Integer) row[2])
                     .withAddress((String) row[3])
                     .withCity((String) row[4])

@@ -88,18 +88,18 @@ public class DataAcquisitionDao {
             parameters.addValue("id", stadium.getId());
             parameters.addValue("teamId", stadium.getExternalTeamId());
             if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource("stadiumId", stadium.getId()), 0)) {
-                parameters.addValue("stadium", stadium.getStadium());
+                parameters.addValue("stadium", stadium.getName());
                 parameters.addValue("capacity", stadium.getCapacity());
                 parameters.addValue("address", stadium.getAddress());
                 parameters.addValue("city", stadium.getCity());
 
                 this.namedParameterJdbcTemplate.update(queryPersistStadium, parameters);
-                log.info("Stadium: {} stored in database.", stadium.getStadium());
+                log.info("Stadium: {} stored in database.", stadium.getName());
             } else if (!objectAlreadyExists(SportObjectEnum.STADIUM, new MapSqlParameterSource(Map.of("stadiumId", stadium.getId(), "teamId", stadium.getExternalTeamId())), 1)) {
                 this.namedParameterJdbcTemplate.update(queryUpdateStadium, parameters);
-                log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getStadium(), stadium.getExternalTeamId());
+                log.info("Stadium: {} now has additional team assigned to with id: {}", stadium.getName(), stadium.getExternalTeamId());
             } else {
-                log.debug("Stadium {} already exists in database.", stadium.getStadium());
+                log.debug("Stadium {} already exists in database.", stadium.getName());
             }
         }
     }

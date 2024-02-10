@@ -2,6 +2,7 @@ package com.mySportPage.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,19 +16,13 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 public class Stadium {
 
-    public Stadium(Integer id, String stadium, Integer capacity, String address, String city) {
-        this.id = id;
-        this.stadium = stadium;
-        this.capacity = capacity;
-        this.address = address;
-        this.city = city;
-    }
-
+    @SerializedName("id")
     @JsonProperty("id")
     private Integer id;
 
+    @SerializedName("name")
     @JsonProperty("venue_name")
-    private String stadium;
+    private String name;
 
     @JsonProperty("venue_capacity")
     private Integer capacity;

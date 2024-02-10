@@ -55,7 +55,7 @@ public class StadiumServiceImpl implements StadiumService {
         for (Stadium stadium : stadiums) {
             stadiumDTOS.add(StadiumDTO
                     .builder()
-                    .withStadium(stadium.getStadium())
+                    .withStadium(stadium.getName())
                     .withAddress(stadium.getAddress())
                     .withCapacity(stadium.getCapacity())
                     .withCity(stadium.getCity())
