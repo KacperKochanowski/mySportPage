@@ -15,23 +15,39 @@ public class TeamDeserializer implements JsonDeserializer<Team> {
 
         JsonObject teamJSON = teamJsonObject.getAsJsonObject("team");
         Team team = Team.builder()
-                .withExternalTeamId(teamJSON.get("id").getAsInt())
-                .withCountry(teamJSON.get("country").getAsString())
-                .withName(teamJSON.get("name").getAsString())
-                .withClubCrest(teamJSON.get("logo").getAsString())
-                .withShortCut(teamJSON.get("code").getAsString())
-                .withClubFounded(teamJSON.get("founded").getAsInt())
-                .withNational(teamJSON.get("national").getAsBoolean())
+                .withExternalTeamId(getIntValue(teamJSON, "id"))
+                .withCountry(getStringValue(teamJSON, "country"))
+                .withName(getStringValue(teamJSON, "name"))
+                .withClubCrest(getStringValue(teamJSON, "logo"))
+                .withShortCut(getStringValue(teamJSON, "code"))
+                .withClubFounded(getIntValue(teamJSON, "founded"))
+                .withNational(getBooleanValue(teamJSON, "national"))
                 .build();
 
         JsonObject stadiumJSON = teamJsonObject.getAsJsonObject("venue");
         team.setStadium(Stadium.builder()
-                .withId(stadiumJSON.get("id").getAsInt())
-                .withName(stadiumJSON.get("name").getAsString())
-                .withAddress(stadiumJSON.get("address").getAsString())
-                .withCity(stadiumJSON.get("city").getAsString())
-                .withCapacity(stadiumJSON.get("capacity").getAsInt())
+                .withId(getIntValue(stadiumJSON, "id"))
+                .withName(getStringValue(stadiumJSON, "name"))
+                .withAddress(getStringValue(stadiumJSON, "address"))
+                .withCity(getStringValue(stadiumJSON, "city"))
+                .withCapacity(getIntValue(stadiumJSON, "capacity"))
+                .withExternalTeamId(new Integer[team.getExternalTeamId()])
                 .build());
         return team;
+    }
+
+    private Integer getIntValue(JsonObject jsonObject, String key) {
+        JsonElement jsonElement = jsonObject.get(key);
+        return jsonElement != null && !jsonElement.isJsonNull() ? jsonElement.getAsInt() : null;
+    }
+
+    private String getStringValue(JsonObject jsonObject, String key) {
+        JsonElement jsonElement = jsonObject.get(key);
+        return jsonElement != null && !jsonElement.isJsonNull() ? jsonElement.getAsString() : null;
+    }
+
+    private boolean getBooleanValue(JsonObject jsonObject, String key) {
+        JsonElement jsonElement = jsonObject.get(key);
+        return jsonElement != null && !jsonElement.isJsonNull() && jsonElement.getAsBoolean();
     }
 }
