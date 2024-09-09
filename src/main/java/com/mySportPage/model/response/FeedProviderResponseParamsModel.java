@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 @Data
-public class FeedProviderResponseParams {
+public class FeedProviderResponseParamsModel {
 
     @SerializedName("league")
     private Integer leagueId;

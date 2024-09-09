@@ -11,6 +11,7 @@ import com.mySportPage.model.*;
 import com.mySportPage.model.Fixture;
 import com.mySportPage.model.League;
 import com.mySportPage.model.Team;
+import com.mySportPage.model.response.FeedProviderLeagueResponseModel;
 import com.mySportPage.rest.response.SportPageResponse;
 import com.mySportPage.service.DataAcquisitionService;
 import org.json.JSONArray;
@@ -47,10 +48,16 @@ public class DataAcquisitionServiceImpl implements DataAcquisitionService {
     }};
 
     @Override
-    public <T> void createObjects(SportPageResponse<T> data, SportObjectEnum sportObjectEnum) {
-        if (data != null) {
+    public <T> void createObjects(SportPageResponse<T> response, SportObjectEnum sportObjectEnum) {
+        if (response != null) {
             switch (sportObjectEnum) {
-                case TEAM_AND_STADIUM -> dao.persistTeamsAndStadiums((List<Team>) data.getData());
+                case TEAM_AND_STADIUM -> dao.persistTeamsAndStadiums((List<Team>) response.getData());
+                case LEAGUE -> {
+                    List<FeedProviderLeagueResponseModel> data = (List<FeedProviderLeagueResponseModel>) response.getData();
+                    dao.persistLeague(data.stream().map(FeedProviderLeagueResponseModel::getLeague).collect(Collectors.toList()));
+                    dao.persistLeagueCoverage(data.stream().map(v -> v.getSeasons().get(0).getCoverage()).collect(Collectors.toList()));
+                    dao.persistCountry(data.stream().map(FeedProviderLeagueResponseModel::getCountry).collect(Collectors.toList()));
+                }
             }
         }
     }

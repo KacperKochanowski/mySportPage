@@ -8,9 +8,9 @@ public class FeedProviderResponseModel<T> {
 
     @SerializedName("get")
     private String entity;
-    private FeedProviderResponseParams parameters;
+    private FeedProviderResponseParamsModel parameters;
     private String[] errors;
     private Integer results;
-    private FeedProviderResponsePaging paging;
+    private FeedProviderResponsePagingModel paging;
     private T response;
 }

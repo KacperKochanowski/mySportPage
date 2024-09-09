@@ -48,7 +48,8 @@ public class FixtureUpdaterTask extends BaseTask {
                 log.debug("FixtureUpdaterTask: not enough events found to perform update league ID = {} - minimum is {}", entry.getKey().getLeagueId(), minValueToAllowUpdate);
                 continue;
             }
-            dataAcquisitionRest.createFixtures(String.valueOf(entry.getKey().getLeagueId()), entry.getKey().getSeason());
+            //TODO: uncomment it!
+//            dataAcquisitionRest.createFixtures(String.valueOf(entry.getKey().getLeagueId()), entry.getKey().getSeason());
         }
     }
 }
