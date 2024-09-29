@@ -48,7 +48,6 @@ class CoachCareerRestTest extends BaseTest {
         return CoachCareerRestPath.ROOT_PATH;
     }
 
-
     @Test
     void should_get_coach_career_by_id() throws Exception {
         //given
@@ -75,8 +74,8 @@ class CoachCareerRestTest extends BaseTest {
         String path = createPath(GET_CAREER_BY_COACH_NAME, pathParams, null);
         MvcResult response = performGETRequest(path);
         //then
-        List<CoachCareer> coachCareerList = mapInternalResponse(response, new TypeReference<>() {});
-
+        List<CoachCareer> coachCareerList = mapInternalResponse(response, new TypeReference<>() {
+        });
         assertThat(coachCareerList).isNotNull();
         assertThat(coachCareerList.stream().map(v -> v.getTeam().getName()).collect(Collectors.toList())).contains("Pogon Szczecin");
     }

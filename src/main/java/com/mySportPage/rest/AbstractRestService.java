@@ -84,7 +84,7 @@ public abstract class AbstractRestService {
                         .build();
                 return fetchDataFromResponse(client.newCall(request).execute());
             } catch (IOException ex) {
-                log.info("AbstractRestService.sendGetRequest(): Couldn't fetch data from request {}. Message: {}", path, ex.getMessage());
+                log.error("AbstractRestService.sendGetRequest(): Couldn't fetch data from request {}. Message: {}", path, ex.getMessage());
             }
         }
         return null;
@@ -94,7 +94,7 @@ public abstract class AbstractRestService {
         try {
             return response.body().string();
         } catch (IOException e) {
-            log.error("DataAcquisitionRest.fetchDataFromResponse(): couldn't fetch data from response. Cause:{}. Message: {}.", e.getCause(), e.getMessage());
+            log.error("AbstractRestService.fetchDataFromResponse(): couldn't fetch data from response. Cause:{}. Message: {}.", e.getCause(), e.getMessage());
             return null;
         }
     }

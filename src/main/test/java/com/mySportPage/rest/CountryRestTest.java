@@ -5,12 +5,10 @@ import com.mySportPage.BaseTest;
 import com.mySportPage.model.Country;
 import com.mySportPage.rest.path.internal.CountryRestPath;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.HashMap;
@@ -29,9 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @WithMockUser
 @ActiveProfiles("test")
 public class CountryRestTest extends BaseTest {
-
-    @Autowired
-    private MockMvc mockMvc;
 
     private final Country TEST_COUNTRY = Country
             .builder()
@@ -54,7 +49,6 @@ public class CountryRestTest extends BaseTest {
         //then
         List<Country> countries = mapInternalResponse(response, new TypeReference<>() {
         });
-
         assertThat(countries).isNotNull();
         assertThat(countries).hasSizeGreaterThan(100);
         assertThat(countries.stream().map(Country::getName).toList()).contains("Poland");
@@ -71,7 +65,6 @@ public class CountryRestTest extends BaseTest {
         //then
         List<Country> countries = mapInternalResponse(response, new TypeReference<>() {
         });
-
         assertThat(countries).isNotNull();
         assertThat(countries).hasSize(1);
         assertThat(countries.get(0)).isEqualTo(TEST_COUNTRY);
@@ -88,8 +81,7 @@ public class CountryRestTest extends BaseTest {
         //then
         List<Country> countries = mapInternalResponse(response, new TypeReference<>() {
         });
-
-        assertThat(countries).isNull();
+        assertThat(countries).isEmpty();
     }
 
     @Test
@@ -103,7 +95,6 @@ public class CountryRestTest extends BaseTest {
         //then
         List<Country> countries = mapInternalResponse(response, new TypeReference<>() {
         });
-
         assertThat(countries).isNotNull();
         assertThat(countries).hasSizeGreaterThan(0);
         assertThat(countries.stream().filter(v -> v.equals(TEST_COUNTRY)).collect(Collectors.toList())).hasSizeGreaterThan(0);
@@ -121,7 +112,6 @@ public class CountryRestTest extends BaseTest {
         //then
         List<Country> countries = mapInternalResponse(response, new TypeReference<>() {
         });
-
-        assertThat(countries).isNull();
+        assertThat(countries).isEmpty();
     }
 }

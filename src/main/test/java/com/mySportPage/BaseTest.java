@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -12,6 +13,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,6 +26,22 @@ public abstract class BaseTest {
 
     protected MvcResult performGETRequest(String path) throws Exception {
         return mockMvc.perform(get(path))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andReturn();
+    }
+
+    protected MvcResult performPOSTRequest(String path) throws Exception {
+        return mockMvc.perform(post(path))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andReturn();
+    }
+
+    protected MvcResult performPOSTRequestWithContent(String path, String content) throws Exception {
+        return mockMvc.perform(post(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andDo(print())
                 .andExpect(status().is(200))
                 .andReturn();
@@ -60,14 +78,8 @@ public abstract class BaseTest {
     protected <T> T mapInternalResponse(MvcResult result, TypeReference<T> type) throws JsonProcessingException, UnsupportedEncodingException {
         String responseBody = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
-
         JsonNode rootNode = objectMapper.readTree(responseBody);
-        JsonNode responseCode = rootNode.path("code");
-        if (Integer.parseInt(responseCode.toString()) >= 400) {
-            return null;
-        }
         JsonNode dataNode = rootNode.path("data");
-
         return objectMapper.readValue(dataNode.toString(), type);
     }
 }

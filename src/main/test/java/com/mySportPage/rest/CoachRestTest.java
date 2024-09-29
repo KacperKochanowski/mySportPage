@@ -4,15 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.BaseTest;
+import com.mySportPage.cache.CoachContainer;
 import com.mySportPage.model.Coach;
+import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.rest.path.internal.CoachRestPath;
+import com.mySportPage.task.CoachTask;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.UnsupportedEncodingException;
@@ -30,14 +33,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CoachRestTest extends BaseTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private CoachTask timerTask;
 
     @Override
     protected String getRootPath() {
         return CoachRestPath.ROOT_PATH;
+    }
+
+    @BeforeEach
+    public void init() {
+        if (CoachContainer.getCoaches().isEmpty()) {
+            timerTask.doWork();
+        }
     }
 
     private final Coach testObject = Coach
@@ -52,7 +62,6 @@ class CoachRestTest extends BaseTest {
             .withPhoto("https://media-1.api-sports.io/football/coachs/1382.png")
             .build();
 
-
     @Test
     void should_get_any_coach_by_league() throws Exception {
         //given
@@ -64,7 +73,6 @@ class CoachRestTest extends BaseTest {
         //then
         List<Coach> coaches = mapInternalResponse(response, new TypeReference<>() {
         });
-
         assertThat(coaches).isNotNull();
         Optional<Coach> testCoach = coaches.stream().filter(v -> v.getName().equals("J. Gustafsson")).findFirst();
         assertThat(testCoach).isPresent()
@@ -101,24 +109,25 @@ class CoachRestTest extends BaseTest {
         checkReceivedValue(response);
     }
 
-//    @Test
-//    void should_get_any_coach_by_multiple_params() throws Exception {
-//        //given
-//        //when
-//        Map<String, String> queryParams = new HashMap<>();
-//        queryParams.put(LEAGUE_ID, "106");
-//        queryParams.put(TEAM_ID, "348");
-//        queryParams.put(COUNTRY, "Sweden");
-//        String path = createPath(GET_COACH_BY_MULTIPLE_PARAMS, null, queryParams);
-//        MvcResult response = performGETRequest(path);
-//        //then
-//        checkReceivedValue(response);
-//    }
+    @Test
+    void should_get_any_coach_by_multiple_params() throws Exception {
+        //given
+        //when
+        CoachRequestModel requestModel = CoachRequestModel.builder()
+                .withLeagueId(106)
+                .withTeamId(348)
+                .withCountry("Sweden")
+                .build();
+        String content = objectMapper.writeValueAsString(requestModel);
+        MvcResult response = performPOSTRequestWithContent(getRootPath(), content);
+        //then
+        checkReceivedValue(response);
+    }
 
     private void checkReceivedValue(MvcResult response) throws UnsupportedEncodingException, JsonProcessingException {
         List<Coach> coaches = mapInternalResponse(response, new TypeReference<>() {
         });
-        assertThat(coaches).isNotNull();
+        assertThat(coaches).isNotEmpty();
         Optional<Coach> foundCoach = coaches.stream().filter(v -> v.getName().equals(testObject.getName())).findFirst();
         assertThat(foundCoach).isPresent()
                 .hasValueSatisfying(sameObjects -> assertThat(foundCoach.get()).isEqualTo(testObject));
