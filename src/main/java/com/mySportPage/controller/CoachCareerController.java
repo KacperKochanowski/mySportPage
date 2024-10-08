@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
+import static com.mySportPage.comonTools.ParamValidator.validateParam;
+
 @Controller
 public class CoachCareerController {
 
@@ -22,6 +24,7 @@ public class CoachCareerController {
     }
 
     public List<CoachCareer> getCoachCareerByName(String coachName) {
+        validateParam(coachName);
         return service.getCoachCareerByName(coachName);
     }
 }

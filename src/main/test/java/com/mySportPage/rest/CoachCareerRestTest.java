@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mySportPage.BaseTest;
 import com.mySportPage.model.CoachCareer;
 import com.mySportPage.rest.path.internal.CoachCareerRestPath;
+import com.mySportPage.rest.response.SportPageBaseResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,20 @@ class CoachCareerRestTest extends BaseTest {
     }
 
     @Test
+    void should_not_get_coach_career_by_id() throws Exception {
+        //given
+        //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(COACH_ID, "-1382");
+        String path = createPath(GET_CAREER_BY_COACH_ID, pathParams, null);
+        //then
+        mockMvc.perform(get(path))
+                .andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.data", Matchers.hasSize(Matchers.equalTo(0))));
+    }
+
+    @Test
     void should_get_coach_career_by_name() throws Exception {
         //given
         //when
@@ -78,5 +93,21 @@ class CoachCareerRestTest extends BaseTest {
         });
         assertThat(coachCareerList).isNotNull();
         assertThat(coachCareerList.stream().map(v -> v.getTeam().getName()).collect(Collectors.toList())).contains("Pogon Szczecin");
+    }
+
+    @Test
+    void should_not_get_coach_career_by_empty_name() throws Exception {
+        //given
+        //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(COACH_NAME, " ");
+        String path = createPath(GET_CAREER_BY_COACH_NAME, pathParams, null);
+        MvcResult response = performGETRequest(path);
+        //then
+        SportPageBaseResponse coachCareerList = mapInternalResponse(response, new TypeReference<>() {
+        });
+        assertThat(coachCareerList).isNotNull();
+        assertThat(coachCareerList.isSuccess()).isFalse();
+        assertThat(coachCareerList.getErrorMessage()).isEqualTo("Invalid param value!");
     }
 }

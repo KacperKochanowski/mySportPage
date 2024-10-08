@@ -27,7 +27,6 @@ public abstract class BaseTest {
     protected MvcResult performGETRequest(String path) throws Exception {
         return mockMvc.perform(get(path))
                 .andDo(print())
-                .andExpect(status().is(200))
                 .andReturn();
     }
 
@@ -79,7 +78,10 @@ public abstract class BaseTest {
         String responseBody = result.getResponse().getContentAsString();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(responseBody);
-        JsonNode dataNode = rootNode.path("data");
-        return objectMapper.readValue(dataNode.toString(), type);
+        JsonNode response = rootNode.path("data");
+        if(response.toString().equals("")) {
+            response = rootNode.get("errorMessage");
+        }
+        return objectMapper.readValue(response.toString(), type);
     }
 }

@@ -18,6 +18,11 @@ public class SportPageBaseResponse {
         this.success = success;
     }
 
+    public SportPageBaseResponse(String errorMessage) {
+        this.success = false;
+        this.errorMessage = errorMessage;
+    }
+
     public SportPageBaseResponse(Exception ex) {
         this.success = false;
         this.errorMessage = ex.getMessage();
