@@ -6,12 +6,10 @@ import com.mySportPage.model.dto.FixtureDTO;
 import com.mySportPage.rest.path.internal.FixtureRestPath;
 import com.mySportPage.rest.path.internal.LeagueRestPath;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
@@ -27,10 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class FixtureRestTest extends BaseTest {
 
-    private boolean testsAvailable = false;
 
-    @Autowired
-    private MockMvc mockMvc;
+    //TODO: investigate logic
+    private boolean testsAvailable = false;
 
     @Override
     protected String getRootPath() {

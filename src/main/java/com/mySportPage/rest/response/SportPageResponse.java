@@ -19,4 +19,8 @@ public class SportPageResponse<T> extends SportPageBaseResponse {
     public SportPageResponse(Exception ex) {
         super(ex);
     }
+
+    public SportPageResponse(String errorMessage) {
+        super(errorMessage);
+    }
 }

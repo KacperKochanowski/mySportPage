@@ -100,7 +100,7 @@ class CoachCareerRestTest extends BaseTest {
         //given
         //when
         Map<String, String> pathParams = new HashMap<>();
-        pathParams.put(COACH_NAME, " ");
+        pathParams.put(COACH_NAME, "  ");
         String path = createPath(GET_CAREER_BY_COACH_NAME, pathParams, null);
         MvcResult response = performGETRequest(path);
         //then
@@ -108,6 +108,6 @@ class CoachCareerRestTest extends BaseTest {
         });
         assertThat(coachCareerList).isNotNull();
         assertThat(coachCareerList.isSuccess()).isFalse();
-        assertThat(coachCareerList.getErrorMessage()).isEqualTo("Invalid param value!");
+        assertThat(coachCareerList.getErrorMessage()).isEqualTo("Forwarded param can not contain only white spaces!");
     }
 }

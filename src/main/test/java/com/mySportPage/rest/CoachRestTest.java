@@ -8,6 +8,7 @@ import com.mySportPage.cache.CoachContainer;
 import com.mySportPage.model.Coach;
 import com.mySportPage.model.request.CoachRequestModel;
 import com.mySportPage.rest.path.internal.CoachRestPath;
+import com.mySportPage.rest.response.SportPageBaseResponse;
 import com.mySportPage.task.CoachTask;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,22 @@ class CoachRestTest extends BaseTest {
     }
 
     @Test
+    void should_not_get_any_coach_by_league() throws Exception {
+        //given
+        //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(LEAGUE_ID, "-106");
+        String path = createPath(GET_COACH_BY_LEAGUE, pathParams, null);
+        MvcResult response = performGETRequest(path);
+        //then
+        SportPageBaseResponse coaches = mapInternalResponse(response, new TypeReference<>() {
+        });
+        assertThat(coaches).isNotNull();
+        assertThat(coaches.isSuccess()).isFalse();
+        assertThat(coaches.getErrorMessage()).isEqualTo("field 'leagueId' cannot be negative (provided: '-106')");
+    }
+
+    @Test
     void should_get_any_coach_by_team() throws Exception {
         //given
         //when
@@ -95,6 +112,22 @@ class CoachRestTest extends BaseTest {
         MvcResult response = performGETRequest(path);
         //then
         checkReceivedValue(response);
+    }
+
+    @Test
+    void should_not_get_any_coach_by_team() throws Exception {
+        //given
+        //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(TEAM_ID, "-348");
+        String path = createPath(GET_COACH_BY_TEAM, pathParams, null);
+        MvcResult response = performGETRequest(path);
+        //then
+        SportPageBaseResponse coaches = mapInternalResponse(response, new TypeReference<>() {
+        });
+        assertThat(coaches).isNotNull();
+        assertThat(coaches.isSuccess()).isFalse();
+        assertThat(coaches.getErrorMessage()).isEqualTo("field 'teamId' cannot be negative (provided: '-348')");
     }
 
     @Test
@@ -110,7 +143,37 @@ class CoachRestTest extends BaseTest {
     }
 
     @Test
+    void should_not_get_any_coach_by_country() throws Exception {
+        //given
+        //when
+        Map<String, String> pathParams = new HashMap<>();
+        pathParams.put(COUNTRY, "United States of Sweden");
+        String path = createPath(GET_COACH_BY_COUNTRY, pathParams, null);
+        MvcResult response = performGETRequest(path);
+        //then
+        SportPageBaseResponse coaches = mapInternalResponse(response, new TypeReference<>() {
+        });
+        assertThat(coaches).isNotNull();
+        assertThat(coaches.isSuccess()).isFalse();
+    }
+
+    @Test
     void should_get_any_coach_by_multiple_params() throws Exception {
+        //given
+        //when
+        CoachRequestModel requestModel = CoachRequestModel.builder()
+                .withLeagueId(106)
+                .withTeamId(348)
+                .withCountry("Sweden")
+                .build();
+        String content = objectMapper.writeValueAsString(requestModel);
+        MvcResult response = performPOSTRequestWithContent(getRootPath(), content);
+        //then
+        checkReceivedValue(response);
+    }
+
+    @Test
+    void should_not_get_any_coach_by_multiple_params() throws Exception {
         //given
         //when
         CoachRequestModel requestModel = CoachRequestModel.builder()

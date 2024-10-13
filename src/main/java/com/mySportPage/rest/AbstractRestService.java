@@ -29,14 +29,9 @@ public abstract class AbstractRestService {
 
     private static final Gson gson = new Gson();
 
-
     protected <T> SportPageResponse<T> processResponse(Supplier<T> supplier) {
-        try {
-            T data = supplier.get();
-            return new SportPageResponse<>(data);
-        } catch (Exception e) {
-            return new SportPageResponse<>(e);
-        }
+        T data = supplier.get();
+        return new SportPageResponse<>(data);
     }
 
     protected SportPageBaseResponse processVoidResponse(Consumer<Void> consumer) {
